@@ -1,11 +1,56 @@
 <script>
+    import { fade } from 'svelte/transition';
+    import Failure from './lib/views/Failure.svelte';
     import Home from './lib/views/Home.svelte';
+    import Loading from './lib/views/Loading.svelte';
 
-    function handlePDFSubmit(ev) {
-        console.log(ev.detail);
+    let state = 'selection';
+    let grades;
+    let error;
+
+    const ENDPOINT = `${import.meta.env.DEV && import.meta.env.VITE_API_ROOT || ''}/api/parse`;
+
+    async function handlePDFSubmit(ev) {
+        state = 'loading';
+        try {
+            const res = await fetch(ENDPOINT, {
+                method: 'POST',
+                body: ev.detail,
+            });
+            const content = await res.json();
+
+            if (content.error)
+                throw new Error(content.error);
+            if (!('data' in content))
+                throw new Error('Aucune donnée n\'a été trouvée dans le PDF');
+
+            grades = content.data;
+            state = 'display';
+        } catch (e) {
+            console.error(e);
+            state = 'error';
+            error = e.message;
+        }
     }
 </script>
 
+
 <main>
-    <Home on:submit={handlePDFSubmit}/>
+    {#if state === 'selection'}
+        <div transition:fade>
+            <Home on:submit={handlePDFSubmit}/>
+        </div>
+    {:else if state === 'loading'}
+        <div transition:fade>
+            <Loading/>
+        </div>
+    {:else if state === 'display'}
+        <div transition:fade>
+            <pre>{JSON.stringify(grades, null, 2)}</pre>
+        </div>
+    {:else if state === 'error'}
+        <div transition:fade>
+            <Failure {error} on:back={() => (state = 'selection')}/>
+        </div>
+    {/if}
 </main>
