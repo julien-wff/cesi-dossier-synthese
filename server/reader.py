@@ -10,7 +10,7 @@ import re
 """
 def read_pdf(path):
     # Read all the tables in the pdf
-    grades = tabula.read_pdf(path, pages='all')
+    grades = tabula.read_pdf(path, pages='all', lattice=True, multiple_tables=True)
 
     # Concatenate all the tables into one if they have a 'AXE / U.E. / E.E.' and 'Coeff.' column
     grades = pd.concat(
