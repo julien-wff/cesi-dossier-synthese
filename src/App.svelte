@@ -1,6 +1,7 @@
 <script>
     import { fade } from 'svelte/transition';
     import Failure from './lib/views/Failure.svelte';
+    import Grades from './lib/views/Grades.svelte';
     import Home from './lib/views/Home.svelte';
     import Loading from './lib/views/Loading.svelte';
 
@@ -46,7 +47,7 @@
         </div>
     {:else if state === 'display'}
         <div transition:fade>
-            <pre>{JSON.stringify(grades, null, 2)}</pre>
+            <Grades content={grades}/>
         </div>
     {:else if state === 'error'}
         <div transition:fade>
