@@ -1,20 +1,19 @@
 <script>
+    import '$lib/app.css';
+    import Failure from '$lib/views/Failure.svelte';
+    import Grades from '$lib/views/Grades.svelte';
+    import Home from '$lib/views/Home.svelte';
+    import Loading from '$lib/views/Loading.svelte';
     import { fade } from 'svelte/transition';
-    import Failure from './lib/views/Failure.svelte';
-    import Grades from './lib/views/Grades.svelte';
-    import Home from './lib/views/Home.svelte';
-    import Loading from './lib/views/Loading.svelte';
 
     let state = 'selection';
     let grades;
     let error;
 
-    const ENDPOINT = `${import.meta.env.DEV && import.meta.env.VITE_API_ROOT || ''}/api/parse`;
-
     async function handlePDFSubmit(ev) {
         state = 'loading';
         try {
-            const res = await fetch(ENDPOINT, {
+            const res = await fetch('/api/parse', {
                 method: 'POST',
                 body: ev.detail,
             });

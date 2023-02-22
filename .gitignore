@@ -7,10 +7,14 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Node and svelte
 node_modules
+.svelte-kit
+build
 dist
-dist-ssr
 *.local
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
 
 # Environment files
 .env
