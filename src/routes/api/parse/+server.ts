@@ -23,6 +23,13 @@ export const POST = (async ({ request }) => {
     if (file.size > 5e4) // 50KB
         return json({ error: 'Le fichier est trop volumineux' }, { status: 400 });
 
+    // Check the temp folder exists, and create it if not
+    try {
+        await fs.access('./temp');
+    } catch {
+        await fs.mkdir('./temp');
+    }
+
     // Save file to disk
     const buffer = await file.arrayBuffer();
     const path = `./temp/${uuid()}.pdf`;
