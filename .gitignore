@@ -15,6 +15,7 @@ dist
 *.local
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+temp
 
 # Environment files
 .env
