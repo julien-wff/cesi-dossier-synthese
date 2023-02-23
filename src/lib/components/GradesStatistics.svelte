@@ -1,6 +1,12 @@
 <script lang="ts">
     import type { Section } from '../types/grades';
-    import { calculateCategoriesAverage, calculateGradesAverage, validationLevel } from '../utils/grades';
+    import {
+        calculateCategoriesAverage,
+        calculateGradesAverage,
+        countLetterWithCoeff,
+        validationLevel,
+        countLetterWithoutCoeff
+    } from '$lib/utils/grades';
 
     export let content: Section[] = [];
 
@@ -33,4 +39,30 @@
        class:bg-blue-500={categoryLevel === 2}>
         {isNaN(categoriesAverage) ? '' : Math.round(categoriesAverage * 100) / 100}
     </p>
+</div>
+
+<h1 class="text-xl mt-6 mb-4">Lettres</h1>
+
+<div class="flex border border-gray-400 w-fit shadow rounded divide-x divide-gray-400">
+    <div class="flex flex-col divide-y divide-gray-400">
+        <div class="p-1.5 text-center">Lettre</div>
+        <div class="p-1.5 text-center text-white bg-blue-500">A</div>
+        <div class="p-1.5 text-center text-white bg-green-500">B</div>
+        <div class="p-1.5 text-center text-white bg-amber-500">C</div>
+        <div class="p-1.5 text-center text-white bg-red-500">D</div>
+    </div>
+    <div class="flex flex-col divide-y divide-gray-400">
+        <div class="p-1.5">Sans Coeff.</div>
+        <div class="p-1.5 text-center">{countLetterWithoutCoeff(content, 'A')}</div>
+        <div class="p-1.5 text-center">{countLetterWithoutCoeff(content, 'B')}</div>
+        <div class="p-1.5 text-center">{countLetterWithoutCoeff(content, 'C')}</div>
+        <div class="p-1.5 text-center">{countLetterWithoutCoeff(content, 'D')}</div>
+    </div>
+    <div class="flex flex-col divide-y divide-gray-400">
+        <div class="p-1.5">Avec Coeff.</div>
+        <div class="p-1.5 text-center">{countLetterWithCoeff(content, 'A')}</div>
+        <div class="p-1.5 text-center">{countLetterWithCoeff(content, 'B')}</div>
+        <div class="p-1.5 text-center">{countLetterWithCoeff(content, 'C')}</div>
+        <div class="p-1.5 text-center">{countLetterWithCoeff(content, 'D')}</div>
+    </div>
 </div>

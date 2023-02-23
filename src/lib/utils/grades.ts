@@ -54,3 +54,17 @@ export function calculateCategoriesAverage(sections: Section[]) {
         .filter(average => !isNaN(average));
     return categoryAverages.reduce((acc, cat) => acc + cat, 0) / categoryAverages.length;
 }
+
+export function countLetterWithCoeff(sections: Section[], letter: keyof typeof LETTER_VALUES) {
+    const grades = sectionsToGrades(sections).flat(2);
+    return grades.filter(grade => grade === letter).length;
+}
+
+export function countLetterWithoutCoeff(sections: Section[], letter: keyof typeof LETTER_VALUES) {
+    const categoryGrades = sections.map(({ categories }) =>
+        categories.map(({ grades }) =>
+            grades.map(({ grade }) => grade)))
+        .flat(2)
+        .filter(grade => grade === letter);
+    return categoryGrades.length;
+}
