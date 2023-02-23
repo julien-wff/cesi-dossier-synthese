@@ -1,28 +1,29 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
-    import { calculateAverage, gradesWithCoefficientToList, validationLevel } from '../utils/grades.js';
+    import type { Grade } from '../types/grades';
+    import { calculateAverage, gradesWithCoefficientToList, validationLevel } from '../utils/grades';
     import GradeSelector from './GradeSelector.svelte';
 
-    export let category;
-    export let grades = [];
+    export let category: string;
+    export let grades: Grade[] = [];
 
-    let categoryAverage, categoryLevel;
+    let categoryAverage: number, categoryLevel: number | null;
     $: categoryAverage = calculateAverage(gradesWithCoefficientToList(grades));
     $: categoryLevel = validationLevel(categoryAverage);
 
-    let initialGrades = [];
+    let initialGrades: (string | null)[] = [];
     onMount(() => {
         initialGrades = grades.map(grade => grade.grade);
     });
 
-    let gradesChanged;
+    let gradesChanged: boolean;
     $: gradesChanged = grades.some((grade, index) => grade.grade !== initialGrades[index]);
 
     function handleGradesRevert() {
         grades = grades.map((grade, index) => ({
             ...grade,
             grade: initialGrades[index],
-        }));
+        }) satisfies Grade);
     }
 </script>
 
