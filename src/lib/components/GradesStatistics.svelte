@@ -52,14 +52,14 @@
         <div class="p-1.5 text-center text-white bg-red-500">D</div>
     </div>
     <div class="flex flex-col divide-y divide-gray-400">
-        <div class="p-1.5">Sans Coeff.</div>
+        <div class="p-1.5 truncate">Sans Coeff.</div>
         <div class="p-1.5 text-center">{countLetterWithoutCoeff(content, 'A')}</div>
         <div class="p-1.5 text-center">{countLetterWithoutCoeff(content, 'B')}</div>
         <div class="p-1.5 text-center">{countLetterWithoutCoeff(content, 'C')}</div>
         <div class="p-1.5 text-center">{countLetterWithoutCoeff(content, 'D')}</div>
     </div>
     <div class="flex flex-col divide-y divide-gray-400">
-        <div class="p-1.5">Avec Coeff.</div>
+        <div class="p-1.5 truncate">Avec Coeff.</div>
         <div class="p-1.5 text-center">{countLetterWithCoeff(content, 'A')}</div>
         <div class="p-1.5 text-center">{countLetterWithCoeff(content, 'B')}</div>
         <div class="p-1.5 text-center">{countLetterWithCoeff(content, 'C')}</div>
