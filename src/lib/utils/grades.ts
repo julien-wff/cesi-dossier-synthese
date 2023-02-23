@@ -1,4 +1,4 @@
-import type { Grade } from '../types/grades';
+import type { Grade, Section } from '../types/grades';
 
 export const LETTER_VALUES = {
     A: 5,
@@ -32,4 +32,25 @@ export function gradesWithCoefficientToList(grades: Grade[]) {
             letters.push(...new Array(coefficient).fill(grade));
     }
     return letters;
+}
+
+export function sectionsToGrades(sections: Section[]) {
+    return sections.map(({ categories }) =>
+        categories.map(({ grades }) =>
+            gradesWithCoefficientToList(grades),
+        ),
+    );
+}
+
+export function calculateGradesAverage(sections: Section[]) {
+    const grades = sectionsToGrades(sections).flat(2);
+    return calculateAverage(grades);
+}
+
+export function calculateCategoriesAverage(sections: Section[]) {
+    const categoryGrades = sectionsToGrades(sections).map(category => category.flat());
+    const categoryAverages = categoryGrades
+        .map(calculateAverage)
+        .filter(average => !isNaN(average));
+    return categoryAverages.reduce((acc, cat) => acc + cat, 0) / categoryAverages.length;
 }
