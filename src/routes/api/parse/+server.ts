@@ -36,7 +36,7 @@ export const POST = (async ({ request }) => {
     await fs.writeFile(path, Buffer.from(buffer));
 
     // Parse the PDF
-    const commandResult = execSync(`java -jar tabula.jar -p all -f JSON -l -u ${path}`).toString();
+    const commandResult = execSync(`java -jar tabula.jar -p all -f JSON -l -u -i ${path}`).toString();
     const parsingResult = JSON.parse(commandResult) as ExtractionTable[];
     const result = parseTabulaResult(parsingResult);
 
