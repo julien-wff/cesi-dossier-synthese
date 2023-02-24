@@ -1,5 +1,6 @@
 <script>
     import '$lib/app.css';
+    import Meta from '$lib/components/Meta.svelte';
     import Failure from '$lib/views/Failure.svelte';
     import Grades from '$lib/views/Grades.svelte';
     import Home from '$lib/views/Home.svelte';
@@ -34,6 +35,8 @@
     }
 </script>
 
+
+<Meta/>
 
 <main>
     {#if state === 'selection'}
