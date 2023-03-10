@@ -8,6 +8,8 @@
     let loading = false;
     let loadingMessage = 'Connexion en cours...';
     let userID: string;
+    let errorMessage: string | null = null;
+    let errorImage: string | null = null;
 
     function handleSubmit() {
         loading = true;
@@ -29,10 +31,15 @@
                 case 'loading_login_page':
                     loadingMessage = 'Chargement de la page de connexion...';
                     break;
+                case 'loading_pdf_page':
+                    loadingMessage = 'Chargement de la page des dossiers...';
+                    break;
                 case 'error':
                     loading = false;
                     eventSource.close();
                     console.error(message.data);
+                    errorMessage = message.data.error;
+                    errorImage = message.data.screenshot;
                     break;
             }
         };
@@ -54,10 +61,28 @@
             password,
         }),
     });
+
+    function resetError() {
+        errorMessage = null;
+        errorImage = null;
+        password = '';
+    }
 </script>
 
 
-{#if !loading}
+{#if errorMessage}
+    <div class="w-full min-h-screen grid place-items-center">
+        <div class="bg-indigo-50 p-8 rounded-md shadow-md w-96">
+            <h2 class="text-xl mb-4">Oh non !</h2>
+            <p class="mb-4">{errorMessage}</p>
+            <img src="data:image/webp;base64,{errorImage}" alt="Erreur" class="w-full rounded"/>
+            <button on:click={resetError}
+                    class="w-full bg-red-500 hover:bg-red-600 text-white p-2 rounded-md mt-4">
+                Réessayer
+            </button>
+        </div>
+    </div>
+{:else if !loading}
     <div class="w-full min-h-screen grid place-items-center">
         <form class="bg-indigo-50 p-8 rounded-md shadow-md w-96" on:submit|preventDefault={handleSubmit}>
             <h2 class="text-xl mb-6">Connexion au compte CESI</h2>
