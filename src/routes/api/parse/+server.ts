@@ -36,7 +36,18 @@ export const POST = (async ({ request }) => {
     await fs.writeFile(path, Buffer.from(buffer));
 
     // Parse the PDF
-    const commandResult = execSync(`java -jar tabula.jar -p all -f JSON -l -u -i ${path}`).toString();
+    const commandArgs = [
+        '-Dorg.slf4j.simpleLogger.defaultLogLevel=off', // Disable slf4j logs
+        '-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog', // Disable commons-logging logs
+        '-jar tabula.jar', // Tabula jar file
+        '-p all', // Parse all pages
+        '-f JSON', // Output as JSON
+        '-l', // Use lattice mode (alternate parsing mode)
+        '-u', // Use line returns in cells
+        '-i', // Silent mode
+        path,
+    ];
+    const commandResult = execSync(`java ${commandArgs.join(' ')}`).toString();
     const parsingResult = JSON.parse(commandResult) as ExtractionTable[];
     const result = parseTabulaResult(parsingResult);
 
