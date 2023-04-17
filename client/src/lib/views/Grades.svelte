@@ -1,5 +1,5 @@
 <script lang="ts">
-    import GradesStatistics from '$lib/components/GradesStatistics.svelte';
+    import GradesStatistics from '../components/GradesStatistics.svelte';
     import GradeCategoryTable from '../components/GradeCategoryTable.svelte';
     import type { Section } from '../types/grades';
 

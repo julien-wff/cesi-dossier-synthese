@@ -6,7 +6,7 @@
         countLetterWithCoeff,
         validationLevel,
         countLetterWithoutCoeff
-    } from '$lib/utils/grades';
+    } from '../utils/grades';
 
     export let content: Section[] = [];
 
