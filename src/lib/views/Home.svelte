@@ -8,7 +8,7 @@
 
     const dispatch = createEventDispatcher();
 
-    function handleFileChange() {
+    function handleFileChange(ev) {
         filename = fileInput.files[0].name;
 
         if (!filename.toLowerCase().endsWith('.pdf')) {
@@ -17,6 +17,10 @@
         }
 
         picked = true;
+
+        // Submit the form if the user pressed shift while dropping the file
+        if (ev.detail.shiftKey)
+            handleSubmit();
     }
 
     function handleCancel() {

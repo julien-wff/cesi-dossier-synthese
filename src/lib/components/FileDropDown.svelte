@@ -1,8 +1,23 @@
 <script>
+    import { createEventDispatcher } from 'svelte';
+
     export let input;
     export let hidden = false;
 
-    let drag;
+    const dispatch = createEventDispatcher();
+
+    let drag = false;
+    let shiftKey = false;
+
+    function handleDrop(ev) {
+        drag = false;
+        shiftKey = ev.shiftKey || false;
+    }
+
+    function handleChange() {
+        dispatch('change', { shiftKey });
+        shiftKey = false;
+    }
 </script>
 
 
@@ -14,9 +29,9 @@
     <input type="file"
            on:dragenter={() => (drag = true)}
            on:dragleave={() => (drag = false)}
-           on:drop={() => (drag = false)}
+           on:drop={handleDrop}
+           on:change={handleChange}
            bind:this={input}
-           on:change
            accept="application/pdf"
            class="w-full h-48 opacity-0 cursor-pointer">
 
