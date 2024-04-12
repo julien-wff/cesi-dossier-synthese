@@ -13,7 +13,7 @@
 
     <select class="block w-9 h-full appearance-none bg-transparent text-center text-white cursor-pointer"
             bind:value={grade}>
-        <option value=""></option>
+        <option value={null}></option>
         <option value="A" class="text-blue-600">A</option>
         <option value="B" class="text-green-600">B</option>
         <option value="C" class="text-amber-600">C</option>
