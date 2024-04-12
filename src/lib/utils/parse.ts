@@ -1,4 +1,4 @@
-import type { Section } from '../types/grades';
+import type { Letter, Section } from '../types/grades';
 import type { ExtractionTable } from '../types/tabula';
 
 const formatString = (str: string) => str.trim().replace(/[\n\r]+/g, ' ');
@@ -29,12 +29,12 @@ export function parseTabulaResult(input: ExtractionTable[]): Section[] {
         const title = row['AXE / U.E. / E.E.'];
         const coefficient = row.Coeff || null;
 
-        let grade = null, previousGrade = null;
+        let letter: Letter | null = null, previousGrade: Letter | null = null;
         if ([ 'A', 'B', 'C', 'D' ].includes(row.Evaluation)) {
-            grade = row.Evaluation;
-        } else if (row.Evaluation.match(/^[A-D]( \/ [A-D])?$/)) {
-            grade = row.Evaluation.split(' / ')[1];
-            previousGrade = row.Evaluation.split(' / ')[0];
+            letter = row.Evaluation as Letter;
+        } else if (RegExp(/^[A-D]( \/ [A-D])?$/).exec(row.Evaluation)) {
+            letter = row.Evaluation.split(' / ')[1] as Letter;
+            previousGrade = row.Evaluation.split(' / ')[0] as Letter;
         }
 
         if (!coefficient) {
@@ -52,7 +52,7 @@ export function parseTabulaResult(input: ExtractionTable[]): Section[] {
         } else {
             result.at(-1)!.categories.at(-1)!.grades.push({
                 name: title,
-                grade,
+                letter: letter,
                 previousGrade,
                 coefficient: Number(coefficient),
             });

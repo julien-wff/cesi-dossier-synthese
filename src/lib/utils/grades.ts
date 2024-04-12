@@ -1,35 +1,35 @@
-import type { Grade, Section } from '../types/grades';
+import type { Grade, Letter, Section } from '../types/grades';
 
 export const LETTER_VALUES = {
     A: 5,
     B: 4,
     C: 2,
     D: 1,
-};
+} satisfies {[key in Letter]: number};
 
-export const convertToLetterGrade = (grade: string) => LETTER_VALUES[grade as keyof typeof LETTER_VALUES] || 0;
+export const convertToLetterGrade = (letter: Letter) => LETTER_VALUES[letter] || 0;
 
-export function calculateAverage(grades: string[]) {
-    grades = grades.filter(convertToLetterGrade);
-    const total = grades.reduce((acc, grade) => acc + convertToLetterGrade(grade), 0);
-    return total / grades.length;
+export function calculateAverage(letters: Letter[]) {
+    letters = letters.filter(convertToLetterGrade);
+    const total = letters.reduce((acc, grade) => acc + convertToLetterGrade(grade), 0);
+    return total / letters.length;
 }
 
-export function validationLevel(value: number) {
-    if (value > 4.5)
+export function validationLevel(grade: number) {
+    if (grade > 4.5)
         return 2;
-    if (value >= 3.6)
+    if (grade >= 3.6)
         return 1;
-    if (value > 0)
+    if (grade > 0)
         return 0;
     return null;
 }
 
 export function gradesWithCoefficientToList(grades: Grade[]) {
-    const letters: string[] = [];
-    for (const { grade, coefficient } of grades) {
-        if (grade && convertToLetterGrade(grade))
-            letters.push(...new Array(coefficient).fill(grade));
+    const letters: Letter[] = [];
+    for (const { letter, coefficient } of grades) {
+        if (letter && convertToLetterGrade(letter))
+            letters.push(...new Array(coefficient).fill(letter));
     }
     return letters;
 }
@@ -55,15 +55,15 @@ export function calculateCategoriesAverage(sections: Section[]) {
     return categoryAverages.reduce((acc, cat) => acc + cat, 0) / categoryAverages.length;
 }
 
-export function countLetterWithCoeff(sections: Section[], letter: keyof typeof LETTER_VALUES) {
+export function countLetterWithCoeff(sections: Section[], letter: Letter) {
     const grades = sectionsToGrades(sections).flat(2);
     return grades.filter(grade => grade === letter).length;
 }
 
-export function countLetterWithoutCoeff(sections: Section[], letter: keyof typeof LETTER_VALUES) {
+export function countLetterWithoutCoeff(sections: Section[], letter: Letter) {
     const categoryGrades = sections.map(({ categories }) =>
         categories.map(({ grades }) =>
-            grades.map(({ grade }) => grade)))
+            grades.map(({ letter }) => letter)))
         .flat(2)
         .filter(grade => grade === letter);
     return categoryGrades.length;

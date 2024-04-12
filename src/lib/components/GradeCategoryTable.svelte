@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import type { Grade } from '../types/grades';
+    import type { Grade, Letter } from '../types/grades';
     import { calculateAverage, gradesWithCoefficientToList, validationLevel } from '../utils/grades';
     import GradeSelector from './GradeSelector.svelte';
 
@@ -11,18 +11,18 @@
     $: categoryAverage = calculateAverage(gradesWithCoefficientToList(grades));
     $: categoryLevel = validationLevel(categoryAverage);
 
-    let initialGrades: (string | null)[] = [];
+    let initialGrades: (Letter | null)[] = [];
     onMount(() => {
-        initialGrades = grades.map(grade => grade.grade);
+        initialGrades = grades.map(grade => grade.letter);
     });
 
     let gradesChanged: boolean;
-    $: gradesChanged = grades.some((grade, index) => grade.grade !== initialGrades[index]);
+    $: gradesChanged = grades.some((grade, index) => grade.letter !== initialGrades[index]);
 
     function handleGradesRevert() {
         grades = grades.map((grade, index) => ({
             ...grade,
-            grade: initialGrades[index],
+            letter: initialGrades[index],
         }) satisfies Grade);
     }
 </script>
@@ -34,18 +34,21 @@
         <div class="p-1.5">
             {category}
         </div>
-        <img src="icons/refresh.svg" alt="*" class="w-9 h-9 cursor-pointer p-1.5"
+        <img src="icons/refresh.svg"
+             alt="*"
+             class="w-9 h-9 cursor-pointer p-1.5"
+             aria-hidden={!gradesChanged}
              class:hidden={!gradesChanged}
              on:click={handleGradesRevert}/>
     </div>
 
     <div class="flex divide-x divide-gray-400">
         <div class="flex-1 divide-y divide-gray-400">
-            {#each grades as { name, coefficient, grade }}
+            {#each grades as { name, coefficient, letter }}
                 <div class="flex divide-x divide-gray-400">
                     <div class="p-1.5 flex-1">{name}</div>
                     <div class="grid place-items-center p-1.5 w-9">{coefficient}</div>
-                    <GradeSelector bind:grade={grade}/>
+                    <GradeSelector bind:grade={letter}/>
                 </div>
             {/each}
         </div>

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { createEventDispatcher } from 'svelte';
 
     export let input;
@@ -9,9 +9,9 @@
     let drag = false;
     let shiftKey = false;
 
-    function handleDrop(ev) {
+    function handleDrop(ev: DragEvent) {
         drag = false;
-        shiftKey = ev.shiftKey || false;
+        shiftKey = ev.shiftKey;
     }
 
     function handleChange() {

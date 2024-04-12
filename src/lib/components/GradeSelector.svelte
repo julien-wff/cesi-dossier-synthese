@@ -1,5 +1,7 @@
-<script>
-    export let grade;
+<script lang="ts">
+    import type { Letter } from '$lib/types/grades';
+
+    export let grade: Letter | null;
 </script>
 
 

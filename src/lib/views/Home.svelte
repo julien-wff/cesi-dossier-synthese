@@ -1,18 +1,18 @@
-<script>
+<script lang="ts">
     import { createEventDispatcher } from 'svelte';
     import FileDropDown from '../components/FileDropDown.svelte';
 
     let picked = false;
-    let filename = null;
-    let fileInput;
+    let filename: string | null = null;
+    let fileInput: HTMLInputElement;
 
     const dispatch = createEventDispatcher();
 
-    function handleFileChange(ev) {
-        filename = fileInput.files[0].name;
+    function handleFileChange(ev: CustomEvent<{ shiftKey: boolean }>) {
+        filename = fileInput?.files?.[0].name ?? null;
 
-        if (!filename.toLowerCase().endsWith('.pdf')) {
-            fileInput.value = null;
+        if (!filename?.toLowerCase().endsWith('.pdf')) {
+            fileInput.value = '';
             return;
         }
 
@@ -25,10 +25,13 @@
 
     function handleCancel() {
         picked = false;
-        fileInput.value = null;
+        fileInput.value = '';
     }
 
     function handleSubmit() {
+        if (!fileInput?.files?.[0])
+            return;
+
         const formData = new FormData();
         formData.append('file', fileInput.files[0]);
         dispatch('submit', formData);

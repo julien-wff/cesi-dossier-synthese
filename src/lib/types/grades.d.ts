@@ -1,3 +1,5 @@
+export type Letter = 'A' | 'B' | 'C' | 'D';
+
 export interface Section {
     name: string;
     categories: Category[];
@@ -10,7 +12,7 @@ export interface Category {
 
 export interface Grade {
     name: string;
-    grade: string | null;
+    letter: Letter | null;
     coefficient: number;
-    previousGrade?: string | null;
+    previousGrade?: Letter | null;
 }

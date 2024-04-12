@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import '$lib/app.css';
     import Meta from '$lib/components/Meta.svelte';
     import Failure from '$lib/views/Failure.svelte';
@@ -6,13 +6,21 @@
     import Home from '$lib/views/Home.svelte';
     import Loading from '$lib/views/Loading.svelte';
     import { fade } from 'svelte/transition';
+    import type { Section } from '$lib/types/grades';
 
-    let state = 'selection';
-    let grades;
-    let error;
+    enum AppState {
+        Selection = 'selection',
+        Loading = 'loading',
+        Display = 'display',
+        Error = 'error',
+    }
 
-    async function handlePDFSubmit(ev) {
-        state = 'loading';
+    let state: AppState = AppState.Selection;
+    let grades: Section[];
+    let error: string;
+
+    async function handlePDFSubmit(ev: CustomEvent<FormData>) {
+        state = AppState.Loading;
         try {
             const res = await fetch('/api/parse', {
                 method: 'POST',
@@ -26,11 +34,11 @@
                 throw new Error('Aucune donnée n\'a été trouvée dans le PDF');
 
             grades = content.data;
-            state = 'display';
+            state = AppState.Display;
         } catch (e) {
             console.error(e);
-            state = 'error';
-            error = e.message;
+            state = AppState.Error;
+            error = (e as Error).message;
         }
     }
 </script>
@@ -39,21 +47,21 @@
 <Meta/>
 
 <main>
-    {#if state === 'selection'}
+    {#if state === AppState.Selection}
         <div transition:fade>
             <Home on:submit={handlePDFSubmit}/>
         </div>
-    {:else if state === 'loading'}
+    {:else if state === AppState.Loading}
         <div transition:fade>
             <Loading/>
         </div>
-    {:else if state === 'display'}
+    {:else if state === AppState.Display}
         <div transition:fade>
             <Grades content={grades}/>
         </div>
-    {:else if state === 'error'}
+    {:else if state === AppState.Error}
         <div transition:fade>
-            <Failure {error} on:back={() => (state = 'selection')}/>
+            <Failure {error} on:back={() => (state = AppState.Selection)}/>
         </div>
     {/if}
 </main>
