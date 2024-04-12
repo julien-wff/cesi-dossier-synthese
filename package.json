@@ -25,6 +25,7 @@
         "vite": "^5.2.8"
     },
     "dependencies": {
+        "@types/node": "^20.12.7",
         "uuid": "^9.0.1"
     }
 }
