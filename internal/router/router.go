@@ -9,7 +9,11 @@ import (
 func NewRouter() http.Handler {
 	r := http.NewServeMux()
 
+	// Health check
 	r.HandleFunc("GET /health", handler.HealthHandler)
+
+	// Parsing
+	r.HandleFunc("POST /api/parse/debug", handler.ParsePdfDebugHandler)
 
 	return r
 }
