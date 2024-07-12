@@ -2,9 +2,9 @@ FROM node:18.14-alpine AS web
 
 RUN apk add --no-cache openjdk8-jre && npm install -g pnpm
 
-WORKDIR /app
+WORKDIR /app/web
 
-COPY package.json pnpm-lock.yaml ./
+COPY web/package.json web/pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY . ./
