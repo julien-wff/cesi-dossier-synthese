@@ -8,6 +8,7 @@ import (
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 	"io"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -55,8 +56,9 @@ type pdfPageContent struct {
 }
 
 // extractRawPdfContent extracts the raw content of a PDF file page by page
-// This includes text, rectangles and lines
-func extractRawPdfContent(f *io.ReadSeeker, pt *utils.ProcessTiming) (*[]pdfPageContent, error) {
+// This includes text, rectangles and lines.
+// Debug makes more expensive calculations, like ordering the results by position
+func extractRawPdfContent(f *io.ReadSeeker, pt *utils.ProcessTiming, debug bool) (*[]pdfPageContent, error) {
 	// Read the content of the original file into a buffer
 	var buf bytes.Buffer
 	if _, err := io.Copy(&buf, *f); err != nil {
@@ -119,15 +121,15 @@ func extractRawPdfContent(f *io.ReadSeeker, pt *utils.ProcessTiming) (*[]pdfPage
 		p := reader.Page(i + 1)
 		pages[i].Page = i
 		pages[i].Size = getPageSize(&p)
-		pages[i].Text = getTextContent(&p, pages[i].Size.Height)
-		pages[i].Rectangles = getRectangleContent(&p, pages[i].Size.Height)
+		pages[i].Text = getTextContent(&p, pages[i].Size.Height, debug)
+		pages[i].Rectangles = getRectangleContent(&p, pages[i].Size.Height, debug)
 
 		pageReader, err := pdfcpu.ExtractPageContent(ctx, i+1)
 		if err != nil {
 			return nil, err
 		}
 
-		lines, err := getLineContent(&pageReader, pages[i].Size.Height)
+		lines, err := getLineContent(&pageReader, pages[i].Size.Height, debug)
 		if err != nil {
 			return nil, err
 		}
@@ -156,7 +158,7 @@ func getPageSize(p *pdf.Page) size {
 }
 
 // getTextContent returns all the text elements of a PDF page
-func getTextContent(p *pdf.Page, pageHeight float64) []textNode {
+func getTextContent(p *pdf.Page, pageHeight float64, sorted bool) []textNode {
 	var content = make(map[position]textNode)
 
 	rows := p.Content().Text
@@ -185,11 +187,22 @@ func getTextContent(p *pdf.Page, pageHeight float64) []textNode {
 		textNodes = append(textNodes, text)
 	}
 
+	// Sort the text nodes by position
+	if sorted {
+		sort.Slice(textNodes, func(i, j int) bool {
+			if textNodes[i].Position.Y == textNodes[j].Position.Y {
+				return textNodes[i].Position.X < textNodes[j].Position.X
+			}
+
+			return textNodes[i].Position.Y < textNodes[j].Position.Y
+		})
+	}
+
 	return textNodes
 }
 
 // getRectangleContent returns all the rectangles of a PDF page
-func getRectangleContent(p *pdf.Page, pageHeight float64) []rectangleNode {
+func getRectangleContent(p *pdf.Page, pageHeight float64, sorted bool) []rectangleNode {
 	rectangles := p.Content().Rect
 	rectangleNodes := make([]rectangleNode, len(rectangles))
 
@@ -206,11 +219,22 @@ func getRectangleContent(p *pdf.Page, pageHeight float64) []rectangleNode {
 		})
 	}
 
+	// Sort the rectangle nodes by position
+	if sorted {
+		sort.Slice(rectangleNodes, func(i, j int) bool {
+			if rectangleNodes[i].Position.Y == rectangleNodes[j].Position.Y {
+				return rectangleNodes[i].Position.X < rectangleNodes[j].Position.X
+			}
+
+			return rectangleNodes[i].Position.Y < rectangleNodes[j].Position.Y
+		})
+	}
+
 	return rectangleNodes
 }
 
 // getLineContent returns all the lines of a PDF page
-func getLineContent(reader *io.Reader, pageHeight float64) ([]lineNode, error) {
+func getLineContent(reader *io.Reader, pageHeight float64, sorted bool) ([]lineNode, error) {
 	linesNode := make([]lineNode, 0)
 
 	buf := new(strings.Builder)
@@ -241,6 +265,17 @@ func getLineContent(reader *io.Reader, pageHeight float64) ([]lineNode, error) {
 				Y2: pageHeight - y,
 			})
 		}
+	}
+
+	// Sort the line nodes by position
+	if sorted {
+		sort.Slice(linesNode, func(i, j int) bool {
+			if linesNode[i].Y1 == linesNode[j].Y1 {
+				return linesNode[i].X1 < linesNode[j].X1
+			}
+
+			return linesNode[i].Y1 < linesNode[j].Y1
+		})
 	}
 
 	return linesNode, nil

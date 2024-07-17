@@ -24,7 +24,7 @@ func ParsePdfDebug(f *io.ReadSeeker) (PdfParseDebugResponse, *utils.ProcessTimin
 	response := PdfParseDebugResponse{}
 
 	// Extract the raw content of the PDF
-	pages, err := extractRawPdfContent(f, pt)
+	pages, err := extractRawPdfContent(f, pt, true)
 	if err != nil {
 		return response, pt, err
 	}
