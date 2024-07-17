@@ -64,8 +64,8 @@ export interface DebugLineLine {
     y2: number;
     direction: DebugLineDirection;
     length: number;
-    start_neighbour_ids: number[];
-    end_neighbour_ids: number[];
+    start_neighbours_ids: number[];
+    end_neighbours_ids: number[];
 }
 
 export enum DrawMode {
