@@ -9,7 +9,7 @@ import (
 )
 
 const pdfMaxSize = 100 << 10 // 100KB
-const pdfFormKey = "pdf"
+const pdfFormKey = "file"
 
 // extractPdf extracts the PDF file from the request
 func extractPdf(r *http.Request) (multipart.File, error) {
