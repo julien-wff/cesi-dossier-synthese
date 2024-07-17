@@ -15,6 +15,8 @@
     export let displaySingleSquare: boolean;
     export let squareIndex: number;
 
+    const round = (v: number) => Math.round(v * 100) / 100;
+
     function handleViewClick(pageNumber: number, drawMode: DrawMode) {
         page = pageNumber;
         mode = drawMode;
@@ -51,12 +53,48 @@ Lines: {data.lines.reduce((t, p) => t + p.lines.length, 0)}
 </div>
 
 {#if mode === DrawMode.Page}
-    <DebugToggleRange label="Text picker" bind:checked={displaySingleText} bind:value={textIndex} min={0}
+    <DebugToggleRange label="Text picker"
+                      bind:checked={displaySingleText}
+                      bind:value={textIndex}
+                      min={0}
                       max={data.pages[page].text.length - 1}/>
-    <DebugToggleRange label="Line picker" bind:checked={displaySingleLine} bind:value={lineIndex} min={0}
+    {#if displaySingleText}
+        {@const text = data.pages[page].text[textIndex]}
+        <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
+            Position: ({round(text.position.x)} ; {round(text.position.y)})
+            <br/>
+            Font size: {text.font_size}
+            <br/>
+            Text: {text.content}
+        </div>
+    {/if}
+
+    <DebugToggleRange label="Line picker"
+                      bind:checked={displaySingleLine}
+                      bind:value={lineIndex}
+                      min={0}
                       max={data.pages[page].lines.length - 1}/>
-    <DebugToggleRange label="Square picker" bind:checked={displaySingleSquare} bind:value={squareIndex} min={0}
+    {#if displaySingleLine}
+        {@const line = data.pages[page].lines[lineIndex]}
+        <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
+            ({round(line.x1)} ; {round(line.y2)}) -> ({round(line.x2)} ; {round(line.y2)})
+        </div>
+    {/if}
+
+    <DebugToggleRange label="Square picker"
+                      bind:checked={displaySingleSquare}
+                      bind:value={squareIndex}
+                      min={0}
                       max={data.pages[page].rectangles.length - 1}/>
+    {#if displaySingleSquare}
+        {@const square = data.pages[page].rectangles[squareIndex]}
+        <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
+            Position: ({round(square.position.x)} ; {round(square.position.y)})
+            -> ({round(square.position.x + square.size.width)} ; {round(square.position.y + square.size.height)})
+            <br/>
+            Size: {round(square.size.width)} x {round(square.size.height)}
+        </div>
+    {/if}
 {/if}
 
 <div class="h-[1px] w-full bg-gray-400 my-2"/>
