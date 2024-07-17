@@ -13,6 +13,7 @@
     export let lineIndex = 0;
     export let displaySingleSquare = false;
     export let squareIndex = 0;
+    export let showNeighbours = false;
 
     let canvas: HTMLCanvasElement;
     let hidden = true;
@@ -26,6 +27,7 @@
             !displaySingleText ? -1 : textIndex,
             !displaySingleLine ? -1 : lineIndex,
             !displaySingleSquare ? -1 : squareIndex,
+            showNeighbours,
         );
 
     function drawCanvas(data: DebugResponse,
@@ -34,7 +36,8 @@
                         debugColors: boolean,
                         displaySingleText: number,
                         displaySingleLine: number,
-                        displaySingleSquare: number) {
+                        displaySingleSquare: number,
+                        showNeighbours: boolean) {
         hidden = false;
         const ctx = canvas?.getContext('2d');
 
@@ -88,12 +91,23 @@
                 ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
             }
         } else if (mode === DrawMode.Line) {
-            for (const line of data.lines[page].lines) {
+            const pickedLine = displaySingleLine !== -1 ? data.lines[page].lines[displaySingleLine] : null;
+            const pickedNeighbours = pickedLine
+                ? [ ...pickedLine.start_neighbours_ids, ...pickedLine.end_neighbours_ids ]
+                : null;
+
+            for (let i = 0; i < data.lines[page].lines.length; i++) {
+                const line = data.lines[page].lines[i];
+                if (!(displaySingleLine === -1 || displaySingleLine === i || (showNeighbours && pickedNeighbours?.includes(line.id))))
+                    continue;
+
                 ctx.strokeStyle = debugColors
                     ? line.direction === DebugLineDirection.Horizontal ? 'blue' : 'red'
                     : 'black';
-                ctx.globalAlpha = debugColors ? FADED_OPACITY : 1;
-                ctx.lineWidth = scaleFactor;
+                ctx.globalAlpha = debugColors && displaySingleLine !== i
+                    ? FADED_OPACITY
+                    : 1;
+                ctx.lineWidth = scaleFactor * (Number(debugColors && displaySingleLine === i) + 1);
                 ctx.beginPath();
                 ctx.moveTo(line.x1 * scaleFactor, line.y1 * scaleFactor);
                 ctx.lineTo(line.x2 * scaleFactor, line.y2 * scaleFactor);
@@ -138,6 +152,7 @@
                 !displaySingleText ? -1 : textIndex,
                 !displaySingleLine ? -1 : lineIndex,
                 !displaySingleSquare ? -1 : squareIndex,
+                showNeighbours,
             );
         });
 

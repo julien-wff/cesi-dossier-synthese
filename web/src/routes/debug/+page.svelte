@@ -21,6 +21,7 @@
     let lineIndex = 0;
     let displaySingleSquare = false;
     let squareIndex = 0;
+    let showNeighbours = false;
 
     async function handlePDFSubmit(ev: SubmitEvent | Event) {
         error = null;
@@ -91,7 +92,8 @@
                                  bind:displaySingleLine
                                  bind:lineIndex
                                  bind:displaySingleSquare
-                                 bind:squareIndex/>
+                                 bind:squareIndex
+                                 bind:showNeighbours/>
         {/if}
     </aside>
 
@@ -102,6 +104,7 @@
                         {debugColors}
                         {displaySingleText} {textIndex}
                         {displaySingleLine} {lineIndex}
-                        {displaySingleSquare} {squareIndex}/>
+                        {displaySingleSquare} {squareIndex}
+                        {showNeighbours}/>
     </div>
 </main>

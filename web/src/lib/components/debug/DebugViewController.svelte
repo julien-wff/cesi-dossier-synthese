@@ -1,7 +1,8 @@
 <script lang="ts">
-    import { type DebugResponse, DrawMode } from '$lib/types/debug.js';
+    import { type DebugLineLine, type DebugResponse, DrawMode } from '$lib/types/debug.js';
     import DebugPdfViewer from '$lib/components/debug/DebugPdfViewer.svelte';
     import DebugToggleRange from '$lib/components/debug/controls/DebugToggleRange.svelte';
+    import DebugCheckBox from '$lib/components/debug/controls/DebugCheckBox.svelte';
 
     export let data: DebugResponse;
     export let debugColors: boolean;
@@ -14,12 +15,22 @@
     export let lineIndex: number;
     export let displaySingleSquare: boolean;
     export let squareIndex: number;
+    export let showNeighbours: boolean;
 
     const round = (v: number) => Math.round(v * 100) / 100;
 
     function handleViewClick(pageNumber: number, drawMode: DrawMode) {
         page = pageNumber;
         mode = drawMode;
+    }
+
+    function getNeighboursIndexes(line: DebugLineLine, page: number) {
+        return data
+            .lines[page]
+            .lines
+            .map((l, i) => ({ id: l.id, ind: i }))
+            .filter(l => line.start_neighbours_ids.includes(l.id) || line.end_neighbours_ids.includes(l.id))
+            .map(({ ind }) => ind);
     }
 </script>
 
@@ -108,3 +119,24 @@ Lines: {data.lines.reduce((t, p) => t + p.lines.length, 0)}
         </button>
     {/each}
 </div>
+
+{#if mode === DrawMode.Line}
+    <DebugToggleRange label="Line picker"
+                      bind:checked={displaySingleLine}
+                      bind:value={lineIndex}
+                      min={0}
+                      max={data.lines[page].lines.length - 1}/>
+    {#if displaySingleLine}
+        {@const line = data.lines[page].lines[lineIndex]}
+        <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
+            ({round(line.x1)} ; {round(line.y2)}) -> ({round(line.x2)} ; {round(line.y2)})
+        </div>
+        <DebugCheckBox label="Show neighbours" bind:checked={showNeighbours}/>
+        {#if showNeighbours}
+            <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
+                {line.start_neighbours_ids.length + line.end_neighbours_ids.length} neighbours
+                ({getNeighboursIndexes(line, page).join(', ')})
+            </div>
+        {/if}
+    {/if}
+{/if}
