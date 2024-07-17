@@ -3,6 +3,7 @@
     import { onDestroy, onMount } from 'svelte';
 
     export let margin = 16;
+    export let resolution = 1;
     export let data: DebugResponse | null = null;
     export let page: number = 0;
     export let mode: DrawMode = DrawMode.Page;
@@ -44,8 +45,13 @@
         if (!ctx)
             return;
 
-        const scaleFactor = getScaleFactor(data, page);
+        let scaleFactor = getScaleFactor(data, page);
         const FADED_OPACITY = 0.40;
+
+        canvas.style.width = `${data.pages[page].size.width * scaleFactor}px`;
+        canvas.style.height = `${data.pages[page].size.height * scaleFactor}px`;
+
+        scaleFactor *= resolution;
 
         canvas.width = data.pages[page].size.width * scaleFactor;
         canvas.height = data.pages[page].size.height * scaleFactor;

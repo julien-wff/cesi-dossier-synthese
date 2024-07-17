@@ -98,7 +98,8 @@
     </aside>
 
     <div class="flex-1 grid place-content-center">
-        <DebugPdfViewer {data}
+        <DebugPdfViewer resolution={2}
+                        {data}
                         {mode}
                         {page}
                         {debugColors}
