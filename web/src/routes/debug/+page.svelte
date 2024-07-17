@@ -11,7 +11,7 @@
     let data: DebugResponse | null = null;
 
     // Viewer
-    let debugColors = false;
+    let debugColors = true;
     let mode: DrawMode = DrawMode.Page;
     let page: number = 0;
 
