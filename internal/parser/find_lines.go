@@ -98,6 +98,7 @@ func (l *pageLine) String() string {
 
 // PageLines represents a list of all the lines in a PDF page
 type PageLines struct {
+	Page  int         `json:"page"`
 	Lines []*pageLine `json:"lines"`
 }
 
@@ -286,7 +287,9 @@ func reorderCoordinates(x1, y1, x2, y2 float64) (float64, float64, float64, floa
 // findPageLines finds all the lines in a PDF page, based on the rectangles and lines found in the content.
 // If debug is true, it will calculate and add debug information for the frontend.
 func findPageLines(content *pdfPageContent, debug bool) (PageLines, error) {
-	pageLines := PageLines{}
+	pageLines := PageLines{
+		Page: content.Page,
+	}
 
 	// Rectangles
 	for _, rect := range content.Rectangles {
