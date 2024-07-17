@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { type DebugResponse, DrawMode } from '$lib/types/debug';
+    import { DebugLineDirection, type DebugResponse, DrawMode } from '$lib/types/debug';
     import { onDestroy, onMount } from 'svelte';
 
     export let margin = 16;
@@ -89,13 +89,27 @@
             }
         } else if (mode === DrawMode.Line) {
             for (const line of data.lines[page].lines) {
-                ctx.strokeStyle = debugColors ? 'blue' : 'black';
+                ctx.strokeStyle = debugColors
+                    ? line.direction === DebugLineDirection.Horizontal ? 'blue' : 'red'
+                    : 'black';
                 ctx.globalAlpha = debugColors ? FADED_OPACITY : 1;
                 ctx.lineWidth = scaleFactor;
                 ctx.beginPath();
                 ctx.moveTo(line.x1 * scaleFactor, line.y1 * scaleFactor);
                 ctx.lineTo(line.x2 * scaleFactor, line.y2 * scaleFactor);
                 ctx.stroke();
+
+                // Draw points at beginning and end of line
+                if (debugColors) {
+                    ctx.fillStyle = 'purple';
+                    ctx.beginPath();
+                    ctx.arc(line.x1 * scaleFactor, line.y1 * scaleFactor, 3 * scaleFactor, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.arc(line.x2 * scaleFactor, line.y2 * scaleFactor, 3 * scaleFactor, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
             }
         }
     }
