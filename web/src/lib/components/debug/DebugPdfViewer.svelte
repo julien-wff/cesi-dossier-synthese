@@ -1,0 +1,138 @@
+<script lang="ts">
+    import { type DebugResponse, DrawMode } from '$lib/types/debug';
+    import { onDestroy, onMount } from 'svelte';
+
+    export let margin = 16;
+    export let data: DebugResponse | null = null;
+    export let page: number = 0;
+    export let mode: DrawMode = DrawMode.Page;
+    export let debugColors = false;
+    export let displaySingleText = false;
+    export let textIndex = 0;
+    export let displaySingleLine = false;
+    export let lineIndex = 0;
+    export let displaySingleSquare = false;
+    export let squareIndex = 0;
+
+    let canvas: HTMLCanvasElement;
+    let hidden = true;
+
+    $: if (canvas && data)
+        drawCanvas(
+            data,
+            page,
+            mode,
+            debugColors,
+            !displaySingleText ? -1 : textIndex,
+            !displaySingleLine ? -1 : lineIndex,
+            !displaySingleSquare ? -1 : squareIndex,
+        );
+
+    function drawCanvas(data: DebugResponse,
+                        page: number,
+                        mode: DrawMode,
+                        debugColors: boolean,
+                        displaySingleText: number,
+                        displaySingleLine: number,
+                        displaySingleSquare: number) {
+        hidden = false;
+        const ctx = canvas?.getContext('2d');
+
+        if (!ctx)
+            return;
+
+        const scaleFactor = getScaleFactor(data, page);
+        const FADED_OPACITY = 0.40;
+
+        canvas.width = data.pages[page].size.width * scaleFactor;
+        canvas.height = data.pages[page].size.height * scaleFactor;
+
+        if (mode === DrawMode.Page) {
+            for (let i = 0; i < data.pages[page].text.length; i++) {
+                const text = data.pages[page].text[i];
+                if (displaySingleText !== -1 && displaySingleText !== i)
+                    continue;
+
+                ctx.font = `${text.font_size * scaleFactor}px sans-serif`;
+                ctx.fillStyle = debugColors ? 'red' : 'black';
+                ctx.globalAlpha = debugColors ? FADED_OPACITY : 1;
+                ctx.fillText(text.content, text.position.x * scaleFactor, text.position.y * scaleFactor);
+            }
+
+            for (let i = 0; i < data.pages[page].lines.length; i++) {
+                const line = data.pages[page].lines[i];
+                if (displaySingleLine !== -1 && displaySingleLine !== i)
+                    continue;
+
+                ctx.strokeStyle = debugColors ? 'blue' : 'black';
+                ctx.globalAlpha = debugColors ? FADED_OPACITY : 1;
+                ctx.lineWidth = scaleFactor;
+                ctx.beginPath();
+                ctx.moveTo(line.x1 * scaleFactor, line.y1 * scaleFactor);
+                ctx.lineTo(line.x2 * scaleFactor, line.y2 * scaleFactor);
+                ctx.stroke();
+            }
+
+            for (let i = 0; i < data.pages[page].rectangles.length; i++) {
+                const rect = data.pages[page].rectangles[i];
+                if (displaySingleSquare !== -1 && displaySingleSquare !== i)
+                    continue;
+
+                ctx.strokeStyle = debugColors ? 'green' : 'black';
+                ctx.globalAlpha = debugColors ? FADED_OPACITY : 1;
+                ctx.lineWidth = scaleFactor;
+                const x1 = rect.position.x * scaleFactor;
+                const y1 = rect.position.y * scaleFactor;
+                const x2 = (rect.position.x + rect.size.width) * scaleFactor;
+                const y2 = (rect.position.y + rect.size.height) * scaleFactor;
+                ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+            }
+        } else if (mode === DrawMode.Line) {
+            for (const line of data.lines[page].lines) {
+                ctx.strokeStyle = debugColors ? 'blue' : 'black';
+                ctx.globalAlpha = debugColors ? FADED_OPACITY : 1;
+                ctx.lineWidth = scaleFactor;
+                ctx.beginPath();
+                ctx.moveTo(line.x1 * scaleFactor, line.y1 * scaleFactor);
+                ctx.lineTo(line.x2 * scaleFactor, line.y2 * scaleFactor);
+                ctx.stroke();
+            }
+        }
+    }
+
+    function getScaleFactor(data: DebugResponse, page: number) {
+        const canvasParent = canvas.parentElement!;
+        const parentWidth = canvasParent.clientWidth;
+        const parentHeight = canvasParent.clientHeight;
+
+        return Math.min(
+            (parentWidth - margin * 2) / data.pages[page].size.width,
+            (parentHeight - margin * 2) / data.pages[page].size.height,
+        );
+    }
+
+    let parentObserver: ResizeObserver;
+
+    onMount(() => {
+        // if parent element size changes, redraw canvas
+        parentObserver = new ResizeObserver(() => {
+            if (data) drawCanvas(
+                data,
+                page,
+                mode,
+                debugColors,
+                !displaySingleText ? -1 : textIndex,
+                !displaySingleLine ? -1 : lineIndex,
+                !displaySingleSquare ? -1 : squareIndex,
+            );
+        });
+
+        parentObserver.observe(canvas.parentElement!);
+    });
+
+    onDestroy(() => {
+        parentObserver?.disconnect();
+    });
+</script>
+
+<canvas bind:this={canvas} class="bg-white" class:hidden/>
