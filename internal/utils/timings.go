@@ -7,23 +7,23 @@ import (
 	"time"
 )
 
-// timingElement represents a single step in the process timing.
-type timingElement struct {
+// TimingElement represents a single step in the process timing.
+type TimingElement struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Duration    float64 `json:"duration"` // In milliseconds
 }
 
-// ProcessTiming represents the duration of each step, with a list of timingElement.
+// ProcessTiming represents the duration of each step, with a list of TimingElement.
 type ProcessTiming struct {
-	Elements      []timingElement `json:"elements"`
+	Elements      []TimingElement `json:"elements"`
 	lastTimestamp int64
 }
 
 // NewProcessTiming creates a new ProcessTiming object, initializing the timestamp to the current time.
 func NewProcessTiming() *ProcessTiming {
 	return &ProcessTiming{
-		Elements:      []timingElement{},
+		Elements:      []TimingElement{},
 		lastTimestamp: time.Now().UnixNano(),
 	}
 }
@@ -35,7 +35,7 @@ func (pt *ProcessTiming) AddElement(name, description string) {
 	currentTimestamp := time.Now().UnixNano()
 	duration := currentTimestamp - pt.lastTimestamp
 	pt.lastTimestamp = currentTimestamp
-	pt.Elements = append(pt.Elements, timingElement{
+	pt.Elements = append(pt.Elements, TimingElement{
 		Name:        name,
 		Description: description,
 		Duration:    float64(duration) / 1e6,

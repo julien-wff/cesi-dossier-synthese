@@ -9,9 +9,10 @@ import (
 // containing the full content of the PDF file through all the steps of the parsing.
 // It will be rendered as JSON in the API response.
 type PdfParseDebugResponse struct {
-	Pages   *[]pdfPageContent `json:"pages"`
-	Lines   []*PageLines      `json:"lines"`
-	Squares []*pageLine       `json:"squares"`
+	Performance []utils.TimingElement `json:"performance"`
+	Pages       *[]pdfPageContent     `json:"pages"`
+	Lines       []*PageLines          `json:"lines"`
+	Squares     []*pageLine           `json:"squares"`
 }
 
 // ParsePdfDebug parses a PDF file returns the full retrieved content through all the steps of the parsing
@@ -50,6 +51,9 @@ func ParsePdfDebug(f *io.ReadSeeker) (PdfParseDebugResponse, *utils.ProcessTimin
 	}
 	response.Squares = squares
 	pt.AddElement("find-squares", "Find pages squares")
+
+	// Add performance counter
+	response.Performance = pt.Elements
 
 	return response, pt, nil
 }
