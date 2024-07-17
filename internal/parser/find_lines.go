@@ -15,20 +15,19 @@ const (
 )
 
 // pageLine represents a line in a PDF page, with its start and end coordinates, direction, length and neighbours
-// Statistics are calculated in PageLines.calculateStats
 type pageLine struct {
-	X1                   float64       `json:"x1"`
-	Y1                   float64       `json:"y1"`
-	X2                   float64       `json:"x2"`
-	Y2                   float64       `json:"y2"`
-	Direction            lineDirection `json:"direction"`
-	Length               float64       `json:"length"`
-	Neighbours           []*pageLine   `json:"-"`
-	StartNeighbours      []*pageLine   `json:"-"`
-	EndNeighbours        []*pageLine   `json:"-"`
-	NeighboursCount      int           `json:"neighbours_count"`
-	StartNeighboursCount int           `json:"start_neighbours_count"`
-	EndNeighboursCount   int           `json:"end_neighbours_count"`
+	Id                 int           `json:"id"`
+	X1                 float64       `json:"x1"`
+	Y1                 float64       `json:"y1"`
+	X2                 float64       `json:"x2"`
+	Y2                 float64       `json:"y2"`
+	Direction          lineDirection `json:"direction"`
+	Length             float64       `json:"length"`
+	Neighbours         []*pageLine   `json:"-"`
+	StartNeighbours    []*pageLine   `json:"-"`
+	EndNeighbours      []*pageLine   `json:"-"`
+	StartNeighboursIds []int         `json:"start_neighbours_ids"`
+	EndNeighboursIds   []int         `json:"end_neighbours_ids"`
 }
 
 // atStart checks if the beginning or the end of l1 is the same as l's start
@@ -125,6 +124,7 @@ func (pls *PageLines) addLine(line lineNode) {
 	}
 
 	pl := pageLine{
+		Id:              len(pls.Lines),
 		X1:              x1,
 		Y1:              y1,
 		X2:              x2,
@@ -235,21 +235,43 @@ func (pls *PageLines) optimize() {
 	})
 }
 
-// calculateStats calculates the neighbours count of all the lines in pls.
-// It also checks if the neighbours count is correct.
-func (pls *PageLines) calculateStats() error {
+// verifyNeighbours checks if the neighbours count is correct.
+func (pls *PageLines) verifyNeighbours() error {
 	for _, l := range pls.Lines {
-		l.NeighboursCount = len(l.Neighbours)
-		l.StartNeighboursCount = len(l.StartNeighbours)
-		l.EndNeighboursCount = len(l.EndNeighbours)
+		neighboursCount := len(l.Neighbours)
+		startNeighboursCount := len(l.StartNeighbours)
+		endNeighboursCount := len(l.EndNeighbours)
 
 		// There should not be neighbours at both the start and the end
-		if l.NeighboursCount != (l.StartNeighboursCount + l.EndNeighboursCount) {
-			return fmt.Errorf("neighbours count is not correct: %d %d %d (%.f, %.f), (%.f, %.f)", l.NeighboursCount, l.StartNeighboursCount, l.EndNeighboursCount, l.X1, l.Y1, l.X2, l.Y2)
+		if neighboursCount != (startNeighboursCount + endNeighboursCount) {
+			return fmt.Errorf("neighbours count is not correct: %d %d %d (%.f, %.f), (%.f, %.f)",
+				neighboursCount,
+				startNeighboursCount,
+				endNeighboursCount,
+				l.X1,
+				l.Y1,
+				l.X2,
+				l.Y2,
+			)
 		}
 	}
 
 	return nil
+}
+
+// addDebugInfos adds debug information to the lines, so they can be displayed in the frontend
+func (pls *PageLines) addDebugInfos() {
+	for _, l := range pls.Lines {
+		l.StartNeighboursIds = make([]int, len(l.StartNeighbours))
+		for i, n := range l.StartNeighbours {
+			l.StartNeighboursIds[i] = n.Id
+		}
+
+		l.EndNeighboursIds = make([]int, len(l.EndNeighbours))
+		for i, n := range l.EndNeighbours {
+			l.EndNeighboursIds[i] = n.Id
+		}
+	}
 }
 
 // reorderCoordinates reorders the coordinates of a line, so that the first point is the top left corner
@@ -261,8 +283,9 @@ func reorderCoordinates(x1, y1, x2, y2 float64) (float64, float64, float64, floa
 	return x1, y1, x2, y2
 }
 
-// findPageLines finds all the lines in a PDF page, based on the rectangles and lines found in the content
-func findPageLines(content *pdfPageContent) (PageLines, error) {
+// findPageLines finds all the lines in a PDF page, based on the rectangles and lines found in the content.
+// If debug is true, it will calculate and add debug information for the frontend.
+func findPageLines(content *pdfPageContent, debug bool) (PageLines, error) {
 	pageLines := PageLines{}
 
 	// Rectangles
@@ -299,7 +322,11 @@ func findPageLines(content *pdfPageContent) (PageLines, error) {
 	}
 
 	pageLines.optimize()
-	err := pageLines.calculateStats()
+	err := pageLines.verifyNeighbours()
+
+	if debug {
+		pageLines.addDebugInfos()
+	}
 
 	return pageLines, err
 }

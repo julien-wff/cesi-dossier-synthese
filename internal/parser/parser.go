@@ -32,7 +32,7 @@ func ParsePdfDebug(f *io.ReadSeeker) (PdfParseDebugResponse, *utils.ProcessTimin
 	// Find lines
 	var lines []*PageLines
 	for _, page := range *pages {
-		pageLines, err := findPageLines(&page)
+		pageLines, err := findPageLines(&page, true)
 		if err != nil {
 			return response, pt, err
 		}
