@@ -148,7 +148,7 @@
 
                 // Add text content
                 ctx.font = `${8 * scaleFactor}px sans-serif`;
-                ctx.fillStyle = debugColors ? 'red' : 'black';
+                ctx.fillStyle = debugColors ? 'blue' : 'black';
                 ctx.globalAlpha = debugColors ? FADED_OPACITY : 1;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
