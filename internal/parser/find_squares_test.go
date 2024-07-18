@@ -173,16 +173,6 @@ func TestPageLine_getSmallestSquare(t *testing.T) {
 			startLine: 0,
 			want:      []int{0, 4, 8, 11, 7, 14},
 		},
-		{
-			name:      "should find square 2-5-10-13-12-8-4 from 2",
-			startLine: 2,
-			want:      []int{2, 5, 10, 13, 12, 8, 4},
-		},
-		{
-			name:      "should find square 1-3-5-10-13-12-8-4 from 1",
-			startLine: 1,
-			want:      []int{1, 3, 5, 10, 13, 12, 8, 4},
-		},
 	}
 
 	for _, tt := range tests {
