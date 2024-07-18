@@ -40,6 +40,11 @@ func (l *pageLine) atEnd(l1 *pageLine) bool {
 	return (l.X2 == l1.X1 && l.Y2 == l1.Y1) || (l.X2 == l1.X2 && l.Y2 == l1.Y2)
 }
 
+// gravity returns the gravity center of l, on the X and Y axis
+func (l *pageLine) gravity() (float64, float64) {
+	return (l.X1 + l.X2) / 2, (l.Y1 + l.Y2) / 2
+}
+
 // addNeighbour adds a neighbour to l and vice versa
 func (l *pageLine) addNeighbour(neighbour *pageLine) {
 	l.Neighbours = append(l.Neighbours, neighbour)
@@ -200,7 +205,7 @@ func (pls *PageLines) mergeLines(l1 *pageLine, l2 *pageLine) {
 }
 
 // optimize merges lines that have one point in common, and reorders by coordinates.
-func (pls *PageLines) optimize() {
+func (pls *PageLines) optimize(pageContent *pdfPageContent) {
 	// Merge lines that have one point in common
 	for _, l := range pls.Lines {
 		// Only merge lines that have one neighbour. Else, it's an intersection
@@ -218,14 +223,20 @@ func (pls *PageLines) optimize() {
 		pls.mergeLines(l, endNeighbour)
 	}
 
+	// Remove lines that are too close to the page borders
+	const margin = 10
+	for _, l := range pls.Lines {
+		x, y := l.gravity()
+		if x < margin || y < margin || x > pageContent.Size.Width-margin || y > pageContent.Size.Height-margin {
+			pls.removeLine(l)
+		}
+	}
+
 	// Reorder by coordinates to start from the top left corner, then like reading a book
 	sort.Slice(pls.Lines, func(i, j int) bool {
 		// Calculate x and y center of the lines
-		xi := (pls.Lines[i].X1 + pls.Lines[i].X2) / 2
-		yi := (pls.Lines[i].Y1 + pls.Lines[i].Y2) / 2
-
-		xj := (pls.Lines[j].X1 + pls.Lines[j].X2) / 2
-		yj := (pls.Lines[j].Y1 + pls.Lines[j].Y2) / 2
+		xi, yi := pls.Lines[i].gravity()
+		xj, yj := pls.Lines[j].gravity()
 
 		// Compare the two lines
 		if yi == yj {
@@ -324,7 +335,7 @@ func findPageLines(content *pdfPageContent, debug bool) (PageLines, error) {
 		pageLines.addLine(line)
 	}
 
-	pageLines.optimize()
+	pageLines.optimize(content)
 	err := pageLines.verifyNeighbours()
 
 	if debug {
