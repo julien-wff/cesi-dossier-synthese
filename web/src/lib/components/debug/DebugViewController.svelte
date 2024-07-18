@@ -131,7 +131,7 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
     {#if displaySingleLine}
         {@const line = data.lines[page].lines[lineIndex]}
         <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
-            ({round(line.x1)} ; {round(line.y2)}) -> ({round(line.x2)} ; {round(line.y2)})
+            ({round(line.x1)} ; {round(line.y1)}) -> ({round(line.x2)} ; {round(line.y2)})
         </div>
         <DebugCheckBox label="Show neighbours" bind:checked={showNeighbours}/>
         {#if showNeighbours}
