@@ -8,9 +8,9 @@ import (
 // Create a set of lines that looks like this:
 //
 //   -- l0  --   -- l1  -- l2  -- l3 --
-//             |                       |
-//            l4                      l5
-//             |                       |
+//  |          |                       |
+// l14        l4                      l5
+//  |          |                       |
 //                           -- l6  --
 //  |          |           |           |
 // l7         l8          l9          l10
@@ -36,6 +36,7 @@ func setupPageLines(t *testing.T) PageLines {
 	page.addLine(lineNode{X1: 0, Y1: 20, X2: 10, Y2: 20})  // l11
 	page.addLine(lineNode{X1: 10, Y1: 20, X2: 20, Y2: 20}) // l12
 	page.addLine(lineNode{X1: 20, Y1: 20, X2: 30, Y2: 20}) // l13
+	page.addLine(lineNode{X1: 0, Y1: 0, X2: 0, Y2: 10})    // l14
 
 	return page
 }
@@ -166,6 +167,11 @@ func TestPageLine_getSmallestSquare(t *testing.T) {
 			name:      "should find square 6-10-13-9 from 6",
 			startLine: 6,
 			want:      []int{6, 10, 13, 9},
+		},
+		{
+			name:      "should find square 0-4-8-11-7-14 from 0",
+			startLine: 0,
+			want:      []int{0, 4, 8, 11, 7, 14},
 		},
 		{
 			name:      "should find square 2-5-10-13-12-8-4 from 2",
