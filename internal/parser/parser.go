@@ -44,8 +44,8 @@ func ParsePdfDebug(f *io.ReadSeeker) (PdfParseDebugResponse, *utils.ProcessTimin
 
 	// Find squares
 	var squares []*PageSquares
-	for _, line := range lines {
-		pageSquares := findPageSquares(line)
+	for i, line := range lines {
+		pageSquares := findPageSquares(line, &(*pages)[i])
 		squares = append(squares, pageSquares)
 	}
 	response.Squares = squares

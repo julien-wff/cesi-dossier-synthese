@@ -168,6 +168,8 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
             -> ({round(square.x2)} ; {round(square.y2)})
             <br/>
             Size: {round(square.x2 - square.x1)} x {round(square.y2 - square.y1)}
+            <br/>
+            Content: {square.content}
         </div>
     {/if}
 {/if}

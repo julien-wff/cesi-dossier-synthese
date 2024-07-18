@@ -188,15 +188,13 @@ func getTextContent(p *pdf.Page, pageHeight float64, sorted bool) []textNode {
 	}
 
 	// Sort the text nodes by position
-	if sorted {
-		sort.Slice(textNodes, func(i, j int) bool {
-			if textNodes[i].Position.Y == textNodes[j].Position.Y {
-				return textNodes[i].Position.X < textNodes[j].Position.X
-			}
+	sort.Slice(textNodes, func(i, j int) bool {
+		if textNodes[i].Position.Y == textNodes[j].Position.Y {
+			return textNodes[i].Position.X < textNodes[j].Position.X
+		}
 
-			return textNodes[i].Position.Y < textNodes[j].Position.Y
-		})
-	}
+		return textNodes[i].Position.Y < textNodes[j].Position.Y
+	})
 
 	return textNodes
 }

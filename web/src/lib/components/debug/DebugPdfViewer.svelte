@@ -146,6 +146,27 @@
                 const y2 = square.y2 * scaleFactor;
                 ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
 
+                // Add text content
+                ctx.font = `${8 * scaleFactor}px sans-serif`;
+                ctx.fillStyle = debugColors ? 'red' : 'black';
+                ctx.globalAlpha = debugColors ? FADED_OPACITY : 1;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                // Prevent text from being drawn outside of square by truncating it
+                let text = square.content;
+                if (ctx.measureText(square.content).width > (x2 - x1) * 0.9) {
+                    const words = square.content.split(' ');
+                    text = '';
+                    for (const word of words) {
+                        if (ctx.measureText(text + word).width > (x2 - x1) * 0.9) {
+                            text += '...';
+                            break;
+                        }
+                        text += word + ' ';
+                    }
+                }
+                ctx.fillText(text, (x1 + x2) / 2, (y1 + y2) / 2);
+
                 // Draw points at corners of square
                 if (debugColors) {
                     ctx.fillStyle = 'purple';

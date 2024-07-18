@@ -2,6 +2,7 @@ package parser
 
 import (
 	"sort"
+	"strings"
 )
 
 // continueStraight returns the neighbour pageLine that continues straight from the line.
@@ -170,11 +171,12 @@ func (l *pageLine) getSmallestSquare() ([][]*pageLine, []*pageLine) {
 // pageSquare represents a square on a page, defined by its top-left and bottom-right coordinates.
 // It also contains the lines that form the square.
 type pageSquare struct {
-	X1    float64 `json:"x1"`
-	Y1    float64 `json:"y1"`
-	X2    float64 `json:"x2"`
-	Y2    float64 `json:"y2"`
-	lines [][]*pageLine
+	X1      float64 `json:"x1"`
+	Y1      float64 `json:"y1"`
+	X2      float64 `json:"x2"`
+	Y2      float64 `json:"y2"`
+	Content string  `json:"content"`
+	lines   [][]*pageLine
 }
 
 // newPageSquare creates a new pageSquare from a 2D array of pageLines (returned from getSmallestSquare).
@@ -226,7 +228,19 @@ func (ps *pageSquare) findBottom() *pageSquare {
 	// Find the smallest square starting from the bottom line
 	square, _ := bottomLine.getSmallestSquare()
 	return newPageSquare(square)
+}
 
+func (ps *pageSquare) addTextContent(pageContent *pdfPageContent) {
+	for _, text := range pageContent.Text {
+		if text.Position.X >= ps.X1 && text.Position.X <= ps.X2 && text.Position.Y >= ps.Y1 && text.Position.Y <= ps.Y2 {
+			text := strings.TrimSpace(text.Content)
+			if text != "" {
+				ps.Content += text + " "
+			}
+		}
+	}
+
+	ps.Content = strings.TrimSpace(ps.Content)
 }
 
 // PageSquares represents all the squares found in a page.
@@ -236,7 +250,7 @@ type PageSquares struct {
 }
 
 // findPageSquares returns all the squares found in the page.
-func findPageSquares(lines *PageLines) *PageSquares {
+func findPageSquares(lines *PageLines, pageContent *pdfPageContent) *PageSquares {
 	result := PageSquares{
 		Page:    lines.Page,
 		Squares: make([]*pageSquare, 0),
@@ -266,6 +280,11 @@ func findPageSquares(lines *PageLines) *PageSquares {
 		}
 
 		result.Squares = append(result.Squares, bottomSquare)
+	}
+
+	// Add text content to each square
+	for _, square := range result.Squares {
+		square.addTextContent(pageContent)
 	}
 
 	return &result

@@ -79,6 +79,7 @@ export interface DebugSquareSquare {
     y1: number;
     x2: number;
     y2: number;
+    content: string;
 }
 
 export enum DrawMode {
