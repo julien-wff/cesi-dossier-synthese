@@ -124,40 +124,27 @@ func (l *pageLine) getSmallestSquare() []*pageLine {
 	path = append(path, l)
 
 	direction := 1
-	straightMoves := 0
-	skipTurn := false
 
 	for {
-		inverted := direction > 3
+		inverted := direction > 2
 		lastLine := path[len(path)-1]
 
-		var next *pageLine
-		if !skipTurn {
-			next = lastLine.continueLeft(inverted)
-		}
-		skipTurn = false
+		// Try to continue left
+		next := lastLine.continueLeft(inverted)
 
+		// If no neighbour was found, try to continue straight
 		if next == nil {
 			next = lastLine.continueStraight(inverted)
-			straightMoves++
 		} else {
-			direction = direction%4 + 1
-			straightMoves = 0
+			direction++
 		}
 
-		// Rollback straight moves
-		if next == nil && straightMoves > 1 {
-			path = path[:len(path)-straightMoves]
-			straightMoves = 0
-			skipTurn = true
+		// If the circle is closed, or no neighbour was found, break
+		if direction > 4 || next == nil {
 			break
 		}
 
 		path = append(path, next)
-
-		if direction == 4 || next == nil {
-			break
-		}
 	}
 
 	return path
