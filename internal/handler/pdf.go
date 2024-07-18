@@ -8,11 +8,15 @@ import (
 	"net/http"
 )
 
-const pdfMaxSize = 100 << 10 // 100KB
-const pdfFormKey = "file"
+const (
+	pdfMaxSize = 100 << 10 // 100KB
+	pdfFormKey = "file"
+)
 
 // extractPdf extracts the PDF file from the request
-func extractPdf(r *http.Request) (multipart.File, error) {
+func extractPdf(w http.ResponseWriter, r *http.Request) (multipart.File, error) {
+	r.Body = http.MaxBytesReader(w, r.Body, pdfMaxSize)
+
 	if err := r.ParseMultipartForm(pdfMaxSize); err != nil {
 		return nil, err
 	}
@@ -29,7 +33,7 @@ func extractPdf(r *http.Request) (multipart.File, error) {
 // the steps of the parsing process as JSON
 func ParsePdfDebugHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract PDF file from request
-	file, err := extractPdf(r)
+	file, err := extractPdf(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
