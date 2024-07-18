@@ -10,6 +10,10 @@ import (
 //	false: continues to the right / bottom of the line.
 //	true: continues to the left / top of the line.
 func (l *pageLine) continueStraight(inverted bool) *pageLine {
+	if l == nil {
+		return nil
+	}
+
 	neighbours := make([]*pageLine, 0)
 
 	if !inverted {
@@ -62,6 +66,10 @@ func (l *pageLine) continueStraight(inverted bool) *pageLine {
 //	false: continues to the right / bottom of the line.
 //	true: continues to the left / top of the line.
 func (l *pageLine) continueLeft(inverted bool) *pageLine {
+	if l == nil {
+		return nil
+	}
+
 	neighbours := make([]*pageLine, 0)
 	if !inverted {
 		neighbours = l.EndNeighbours
@@ -118,11 +126,19 @@ func (l *pageLine) continueLeft(inverted bool) *pageLine {
 	}
 }
 
-// getSmallestSquare returns the smallest square, starting from the line.
-func (l *pageLine) getSmallestSquare() []*pageLine {
+// getSmallestSquare returns the smallest square, starting from the pageLine l.
+// It returns two values:
+//
+//   - The square, as a 2D array of pageLines, where the first array is the top line, going clockwise.
+//   - The path, as a 1D array of pageLines, where the first element is the starting line, and the last element is the
+//     line just before.
+func (l *pageLine) getSmallestSquare() ([][]*pageLine, []*pageLine) {
 	path := make([]*pageLine, 0)
 	path = append(path, l)
+	result := make([][]*pageLine, 4)
+	result[0] = append(result[0], l)
 
+	// lines direction: 1 = top, 2 = right, 3 = bottom, 4 = left
 	direction := 1
 
 	for {
@@ -145,16 +161,112 @@ func (l *pageLine) getSmallestSquare() []*pageLine {
 		}
 
 		path = append(path, next)
+		result[direction-1] = append(result[direction-1], next)
 	}
 
-	return path
+	return result, path
+}
+
+// pageSquare represents a square on a page, defined by its top-left and bottom-right coordinates.
+// It also contains the lines that form the square.
+type pageSquare struct {
+	X1    float64 `json:"x1"`
+	Y1    float64 `json:"y1"`
+	X2    float64 `json:"x2"`
+	Y2    float64 `json:"y2"`
+	lines [][]*pageLine
+}
+
+// newPageSquare creates a new pageSquare from a 2D array of pageLines (returned from getSmallestSquare).
+// Returns nil if the square is not valid.
+func newPageSquare(lineSquare [][]*pageLine) *pageSquare {
+	if len(lineSquare) < 4 || len(lineSquare[0]) == 0 || len(lineSquare[2]) == 0 {
+		return nil
+	}
+
+	return &pageSquare{
+		X1:    lineSquare[0][0].X1,
+		Y1:    lineSquare[0][0].Y1,
+		X2:    lineSquare[2][0].X2,
+		Y2:    lineSquare[2][0].Y2,
+		lines: lineSquare,
+	}
+}
+
+// findLeft returns the square that is on the left of the current square.
+// Returns nil if no square is found.
+func (ps *pageSquare) findLeft() *pageSquare {
+	// Find the left line
+	if len(ps.lines[0]) == 0 {
+		return nil
+	}
+
+	// Find the starting line of the left square (its first top line)
+	leftLine := ps.lines[0][len(ps.lines[0])-1].continueStraight(false)
+	if leftLine == nil {
+		return nil
+	}
+
+	// Find the smallest square starting from the left line
+	square, _ := leftLine.getSmallestSquare()
+	return newPageSquare(square)
+}
+
+// findBottom returns the square that is at the bottom of the current square.
+// Returns nil if no square is found.
+func (ps *pageSquare) findBottom() *pageSquare {
+	// Find the bottom line
+	if len(ps.lines[3]) == 0 {
+		return nil
+	}
+
+	// Find the starting line of the bottom square (its first top line)
+	bottomLine := ps.lines[3][0].continueStraight(false).continueLeft(true)
+
+	// Find the smallest square starting from the bottom line
+	square, _ := bottomLine.getSmallestSquare()
+	return newPageSquare(square)
+
+}
+
+// PageSquares represents all the squares found in a page.
+type PageSquares struct {
+	Squares []*pageSquare `json:"squares"`
+	Page    int           `json:"page"`
 }
 
 // findPageSquares returns all the squares found in the page.
-func findPageSquares(lines *PageLines) []*pageLine {
-	line := lines.Lines[0]
-	result := make([]*pageLine, 0)
-	result = append(result, line.getSmallestSquare()...)
+func findPageSquares(lines *PageLines) *PageSquares {
+	result := PageSquares{
+		Page:    lines.Page,
+		Squares: make([]*pageSquare, 0),
+	}
 
-	return result
+	// Find the starting square, based on the first page line
+	lineSquare, _ := lines.Lines[0].getSmallestSquare()
+	bottomSquare := newPageSquare(lineSquare)
+	result.Squares = append(result.Squares, bottomSquare)
+
+	for {
+		// Find left squares
+		leftSquare := bottomSquare
+		for {
+			leftSquare = leftSquare.findLeft()
+			if leftSquare == nil {
+				break
+			}
+
+			result.Squares = append(result.Squares, leftSquare)
+		}
+
+		// Find bottom squares
+		bottomSquare = bottomSquare.findBottom()
+		if bottomSquare == nil {
+			break
+		}
+
+		result.Squares = append(result.Squares, bottomSquare)
+	}
+
+	return &result
 }

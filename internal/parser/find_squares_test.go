@@ -189,7 +189,7 @@ func TestPageLine_getSmallestSquare(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			page := setupPageLines(t)
 			startLine := page.Lines[tt.startLine]
-			square := startLine.getSmallestSquare()
+			_, path := startLine.getSmallestSquare()
 
 			expected := ""
 			for _, l := range tt.want {
@@ -198,7 +198,7 @@ func TestPageLine_getSmallestSquare(t *testing.T) {
 			expected = expected[:len(expected)-2]
 
 			result := ""
-			for _, l := range square {
+			for _, l := range path {
 				result += findLineName(&page, l) + ", "
 			}
 			result = result[:len(result)-2]

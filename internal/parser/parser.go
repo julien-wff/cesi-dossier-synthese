@@ -12,7 +12,7 @@ type PdfParseDebugResponse struct {
 	Performance []utils.TimingElement `json:"performance"`
 	Pages       *[]pdfPageContent     `json:"pages"`
 	Lines       []*PageLines          `json:"lines"`
-	Squares     []*pageLine           `json:"squares"`
+	Squares     []*PageSquares        `json:"squares"`
 }
 
 // ParsePdfDebug parses a PDF file returns the full retrieved content through all the steps of the parsing
@@ -43,11 +43,10 @@ func ParsePdfDebug(f *io.ReadSeeker) (PdfParseDebugResponse, *utils.ProcessTimin
 	pt.AddElement("find-lines", "Find pages lines")
 
 	// Find squares
-	// TODO: change pageLine to PageSquares
-	var squares []*pageLine
+	var squares []*PageSquares
 	for _, line := range lines {
 		pageSquares := findPageSquares(line)
-		squares = append(squares, pageSquares...)
+		squares = append(squares, pageSquares)
 	}
 	response.Squares = squares
 	pt.AddElement("find-squares", "Find pages squares")
