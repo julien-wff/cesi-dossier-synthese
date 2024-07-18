@@ -2,6 +2,7 @@ export interface DebugResponse {
     performance: DebugPerformanceElement[];
     pages: DebugPage[];
     lines: DebugLine[];
+    squares: DebugSquare[];
 }
 
 export interface DebugPerformanceElement {
@@ -68,7 +69,20 @@ export interface DebugLineLine {
     end_neighbours_ids: number[];
 }
 
+export interface DebugSquare {
+    page: number;
+    squares: DebugSquareSquare[];
+}
+
+export interface DebugSquareSquare {
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+}
+
 export enum DrawMode {
     Page,
     Line,
+    Square,
 }

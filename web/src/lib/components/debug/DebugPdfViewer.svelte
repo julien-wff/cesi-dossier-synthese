@@ -131,6 +131,41 @@
                     ctx.fill();
                 }
             }
+        } else if (mode === DrawMode.Square) {
+            for (let i = 0; i < data.squares[page].squares.length; i++) {
+                const square = data.squares[page].squares[i];
+                if (displaySingleSquare !== -1 && displaySingleSquare !== i)
+                    continue;
+
+                ctx.strokeStyle = debugColors ? 'red' : 'black';
+                ctx.globalAlpha = debugColors ? FADED_OPACITY : 1;
+                ctx.lineWidth = scaleFactor;
+                const x1 = square.x1 * scaleFactor;
+                const y1 = square.y1 * scaleFactor;
+                const x2 = square.x2 * scaleFactor;
+                const y2 = square.y2 * scaleFactor;
+                ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+                // Draw points at corners of square
+                if (debugColors) {
+                    ctx.fillStyle = 'purple';
+                    ctx.beginPath();
+                    ctx.arc(x1, y1, 3 * scaleFactor, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.arc(x2, y1, 3 * scaleFactor, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.arc(x1, y2, 3 * scaleFactor, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.arc(x2, y2, 3 * scaleFactor, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            }
         }
     }
 

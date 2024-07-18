@@ -43,6 +43,8 @@ Pages: {data.pages.length}
 Text nodes: {data.pages.reduce((t, p) => t + p.text.length, 0)}
 <br/>
 Lines: {data.lines.reduce((t, p) => t + p.lines.length, 0)}
+<br/>
+Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
 
 <div class="h-[1px] w-full bg-gray-400 my-2"/>
 <h2 class="text-lg font-bold mb-2">Global parameters</h2>
@@ -138,5 +140,34 @@ Lines: {data.lines.reduce((t, p) => t + p.lines.length, 0)}
                 ({getNeighboursIndexes(line, page).join(', ')})
             </div>
         {/if}
+    {/if}
+{/if}
+
+<div class="h-[1px] w-full bg-gray-400 my-2"/>
+<h2 class="text-lg font-bold mb-2">Squares view</h2>
+<div class="grid grid-cols-2 gap-2">
+    {#each data.squares as { page: pageNumber }}
+        <button class="aspect-square grid place-content-center rounded border-2 cursor-pointer"
+                class:border-indigo-400={mode === DrawMode.Square && pageNumber === page}
+                on:click={() => handleViewClick(pageNumber, DrawMode.Square)}>
+            <DebugPdfViewer margin={0} {data} page={pageNumber} mode={DrawMode.Square} {debugColors}/>
+        </button>
+    {/each}
+</div>
+
+{#if mode === DrawMode.Square}
+    <DebugToggleRange label="Square picker"
+                      bind:checked={displaySingleSquare}
+                      bind:value={squareIndex}
+                      min={0}
+                      max={data.squares[page].squares.length - 1}/>
+    {#if displaySingleSquare}
+        {@const square = data.squares[page].squares[squareIndex]}
+        <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
+            Position: ({round(square.x1)} ; {round(square.y1)})
+            -> ({round(square.x2)} ; {round(square.y2)})
+            <br/>
+            Size: {round(square.x2 - square.x1)} x {round(square.y2 - square.y1)}
+        </div>
     {/if}
 {/if}
