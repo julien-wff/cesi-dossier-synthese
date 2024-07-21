@@ -132,8 +132,9 @@
                 }
             }
         } else if (mode === DrawMode.Square) {
-            for (let i = 0; i < data.squares[page].squares.length; i++) {
-                const square = data.squares[page].squares[i];
+            const squares = data.squares[page].squares.flat();
+            for (let i = 0; i < squares.length; i++) {
+                const square = squares[i];
                 if (displaySingleSquare !== -1 && displaySingleSquare !== i)
                     continue;
 

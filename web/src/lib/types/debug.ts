@@ -71,7 +71,7 @@ export interface DebugLineLine {
 
 export interface DebugSquare {
     page: number;
-    squares: DebugSquareSquare[];
+    squares: DebugSquareSquare[][];
 }
 
 export interface DebugSquareSquare {

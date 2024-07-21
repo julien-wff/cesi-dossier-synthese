@@ -160,9 +160,9 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
                       bind:checked={displaySingleSquare}
                       bind:value={squareIndex}
                       min={0}
-                      max={data.squares[page].squares.length - 1}/>
+                      max={data.squares[page].squares.flat().length - 1}/>
     {#if displaySingleSquare}
-        {@const square = data.squares[page].squares[squareIndex]}
+        {@const square = data.squares[page].squares.flat()[squareIndex]}
         <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
             Position: ({round(square.x1)} ; {round(square.y1)})
             -> ({round(square.x2)} ; {round(square.y2)})

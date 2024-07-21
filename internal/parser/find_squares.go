@@ -245,21 +245,23 @@ func (ps *pageSquare) addTextContent(pageContent *pdfPageContent) {
 
 // PageSquares represents all the squares found in a page.
 type PageSquares struct {
-	Squares []*pageSquare `json:"squares"`
-	Page    int           `json:"page"`
+	Squares [][]*pageSquare `json:"squares"`
+	Page    int             `json:"page"`
 }
 
 // findPageSquares returns all the squares found in the page.
 func findPageSquares(lines *PageLines, pageContent *pdfPageContent) *PageSquares {
 	result := PageSquares{
 		Page:    lines.Page,
-		Squares: make([]*pageSquare, 0),
+		Squares: make([][]*pageSquare, 0),
 	}
 
 	// Find the starting square, based on the first page line
 	lineSquare, _ := lines.Lines[0].getSmallestSquare()
 	bottomSquare := newPageSquare(lineSquare)
-	result.Squares = append(result.Squares, bottomSquare)
+	result.Squares = append(result.Squares, []*pageSquare{bottomSquare})
+
+	lineIndex := 0
 
 	for {
 		// Find left squares
@@ -270,7 +272,7 @@ func findPageSquares(lines *PageLines, pageContent *pdfPageContent) *PageSquares
 				break
 			}
 
-			result.Squares = append(result.Squares, leftSquare)
+			result.Squares[lineIndex] = append(result.Squares[lineIndex], leftSquare)
 		}
 
 		// Find bottom squares
@@ -279,12 +281,15 @@ func findPageSquares(lines *PageLines, pageContent *pdfPageContent) *PageSquares
 			break
 		}
 
-		result.Squares = append(result.Squares, bottomSquare)
+		lineIndex++
+		result.Squares = append(result.Squares, []*pageSquare{bottomSquare})
 	}
 
 	// Add text content to each square
-	for _, square := range result.Squares {
-		square.addTextContent(pageContent)
+	for _, line := range result.Squares {
+		for _, square := range line {
+			square.addTextContent(pageContent)
+		}
 	}
 
 	return &result
