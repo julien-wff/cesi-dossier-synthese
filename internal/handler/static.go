@@ -1,20 +1,15 @@
 package handler
 
 import (
-	"embed"
+	"github.com/julien-wff/cesi-dossier-synthese/internal/web"
 	"io/fs"
 	"log"
 	"net/http"
 )
 
-//go:embed build/*
-var staticFiles embed.FS
-
-var staticFS = fs.FS(staticFiles)
-
 // StaticFilesHandler serves files from the /build directory inside embed.FS. It also serves the /build/index.html file
 func StaticFilesHandler() http.Handler {
-	staticBuildFS, err := fs.Sub(staticFS, "build")
+	staticBuildFS, err := fs.Sub(web.StaticFS, "build")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,7 +19,7 @@ func StaticFilesHandler() http.Handler {
 
 // StaticHtmlHandler serves the /build/<name>.html file from embed.FS
 func StaticHtmlHandler(name string) http.Handler {
-	debugHtmlFile, err := fs.ReadFile(staticFS, "build/"+name+".html")
+	debugHtmlFile, err := fs.ReadFile(web.StaticFS, "build/"+name+".html")
 	if err != nil {
 		log.Fatal("StaticHtmlHandler() error: ", err)
 	}
