@@ -1,6 +1,9 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
     import FileDropDown from '../components/FileDropDown.svelte';
+    import { fade } from 'svelte/transition';
+
+    export let loading = false;
 
     let picked = false;
     let filename: string | null = null;
@@ -40,7 +43,12 @@
 
 
 <div class="w-full min-h-screen grid place-items-center">
-    <div class="bg-indigo-50 p-8 rounded-md shadow-md w-96">
+    <div class="bg-indigo-50 p-8 rounded-md shadow-md w-96 relative">
+        {#if loading}
+            <div class="absolute inset-0 bg-black bg-opacity-20 rounded-md cursor-progress z-10"
+                 transition:fade/>
+        {/if}
+
         <h2 class="text-xl mb-6">Dossier de synthèse CESI</h2>
 
         <FileDropDown bind:input={fileInput} hidden={picked} on:change={handleFileChange}/>

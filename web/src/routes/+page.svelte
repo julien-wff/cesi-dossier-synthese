@@ -4,7 +4,6 @@
     import Failure from '$lib/views/Failure.svelte';
     import Grades from '$lib/views/Grades.svelte';
     import Home from '$lib/views/Home.svelte';
-    import Loading from '$lib/views/Loading.svelte';
     import { fade } from 'svelte/transition';
     import type { Section } from '$lib/types/grades';
     import { PUBLIC_API_ENDPOINT } from '$env/static/public';
@@ -48,13 +47,9 @@
 <Meta/>
 
 <main>
-    {#if state === AppState.Selection}
+    {#if state === AppState.Selection || state === AppState.Loading}
         <div transition:fade>
-            <Home on:submit={handlePDFSubmit}/>
-        </div>
-    {:else if state === AppState.Loading}
-        <div transition:fade>
-            <Loading/>
+            <Home on:submit={handlePDFSubmit} loading={state === AppState.Loading}/>
         </div>
     {:else if state === AppState.Display}
         <div transition:fade>
