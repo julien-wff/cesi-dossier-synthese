@@ -4,6 +4,7 @@
     import { type DebugResponse, DrawMode } from '$lib/types/debug';
     import DebugPdfViewer from '$lib/components/debug/DebugPdfViewer.svelte';
     import DebugViewController from '$lib/components/debug/DebugViewController.svelte';
+    import { PUBLIC_API_ENDPOINT } from '$env/static/public';
 
     let fileInput: HTMLInputElement;
     let error: string | null = null;
@@ -39,7 +40,7 @@
 
         try {
             loading = true;
-            const res = await fetch('http://localhost:8080/api/parse/debug', {
+            const res = await fetch(PUBLIC_API_ENDPOINT + '/parse/debug', {
                 method: 'POST',
                 body: form,
             });

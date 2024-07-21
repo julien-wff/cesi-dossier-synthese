@@ -7,6 +7,7 @@
     import Loading from '$lib/views/Loading.svelte';
     import { fade } from 'svelte/transition';
     import type { Section } from '$lib/types/grades';
+    import { PUBLIC_API_ENDPOINT } from '$env/static/public';
 
     enum AppState {
         Selection = 'selection',
@@ -22,7 +23,7 @@
     async function handlePDFSubmit(ev: CustomEvent<FormData>) {
         state = AppState.Loading;
         try {
-            const res = await fetch('http://localhost:8080/api/parse', {
+            const res = await fetch(PUBLIC_API_ENDPOINT + '/parse', {
                 method: 'POST',
                 body: ev.detail,
             });
