@@ -45,6 +45,19 @@ func (l *pageLine) gravity() (float64, float64) {
 	return (l.X1 + l.X2) / 2, (l.Y1 + l.Y2) / 2
 }
 
+// isOutside checks if l is outside the zone
+func (l *pageLine) isOutside(zone size, margin float64) bool {
+	if l.X1 < margin || l.Y1 < margin || l.X2 < margin || l.Y2 < margin {
+		return true
+	}
+
+	if l.X1 > zone.Width-margin || l.Y1 > zone.Height-margin || l.X2 > zone.Width-margin || l.Y2 > zone.Height-margin {
+		return true
+	}
+
+	return false
+}
+
 // addNeighbour adds a neighbour to l and vice versa
 func (l *pageLine) addNeighbour(neighbour *pageLine) {
 	l.Neighbours = append(l.Neighbours, neighbour)
@@ -224,10 +237,9 @@ func (pls *PageLines) optimize(pageContent *pdfPageContent) {
 	}
 
 	// Remove lines that are too close to the page borders
-	const margin = 10
 	for _, l := range pls.Lines {
-		x, y := l.gravity()
-		if x < margin || y < margin || x > pageContent.Size.Width-margin || y > pageContent.Size.Height-margin {
+		if l.isOutside(pageContent.Size, 10) {
+			fmt.Println("Removing line outside the zone", l.Id, l)
 			pls.removeLine(l)
 		}
 	}
