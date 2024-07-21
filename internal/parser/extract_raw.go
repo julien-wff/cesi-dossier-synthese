@@ -121,7 +121,7 @@ func extractRawPdfContent(f *io.ReadSeeker, pt *utils.ProcessTiming, debug bool)
 		p := reader.Page(i + 1)
 		pages[i].Page = i
 		pages[i].Size = getPageSize(&p)
-		pages[i].Text = getTextContent(&p, pages[i].Size.Height, debug)
+		pages[i].Text = getTextContent(&p, pages[i].Size.Height)
 		pages[i].Rectangles = getRectangleContent(&p, pages[i].Size.Height, debug)
 
 		pageReader, err := pdfcpu.ExtractPageContent(ctx, i+1)
@@ -158,7 +158,7 @@ func getPageSize(p *pdf.Page) size {
 }
 
 // getTextContent returns all the text elements of a PDF page
-func getTextContent(p *pdf.Page, pageHeight float64, sorted bool) []textNode {
+func getTextContent(p *pdf.Page, pageHeight float64) []textNode {
 	var content = make(map[position]textNode)
 
 	rows := p.Content().Text
