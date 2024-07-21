@@ -22,7 +22,7 @@ COPY --from=web-builder /app/build/ ./internal/web/build/
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/bin/app ./cmd/server/main.go
 
 
-FROM alpine:3.20 AS runner
+FROM alpine:3.20 AS runtime
 
 USER 1000:1000
 
@@ -33,6 +33,20 @@ ENV XDG_CONFIG_HOME=/app/.config
 RUN mkdir -p /app/.config
 
 COPY --from=backend-builder /app/bin/app ./
+
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VCS_URL
+ARG VERSION
+
+LABEL org.opencontainers.image.version=$VERSION \
+      org.opencontainers.image.title="CESI Dossier de Synthèse" \
+      org.opencontainers.image.description="Web interface to visualize grades from CESI Engineering School" \
+      org.opencontainers.image.authors="Julien W <cefadrom1@gmail.com>" \
+      org.opencontainers.image.url=$VCS_URL \
+      org.opencontainers.image.source=$VCS_URL \
+      org.opencontainers.image.revision=$VCS_REF \
+      org.opencontainers.image.created=$BUILD_DATE
 
 EXPOSE 8080
 
