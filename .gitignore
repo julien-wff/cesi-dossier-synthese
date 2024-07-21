@@ -10,7 +10,7 @@ lerna-debug.log*
 # Node and svelte
 node_modules
 .svelte-kit
-build
+/web/build
 dist
 *.local
 vite.config.js.timestamp-*

@@ -12,7 +12,7 @@ import (
 func main() {
 	cfg := utils.GetAppConfig()
 
-	r := router.NewRouter()
+	r := router.NewRouter(cfg)
 
 	if cfg.Production {
 		fmt.Println("Starting production server on port", cfg.Port)
