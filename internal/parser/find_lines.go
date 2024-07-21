@@ -239,7 +239,6 @@ func (pls *PageLines) optimize(pageContent *pdfPageContent) {
 	// Remove lines that are too close to the page borders
 	for _, l := range pls.Lines {
 		if l.isOutside(pageContent.Size, 10) {
-			fmt.Println("Removing line outside the zone", l.Id, l)
 			pls.removeLine(l)
 		}
 	}
