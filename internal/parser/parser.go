@@ -13,6 +13,7 @@ type PdfParseDebugResponse struct {
 	Pages       *[]pdfPageContent     `json:"pages"`
 	Lines       []*PageLines          `json:"lines"`
 	Squares     []*PageSquares        `json:"squares"`
+	Grades      []Section             `json:"grades"`
 }
 
 // ParsePdfDebug parses a PDF file returns the full retrieved content through all the steps of the parsing
@@ -50,6 +51,14 @@ func ParsePdfDebug(f *io.ReadSeeker) (PdfParseDebugResponse, *utils.ProcessTimin
 	}
 	response.Squares = squares
 	pt.AddElement("find-squares", "Find pages squares")
+
+	// Extract grades
+	grades, err := extractGrades(squares)
+	if err != nil {
+		return response, pt, err
+	}
+	response.Grades = grades
+	pt.AddElement("extract-grades", "Extract grades")
 
 	// Add performance counter
 	response.Performance = pt.Elements
