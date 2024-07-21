@@ -1,7 +1,10 @@
 .idea
 .vscode
-node_modules
-build
-dist
-temp
-.svelte-kit
+web/node_modules
+web/build
+web/dist
+web/temp
+web/.svelte-kit
+web/.env
+web/.env.*
+internal/web/build
