@@ -22,7 +22,7 @@
     async function handlePDFSubmit(ev: CustomEvent<FormData>) {
         state = AppState.Loading;
         try {
-            const res = await fetch('/api/parse', {
+            const res = await fetch('http://localhost:8080/api/parse', {
                 method: 'POST',
                 body: ev.detail,
             });

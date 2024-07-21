@@ -66,3 +66,39 @@ func ParsePdfDebugHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
+
+func ParsePdfHandler(w http.ResponseWriter, r *http.Request) {
+	// Extract PDF file from request
+	file, err := extractPdf(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer func() {
+		_ = file.Close()
+	}()
+
+	// Type assertion to convert multipart.File to io.ReadSeeker
+	readSeeker, ok := file.(io.ReadSeeker)
+	if !ok {
+		http.Error(w, "Failed to assert file type to io.ReadSeeker", http.StatusInternalServerError)
+		return
+	}
+
+	// Parse PDF file
+	result, pt, err := parser.ParsePdf(&readSeeker)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Write headers
+	w.Header().Set("Server-Timing", pt.ServerTiming())
+	w.Header().Set("Content-Type", "application/json")
+
+	// Write response body as JSON
+	if err := json.NewEncoder(w).Encode(result); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}

@@ -16,6 +16,54 @@ type PdfParseDebugResponse struct {
 	Grades      []Section             `json:"grades"`
 }
 
+type PdfParseResponse struct {
+	Data []Section `json:"data"`
+}
+
+// ParsePdf parses a PDF file and returns the extracted grades, under the `data` key in the response.
+func ParsePdf(f *io.ReadSeeker) (PdfParseResponse, *utils.ProcessTiming, error) {
+	// Initialize performance counter
+	pt := utils.NewProcessTiming()
+
+	// Initialize response
+	response := PdfParseResponse{}
+
+	// Extract the raw content of the PDF
+	pages, err := extractRawPdfContent(f, pt, false)
+	if err != nil {
+		return response, pt, err
+	}
+
+	// Find lines
+	var lines []*PageLines
+	for _, page := range *pages {
+		pageLines, err := findPageLines(&page, false)
+		if err != nil {
+			return response, pt, err
+		}
+		lines = append(lines, &pageLines)
+	}
+	pt.AddElement("find-lines", "Find pages lines")
+
+	// Find squares
+	var squares []*PageSquares
+	for i, line := range lines {
+		pageSquares := findPageSquares(line, &(*pages)[i])
+		squares = append(squares, pageSquares)
+	}
+	pt.AddElement("find-squares", "Find pages squares")
+
+	// Extract grades
+	grades, err := extractGrades(squares)
+	if err != nil {
+		return response, pt, err
+	}
+	response.Data = grades
+	pt.AddElement("extract-grades", "Extract grades")
+
+	return response, pt, nil
+}
+
 // ParsePdfDebug parses a PDF file returns the full retrieved content through all the steps of the parsing
 func ParsePdfDebug(f *io.ReadSeeker) (PdfParseDebugResponse, *utils.ProcessTiming, error) {
 	// Initialize performance counter

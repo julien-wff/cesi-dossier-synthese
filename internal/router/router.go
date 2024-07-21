@@ -14,6 +14,7 @@ func NewRouter() http.Handler {
 
 	// Parsing
 	r.HandleFunc("POST /api/parse/debug", handler.ParsePdfDebugHandler)
+	r.HandleFunc("POST /api/parse", handler.ParsePdfHandler)
 
 	return r
 }
