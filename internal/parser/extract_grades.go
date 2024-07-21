@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"errors"
+	"github.com/julien-wff/cesi-dossier-synthese/internal/apierrors"
 	"strconv"
 	"strings"
 )
@@ -41,7 +41,7 @@ type Section struct {
 //   - Sections are the main categories of the grades. They take a whole square line.
 //   - Categories are the subcategories of the grades. They are 3 squares wide.
 //   - Grades are the actual grades. They are 6 squares wide.
-func extractGrades(pageSquares []*PageSquares) ([]Section, error) {
+func extractGrades(pageSquares []*PageSquares) ([]Section, *apierrors.APIError) {
 	squares := make([][]*pageSquare, 0)
 
 	for _, squareLine := range pageSquares {
@@ -59,7 +59,7 @@ func extractGrades(pageSquares []*PageSquares) ([]Section, error) {
 
 	// Check if there are enough squares
 	if len(squares) < 2 {
-		return []Section{}, errors.New("not enough squares")
+		return []Section{}, apierrors.NewGradesExtractionError("not enough squares")
 	}
 
 	// Get sections indexes (full width squares)
@@ -72,7 +72,7 @@ func extractGrades(pageSquares []*PageSquares) ([]Section, error) {
 
 	// Check if there are enough sections
 	if len(sectionsIndexes) == 0 {
-		return []Section{}, errors.New("not enough sections")
+		return []Section{}, apierrors.NewGradesExtractionError("no sections found")
 	}
 
 	// Parse sections

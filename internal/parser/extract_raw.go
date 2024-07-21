@@ -2,6 +2,7 @@ package parser
 
 import (
 	"bytes"
+	"github.com/julien-wff/cesi-dossier-synthese/internal/apierrors"
 	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"github.com/ledongthuc/pdf"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
@@ -58,11 +59,11 @@ type pdfPageContent struct {
 // extractRawPdfContent extracts the raw content of a PDF file page by page
 // This includes text, rectangles and lines.
 // Debug makes more expensive calculations, like ordering the results by position
-func extractRawPdfContent(f *io.ReadSeeker, pt *utils.ProcessTiming, debug bool) (*[]pdfPageContent, error) {
+func extractRawPdfContent(f *io.ReadSeeker, pt *utils.ProcessTiming, debug bool) (*[]pdfPageContent, *apierrors.APIError) {
 	// Read the content of the original file into a buffer
 	var buf bytes.Buffer
 	if _, err := io.Copy(&buf, *f); err != nil {
-		return nil, err
+		return nil, apierrors.NewPdfReadingError(err)
 	}
 
 	// Create a writer to the buffer to apply modifications
@@ -76,14 +77,14 @@ func extractRawPdfContent(f *io.ReadSeeker, pt *utils.ProcessTiming, debug bool)
 	// Check if the file is a valid PDF
 	ctx, err := api.ReadValidateAndOptimize(*f, conf)
 	if err != nil {
-		return nil, err
+		return nil, apierrors.NewPdfReadingError(err)
 	}
 
 	pt.AddElement("read-validate-optimize", "Read, validate and optimize")
 
 	// Apply the optimization to the buffer
 	if err := api.Optimize(bytes.NewReader(buf.Bytes()), writer, conf); err != nil {
-		return nil, err
+		return nil, apierrors.NewPdfReadingError(err)
 	}
 
 	pt.AddElement("optimize", "Optimize")
@@ -97,7 +98,7 @@ func extractRawPdfContent(f *io.ReadSeeker, pt *utils.ProcessTiming, debug bool)
 
 	reader, err := pdf.NewReader(sectionReader, size)
 	if err != nil {
-		return nil, err
+		return nil, apierrors.NewPdfReadingError(err)
 	}
 
 	pagesCount := reader.NumPage()
@@ -111,7 +112,7 @@ func extractRawPdfContent(f *io.ReadSeeker, pt *utils.ProcessTiming, debug bool)
 
 	_, err = api.PagesForPageSelection(pagesCount, pagesStringIndexes, true, false)
 	if err != nil {
-		return nil, err
+		return nil, apierrors.NewPdfReadingError(err)
 	}
 
 	pages := make([]pdfPageContent, pagesCount)
@@ -126,12 +127,12 @@ func extractRawPdfContent(f *io.ReadSeeker, pt *utils.ProcessTiming, debug bool)
 
 		pageReader, err := pdfcpu.ExtractPageContent(ctx, i+1)
 		if err != nil {
-			return nil, err
+			return nil, apierrors.NewPdfReadingError(err)
 		}
 
 		lines, err := getLineContent(&pageReader, pages[i].Size.Height, debug)
 		if err != nil {
-			return nil, err
+			return nil, apierrors.NewPdfReadingError(err)
 		}
 		pages[i].Lines = lines
 

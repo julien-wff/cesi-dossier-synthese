@@ -28,8 +28,8 @@
             });
             const content = await res.json();
 
-            if (content.error)
-                throw new Error(content.error);
+            if (!res.ok)
+                throw new Error(content?.message?.fr || 'Une erreur inconnue est survenue');
             if (!('data' in content))
                 throw new Error('Aucune donnée n\'a été trouvée dans le PDF');
 

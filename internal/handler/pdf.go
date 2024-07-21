@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/julien-wff/cesi-dossier-synthese/internal/apierrors"
 	"github.com/julien-wff/cesi-dossier-synthese/internal/parser"
 	"io"
 	"mime/multipart"
@@ -14,16 +15,16 @@ const (
 )
 
 // extractPdf extracts the PDF file from the request
-func extractPdf(w http.ResponseWriter, r *http.Request) (multipart.File, error) {
+func extractPdf(w http.ResponseWriter, r *http.Request) (multipart.File, *apierrors.APIError) {
 	r.Body = http.MaxBytesReader(w, r.Body, pdfMaxSize)
 
 	if err := r.ParseMultipartForm(pdfMaxSize); err != nil {
-		return nil, err
+		return nil, apierrors.NewFileTooBigError(err)
 	}
 
 	file, _, err := r.FormFile(pdfFormKey)
 	if err != nil {
-		return nil, err
+		return nil, apierrors.NewInvalidFileError(err)
 	}
 
 	return file, nil
@@ -35,7 +36,7 @@ func ParsePdfDebugHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract PDF file from request
 	file, err := extractPdf(w, r)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		err.Write(w)
 		return
 	}
 
@@ -46,14 +47,14 @@ func ParsePdfDebugHandler(w http.ResponseWriter, r *http.Request) {
 	// Type assertion to convert multipart.File to io.ReadSeeker
 	readSeeker, ok := file.(io.ReadSeeker)
 	if !ok {
-		http.Error(w, "Failed to assert file type to io.ReadSeeker", http.StatusInternalServerError)
+		apierrors.NewTypeAssertionError().Write(w)
 		return
 	}
 
 	// Parse PDF file
 	result, pt, err := parser.ParsePdfDebug(&readSeeker)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		err.Write(w)
 		return
 	}
 
@@ -63,7 +64,7 @@ func ParsePdfDebugHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Write response body as JSON
 	if err := json.NewEncoder(w).Encode(result); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		apierrors.NewJsonEncoderError(err).Write(w)
 	}
 }
 
@@ -71,7 +72,7 @@ func ParsePdfHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract PDF file from request
 	file, err := extractPdf(w, r)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		err.Write(w)
 		return
 	}
 
@@ -82,14 +83,14 @@ func ParsePdfHandler(w http.ResponseWriter, r *http.Request) {
 	// Type assertion to convert multipart.File to io.ReadSeeker
 	readSeeker, ok := file.(io.ReadSeeker)
 	if !ok {
-		http.Error(w, "Failed to assert file type to io.ReadSeeker", http.StatusInternalServerError)
+		apierrors.NewTypeAssertionError().Write(w)
 		return
 	}
 
 	// Parse PDF file
 	result, pt, err := parser.ParsePdf(&readSeeker)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		err.Write(w)
 		return
 	}
 
@@ -99,6 +100,6 @@ func ParsePdfHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Write response body as JSON
 	if err := json.NewEncoder(w).Encode(result); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		apierrors.NewJsonEncoderError(err).Write(w)
 	}
 }
