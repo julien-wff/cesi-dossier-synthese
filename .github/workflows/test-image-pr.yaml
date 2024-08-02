@@ -1,0 +1,25 @@
+name: Build Docker image on PR
+
+on:
+  pull_request:
+    branches:
+      - '*'
+      - '!main'
+
+jobs:
+    build-image:
+      name: Build Docker image
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: ${{ github.repository }}:pr-${{ github.event.number }}
