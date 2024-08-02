@@ -166,9 +166,6 @@ func parseGrade(squares []*pageSquare) (Grade, bool) {
 
 	// Parse letter
 	letter, previousLetter := parseLetter(squares[2].Content)
-	if letter == nil {
-		return Grade{}, false
-	}
 
 	return Grade{
 		Name:          squares[0].Content,
