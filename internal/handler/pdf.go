@@ -2,11 +2,13 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/julien-wff/cesi-dossier-synthese/internal/apierrors"
 	"github.com/julien-wff/cesi-dossier-synthese/internal/parser"
 	"io"
 	"mime/multipart"
 	"net/http"
+	"runtime/debug"
 )
 
 const (
@@ -30,9 +32,23 @@ func extractPdf(w http.ResponseWriter, r *http.Request) (multipart.File, *apierr
 	return file, nil
 }
 
+// handleParsingPanic handles panics that may occur during the parsing process.
+// It writes a GradesExtractionError to the response writer, and prints the stack trace.
+func handleParsingPanic(w http.ResponseWriter) {
+	if r := recover(); r != nil {
+		apierrors.NewGradesExtractionError("parsing error").Write(w)
+		fmt.Printf("Recovered from panic: %v\n", r)
+		debug.PrintStack()
+	}
+
+}
+
 // ParsePdfDebugHandler handles the parsing of the request PDF file, and returns debug information about all
 // the steps of the parsing process as JSON
 func ParsePdfDebugHandler(w http.ResponseWriter, r *http.Request) {
+	// Handle panics
+	defer handleParsingPanic(w)
+
 	// Extract PDF file from request
 	file, err := extractPdf(w, r)
 	if err != nil {
@@ -69,6 +85,9 @@ func ParsePdfDebugHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ParsePdfHandler(w http.ResponseWriter, r *http.Request) {
+	// Handle panic
+	defer handleParsingPanic(w)
+
 	// Extract PDF file from request
 	file, err := extractPdf(w, r)
 	if err != nil {
