@@ -2,34 +2,54 @@
     import { DebugLineDirection, type DebugResponse, DrawMode } from '$lib/types/debug';
     import { onDestroy, onMount } from 'svelte';
 
-    export let margin = 16;
-    export let resolution = 1;
-    export let data: DebugResponse | null = null;
-    export let page: number = 0;
-    export let mode: DrawMode = DrawMode.Page;
-    export let debugColors = false;
-    export let displaySingleText = false;
-    export let textIndex = 0;
-    export let displaySingleLine = false;
-    export let lineIndex = 0;
-    export let displaySingleSquare = false;
-    export let squareIndex = 0;
-    export let showNeighbours = false;
+    interface Props {
+        margin?: number;
+        resolution?: number;
+        data?: DebugResponse | null;
+        page?: number;
+        mode?: DrawMode;
+        debugColors?: boolean;
+        displaySingleText?: boolean;
+        textIndex?: number;
+        displaySingleLine?: boolean;
+        lineIndex?: number;
+        displaySingleSquare?: boolean;
+        squareIndex?: number;
+        showNeighbours?: boolean;
+    }
 
-    let canvas: HTMLCanvasElement;
-    let hidden = true;
+    let {
+        margin = 16,
+        resolution = 1,
+        data = null,
+        page = 0,
+        mode = DrawMode.Page,
+        debugColors = false,
+        displaySingleText = false,
+        textIndex = 0,
+        displaySingleLine = false,
+        lineIndex = 0,
+        displaySingleSquare = false,
+        squareIndex = 0,
+        showNeighbours = false,
+    }: Props = $props();
 
-    $: if (canvas && data)
-        drawCanvas(
-            data,
-            page,
-            mode,
-            debugColors,
-            !displaySingleText ? -1 : textIndex,
-            !displaySingleLine ? -1 : lineIndex,
-            !displaySingleSquare ? -1 : squareIndex,
-            showNeighbours,
-        );
+    let canvas = $state<HTMLCanvasElement>();
+    let hidden = $state(true);
+
+    $effect(() => {
+        if (canvas && data)
+            drawCanvas(
+                data,
+                page,
+                mode,
+                debugColors,
+                !displaySingleText ? -1 : textIndex,
+                !displaySingleLine ? -1 : lineIndex,
+                !displaySingleSquare ? -1 : squareIndex,
+                showNeighbours,
+            );
+    });
 
     function drawCanvas(data: DebugResponse,
                         page: number,
@@ -42,7 +62,7 @@
         hidden = false;
         const ctx = canvas?.getContext('2d');
 
-        if (!ctx)
+        if (!canvas || !ctx)
             return;
 
         let scaleFactor = getScaleFactor(data, page);
@@ -192,7 +212,7 @@
     }
 
     function getScaleFactor(data: DebugResponse, page: number) {
-        const canvasParent = canvas.parentElement!;
+        const canvasParent = canvas!.parentElement!;
         const parentWidth = canvasParent.clientWidth;
         const parentHeight = canvasParent.clientHeight;
 
@@ -219,7 +239,7 @@
             );
         });
 
-        parentObserver.observe(canvas.parentElement!);
+        parentObserver.observe(canvas!.parentElement!);
     });
 
     onDestroy(() => {
@@ -227,4 +247,4 @@
     });
 </script>
 
-<canvas bind:this={canvas} class="bg-white" class:hidden/>
+<canvas bind:this={canvas} class="bg-white" class:hidden></canvas>

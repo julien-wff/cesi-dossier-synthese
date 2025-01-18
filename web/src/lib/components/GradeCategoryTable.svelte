@@ -4,20 +4,22 @@
     import { calculateAverage, gradesWithCoefficientToList, validationLevel } from '../utils/grades';
     import GradeSelector from './GradeSelector.svelte';
 
-    export let category: string;
-    export let grades: Grade[] = [];
+    interface Props {
+        category: string;
+        grades?: Grade[];
+    }
 
-    let categoryAverage: number, categoryLevel: number | null;
-    $: categoryAverage = calculateAverage(gradesWithCoefficientToList(grades));
-    $: categoryLevel = validationLevel(categoryAverage);
+    let { category, grades = $bindable([]) }: Props = $props();
 
-    let initialGrades: (Letter | null)[] = [];
+    let categoryAverage = $derived(calculateAverage(gradesWithCoefficientToList(grades)));
+    let categoryLevel = $derived(validationLevel(categoryAverage));
+    let initialGrades: (Letter | null)[] = $state([]);
+
     onMount(() => {
         initialGrades = grades.map(grade => grade.letter);
     });
 
-    let gradesChanged: boolean;
-    $: gradesChanged = grades.some((grade, index) => grade.letter !== initialGrades[index]);
+    let gradesChanged = $derived(grades.some((grade, index) => grade.letter !== initialGrades[index]));
 
     function handleGradesRevert() {
         grades = grades.map((grade, index) => ({
@@ -39,16 +41,16 @@
              class="w-9 h-9 cursor-pointer p-1.5"
              aria-hidden={!gradesChanged}
              class:hidden={!gradesChanged}
-             on:click={handleGradesRevert}/>
+             onclick={handleGradesRevert}/>
     </div>
 
     <div class="flex divide-x divide-gray-400">
         <div class="flex-1 divide-y divide-gray-400">
-            {#each grades as { name, coefficient, letter }}
+            {#each grades as { name, coefficient }, i}
                 <div class="flex divide-x divide-gray-400">
                     <div class="p-1.5 flex-1">{name}</div>
                     <div class="grid place-items-center p-1.5 w-9">{coefficient}</div>
-                    <GradeSelector bind:grade={letter}/>
+                    <GradeSelector bind:grade={grades[i].letter}/>
                 </div>
             {/each}
         </div>

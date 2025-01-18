@@ -4,18 +4,33 @@
     import DebugToggleRange from '$lib/components/debug/controls/DebugToggleRange.svelte';
     import DebugCheckBox from '$lib/components/debug/controls/DebugCheckBox.svelte';
 
-    export let data: DebugResponse;
-    export let debugColors: boolean;
-    export let page: number;
-    export let mode: DrawMode;
+    interface Props {
+        data: DebugResponse;
+        debugColors: boolean;
+        page: number;
+        mode: DrawMode;
+        displaySingleText: boolean;
+        textIndex: number;
+        displaySingleLine: boolean;
+        lineIndex: number;
+        displaySingleSquare: boolean;
+        squareIndex: number;
+        showNeighbours: boolean;
+    }
 
-    export let displaySingleText: boolean;
-    export let textIndex: number;
-    export let displaySingleLine: boolean;
-    export let lineIndex: number;
-    export let displaySingleSquare: boolean;
-    export let squareIndex: number;
-    export let showNeighbours: boolean;
+    let {
+        data = $bindable(),
+        debugColors = $bindable(),
+        page = $bindable(),
+        mode = $bindable(),
+        displaySingleText = $bindable(),
+        textIndex = $bindable(),
+        displaySingleLine = $bindable(),
+        lineIndex = $bindable(),
+        displaySingleSquare = $bindable(),
+        squareIndex = $bindable(),
+        showNeighbours = $bindable(),
+    }: Props = $props();
 
     const round = (v: number) => Math.round(v * 100) / 100;
 
@@ -34,7 +49,7 @@
     }
 </script>
 
-<div class="h-[1px] w-full bg-gray-400 mb-2"/>
+<div class="h-[1px] w-full bg-gray-400 mb-2"></div>
 <h2 class="text-lg font-bold">Statistics</h2>
 Duration: {Math.round(data.performance.reduce((t, v) => t + v.duration, 0) * 100) / 100} ms
 <br/>
@@ -46,20 +61,20 @@ Lines: {data.lines.reduce((t, p) => t + p.lines.length, 0)}
 <br/>
 Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
 
-<div class="h-[1px] w-full bg-gray-400 my-2"/>
+<div class="h-[1px] w-full bg-gray-400 my-2"></div>
 <h2 class="text-lg font-bold mb-2">Global parameters</h2>
 <label class="block select-none">
     <input type="checkbox" bind:checked={debugColors} class="mr-2"/>
     Debug colors
 </label>
 
-<div class="h-[1px] w-full bg-gray-400 my-2"/>
+<div class="h-[1px] w-full bg-gray-400 my-2"></div>
 <h2 class="text-lg font-bold mb-2">Page view</h2>
 <div class="grid grid-cols-2 gap-2">
     {#each data.pages as { page: pageNumber }}
         <button class="aspect-square grid place-content-center rounded border-2 cursor-pointer mb-4"
                 class:border-indigo-400={mode === DrawMode.Page && pageNumber === page}
-                on:click={() => handleViewClick(pageNumber, DrawMode.Page)}>
+                onclick={() => handleViewClick(pageNumber, DrawMode.Page)}>
             <DebugPdfViewer margin={0} {data} page={pageNumber} mode={DrawMode.Page} {debugColors}/>
         </button>
     {/each}
@@ -110,13 +125,13 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
     {/if}
 {/if}
 
-<div class="h-[1px] w-full bg-gray-400 my-2"/>
+<div class="h-[1px] w-full bg-gray-400 my-2"></div>
 <h2 class="text-lg font-bold mb-2">Lines view</h2>
 <div class="grid grid-cols-2 gap-2">
     {#each data.lines as { page: pageNumber }}
         <button class="aspect-square grid place-content-center rounded border-2 cursor-pointer"
                 class:border-indigo-400={mode === DrawMode.Line && pageNumber === page}
-                on:click={() => handleViewClick(pageNumber, DrawMode.Line)}>
+                onclick={() => handleViewClick(pageNumber, DrawMode.Line)}>
             <DebugPdfViewer margin={0} {data} page={pageNumber} mode={DrawMode.Line} {debugColors}/>
         </button>
     {/each}
@@ -143,13 +158,13 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
     {/if}
 {/if}
 
-<div class="h-[1px] w-full bg-gray-400 my-2"/>
+<div class="h-[1px] w-full bg-gray-400 my-2"></div>
 <h2 class="text-lg font-bold mb-2">Squares view</h2>
 <div class="grid grid-cols-2 gap-2">
     {#each data.squares as { page: pageNumber }}
         <button class="aspect-square grid place-content-center rounded border-2 cursor-pointer"
                 class:border-indigo-400={mode === DrawMode.Square && pageNumber === page}
-                on:click={() => handleViewClick(pageNumber, DrawMode.Square)}>
+                onclick={() => handleViewClick(pageNumber, DrawMode.Square)}>
             <DebugPdfViewer margin={0} {data} page={pageNumber} mode={DrawMode.Square} {debugColors}/>
         </button>
     {/each}

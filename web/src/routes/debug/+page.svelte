@@ -6,29 +6,32 @@
     import DebugViewController from '$lib/components/debug/DebugViewController.svelte';
     import { PUBLIC_API_ENDPOINT } from '$env/static/public';
 
-    let fileInput: HTMLInputElement;
-    let error: string | null = null;
-    let loading = false;
-    let data: DebugResponse | null = null;
+    let fileInput = $state<HTMLInputElement>();
+    let error = $state<string | null>(null);
+    let loading = $state(false);
+    let data = $state<DebugResponse | null>(null);
 
     // Viewer
-    let debugColors = true;
-    let mode: DrawMode = DrawMode.Page;
-    let page: number = 0;
+    let debugColors = $state(true);
+    let mode = $state(DrawMode.Page);
+    let page = $state(0);
 
-    let displaySingleText = false;
-    let textIndex = 0;
-    let displaySingleLine = false;
-    let lineIndex = 0;
-    let displaySingleSquare = false;
-    let squareIndex = 0;
-    let showNeighbours = false;
+    let displaySingleText = $state(false);
+    let textIndex = $state(0);
+    let displaySingleLine = $state(false);
+    let lineIndex = $state(0);
+    let displaySingleSquare = $state(false);
+    let squareIndex = $state(0);
+    let showNeighbours = $state(false);
 
     async function handlePDFSubmit(ev: SubmitEvent | Event) {
+        if (ev instanceof SubmitEvent)
+            ev.preventDefault();
+
         error = null;
         data = null;
 
-        const file = fileInput.files?.[0];
+        const file = fileInput?.files?.[0];
         if (!file) {
             if (ev instanceof SubmitEvent)
                 error = 'No file selected';
@@ -66,12 +69,12 @@
     <aside class="w-72 p-2 bg-indigo-50 shadow-md max-h-screen overflow-y-auto">
         <h1 class="text-xl font-bold mb-4">Debug viewer</h1>
 
-        <form on:submit|preventDefault={handlePDFSubmit} class="mb-4">
+        <form onsubmit={handlePDFSubmit} class="mb-4">
             <input type="file"
                    accept="application/pdf"
                    class="block w-full text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                    disabled={loading}
-                   on:change={handlePDFSubmit}
+                   onchange={handlePDFSubmit}
                    bind:this={fileInput}>
             <button type="submit"
                     class="w-full bg-indigo-500 text-white py-1 mt-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"

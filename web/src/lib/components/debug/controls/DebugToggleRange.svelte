@@ -1,11 +1,21 @@
 <script lang="ts">
     import DebugCheckBox from '$lib/components/debug/controls/DebugCheckBox.svelte';
 
-    export let checked: boolean;
-    export let label: string;
-    export let min = 0;
-    export let max = 100;
-    export let value = 0;
+    interface Props {
+        checked: boolean;
+        label: string;
+        min?: number;
+        max?: number;
+        value?: number;
+    }
+
+    let {
+        checked = $bindable(),
+        label,
+        min = 0,
+        max = 100,
+        value = $bindable(0)
+    }: Props = $props();
 </script>
 
 <DebugCheckBox {label} bind:checked/>
