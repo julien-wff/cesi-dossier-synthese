@@ -18,7 +18,6 @@ func main() {
 		fmt.Println("Starting production server on port", cfg.Port)
 	} else {
 		fmt.Println("Starting development server on port", cfg.Port)
-		r = handlers.CORS()(r)
 		r = handlers.LoggingHandler(os.Stdout, r)
 	}
 
