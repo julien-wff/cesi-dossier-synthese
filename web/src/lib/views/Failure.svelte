@@ -1,13 +1,10 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+    interface Props {
+        error: string;
+        onback: () => void;
+    }
 
-    export let error: string;
-
-    const dispatch = createEventDispatcher();
-
-    const handleBack = () => {
-        dispatch('back');
-    };
+    let { error, onback }: Props = $props();
 </script>
 
 
@@ -16,7 +13,7 @@
         <h1 class="text-xl mb-6">Oh non ! Une erreur est survenue :(</h1>
         <p class="mb-6">{error}</p>
         <button class="bg-red-500 hover:bg-red-700 w-full text-white px-4 py-2 rounded-md"
-                on:click={handleBack}>
+                onclick={onback}>
             Recommencer
         </button>
     </div>

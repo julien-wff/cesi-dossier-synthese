@@ -3,7 +3,11 @@
     import GradeCategoryTable from '../components/GradeCategoryTable.svelte';
     import type { Section } from '../types/grades';
 
-    export let content: Section[];
+    interface Props {
+        content: Section[];
+    }
+
+    let { content = $bindable([]) }: Props = $props();
 </script>
 
 
@@ -11,8 +15,8 @@
     <div class="sm:max-w-xl w-full p-2 sm:p-4 bg-indigo-50 sm:shadow-md sm:rounded-md">
         {#each content as { name: group, categories }, i}
             <h1 class="mb-4 text-xl" class:mt-6={i !== 0}>{group}</h1>
-            {#each categories as { name: category, grades }}
-                <GradeCategoryTable category={category} bind:grades={grades}/>
+            {#each categories as { name: category }, i}
+                <GradeCategoryTable category={category} bind:grades={categories[i].grades}/>
             {/each}
         {/each}
     </div>

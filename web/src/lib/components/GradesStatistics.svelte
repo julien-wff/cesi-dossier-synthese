@@ -4,17 +4,20 @@
         calculateCategoriesAverage,
         calculateGradesAverage,
         countLetterWithCoeff,
+        countLetterWithoutCoeff,
         validationLevel,
-        countLetterWithoutCoeff
     } from '$lib/utils/grades';
 
-    export let content: Section[] = [];
+    interface Props {
+        content?: Section[];
+    }
 
-    let gradesAverage: number, categoriesAverage: number, gradesLevel: number | null, categoryLevel: number | null;
-    $: gradesAverage = calculateGradesAverage(content);
-    $: categoriesAverage = calculateCategoriesAverage(content);
-    $: gradesLevel = validationLevel(gradesAverage);
-    $: categoryLevel = validationLevel(categoriesAverage);
+    let { content = $bindable([]) }: Props = $props();
+
+    let gradesAverage = $derived(calculateGradesAverage(content));
+    let categoriesAverage = $derived(calculateCategoriesAverage(content));
+    let gradesLevel = $derived(validationLevel(gradesAverage));
+    let categoryLevel = $derived(validationLevel(categoriesAverage));
 </script>
 
 

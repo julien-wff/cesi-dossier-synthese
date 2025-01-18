@@ -15,16 +15,16 @@
         Error = 'error',
     }
 
-    let state: AppState = AppState.Selection;
-    let grades: Section[];
-    let error: string;
+    let appState = $state<AppState>(AppState.Selection);
+    let grades = $state<Section[]>([]);
+    let error = $state<string | null>(null);
 
-    async function handlePDFSubmit(ev: CustomEvent<FormData>) {
-        state = AppState.Loading;
+    async function handlePDFSubmit(form: FormData) {
+        appState = AppState.Loading;
         try {
             const res = await fetch(PUBLIC_API_ENDPOINT + '/parse', {
                 method: 'POST',
-                body: ev.detail,
+                body: form,
             });
             const content = await res.json();
 
@@ -34,10 +34,10 @@
                 throw new Error('Aucune donnée n\'a été trouvée dans le PDF');
 
             grades = content.data;
-            state = AppState.Display;
+            appState = AppState.Display;
         } catch (e) {
             console.error(e);
-            state = AppState.Error;
+            appState = AppState.Error;
             error = (e as Error).message;
         }
     }
@@ -47,17 +47,17 @@
 <Meta/>
 
 <main>
-    {#if state === AppState.Selection || state === AppState.Loading}
+    {#if appState === AppState.Selection || appState === AppState.Loading}
         <div transition:fade>
-            <Home on:submit={handlePDFSubmit} loading={state === AppState.Loading}/>
+            <Home onsubmit={handlePDFSubmit} loading={appState === AppState.Loading}/>
         </div>
-    {:else if state === AppState.Display}
+    {:else if appState === AppState.Display}
         <div transition:fade>
-            <Grades content={grades}/>
+            <Grades bind:content={grades}/>
         </div>
-    {:else if state === AppState.Error}
+    {:else if appState === AppState.Error && error}
         <div transition:fade>
-            <Failure {error} on:back={() => (state = AppState.Selection)}/>
+            <Failure {error} onback={() => (appState = AppState.Selection)}/>
         </div>
     {/if}
 </main>

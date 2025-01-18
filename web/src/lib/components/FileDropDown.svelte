@@ -1,12 +1,13 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+    interface Props {
+        input: HTMLInputElement | undefined;
+        hidden?: boolean;
+        onchange?: ({ shiftKey }: { shiftKey: boolean }) => void;
+    }
 
-    export let input;
-    export let hidden = false;
+    let { input = $bindable(), hidden = false, onchange }: Props = $props();
 
-    const dispatch = createEventDispatcher();
-
-    let drag = false;
+    let drag = $state(false);
     let shiftKey = false;
 
     function handleDrop(ev: DragEvent) {
@@ -15,7 +16,7 @@
     }
 
     function handleChange() {
-        dispatch('change', { shiftKey });
+        onchange?.({ shiftKey });
         shiftKey = false;
     }
 </script>
@@ -27,10 +28,10 @@
      class:border-indigo-500={drag}>
 
     <input type="file"
-           on:dragenter={() => (drag = true)}
-           on:dragleave={() => (drag = false)}
-           on:drop={handleDrop}
-           on:change={handleChange}
+           ondragenter={() => (drag = true)}
+           ondragleave={() => (drag = false)}
+           ondrop={handleDrop}
+           onchange={handleChange}
            bind:this={input}
            accept="application/pdf"
            class="w-full h-48 opacity-0 cursor-pointer">
