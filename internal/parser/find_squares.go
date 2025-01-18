@@ -133,6 +133,8 @@ func (l *pageLine) continueLeft(inverted bool) *pageLine {
 //   - The square, as a 2D array of pageLines, where the first array is the top line, going clockwise.
 //   - The path, as a 1D array of pageLines, where the first element is the starting line, and the last element is the
 //     line just before.
+//
+// If no square is found, it returns nil.
 func (l *pageLine) getSmallestSquare() ([][]*pageLine, []*pageLine) {
 	path := make([]*pageLine, 0)
 	path = append(path, l)
@@ -156,8 +158,12 @@ func (l *pageLine) getSmallestSquare() ([][]*pageLine, []*pageLine) {
 			direction++
 		}
 
+		if next == nil {
+			return nil, nil
+		}
+
 		// If the circle is closed, or no neighbour was found, break
-		if direction > 4 || next == nil {
+		if direction > 4 {
 			break
 		}
 
@@ -258,6 +264,10 @@ func findPageSquares(lines *PageLines, pageContent *pdfPageContent) *PageSquares
 
 	// Find the starting square, based on the first page line
 	lineSquare, _ := lines.Lines[0].getSmallestSquare()
+	if lineSquare == nil {
+		return &result
+	}
+
 	bottomSquare := newPageSquare(lineSquare)
 	result.Squares = append(result.Squares, []*pageSquare{bottomSquare})
 

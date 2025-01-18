@@ -41,7 +41,7 @@ func (e *APIError) Unwrap() error {
 var (
 	JsonEncodingErrorMessage     = APIErrorMessage{Fr: "Erreur d'encodage JSON", En: "JSON encoding error"}
 	FileTooBigErrorMessage       = APIErrorMessage{Fr: "Fichier trop volumineux", En: "File too big"}
-	InvalidFileErrorMessage      = APIErrorMessage{Fr: "Fichier introuvable dans la requête", En: "File not found in request"}
+	FileNotFoundErrorMessage     = APIErrorMessage{Fr: "Fichier introuvable dans la requête", En: "File not found in request"}
 	TypeAssertionErrorMessage    = APIErrorMessage{Fr: "Impossible de charger le fichier en mémoire", En: "Failed to load file in memory"}
 	PdfReadingErrorMessage       = APIErrorMessage{Fr: "Erreur lors de la lecture du fichier PDF", En: "Error while reading the PDF file"}
 	PdfLineParsingErrorMessage   = APIErrorMessage{Fr: "Erreur lors de l'extraction des lignes du PDF", En: "Error while extracting lines from the PDF"}
@@ -66,8 +66,8 @@ func NewFileTooBigError(err error) *APIError {
 	return NewAPIError("file_too_big", http.StatusRequestEntityTooLarge, FileTooBigErrorMessage, err)
 }
 
-func NewInvalidFileError(err error) *APIError {
-	return NewAPIError("invalid_file", http.StatusBadRequest, InvalidFileErrorMessage, err)
+func NewFileNotFoundError(err error) *APIError {
+	return NewAPIError("invalid_file", http.StatusBadRequest, FileNotFoundErrorMessage, err)
 }
 
 func NewTypeAssertionError() *APIError {
