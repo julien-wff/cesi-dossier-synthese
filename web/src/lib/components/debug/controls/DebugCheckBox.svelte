@@ -1,6 +1,10 @@
 <script lang="ts">
-    export let checked = false;
-    export let label: string;
+    interface Props {
+        checked?: boolean;
+        label: string;
+    }
+
+    let { checked = $bindable(false), label }: Props = $props();
 </script>
 
 <label class="block select-none">
