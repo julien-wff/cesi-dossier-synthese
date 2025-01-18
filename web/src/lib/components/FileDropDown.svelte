@@ -22,10 +22,12 @@
 </script>
 
 
-<div class="border border-gray-400 rounded relative"
+<div class="border border-slate-400 dark:border-slate-400 rounded relative"
      class:hidden
      class:bg-blue-100={drag}
-     class:border-indigo-500={drag}>
+     class:border-indigo-500={drag}
+     class:dark:bg-blue-900={drag}
+     class:dark:border-indigo-500={drag}>
 
     <input type="file"
            ondragenter={() => (drag = true)}
@@ -38,6 +40,6 @@
 
     <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center pointer-events-none">
         <img src="icons/document.svg" alt="Document" class="w-8 h-8">
-        <p class="text-sm text-gray-500">Cliquez ou glissez-déposez le PDF</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Cliquez ou glissez-déposez le PDF</p>
     </div>
 </div>

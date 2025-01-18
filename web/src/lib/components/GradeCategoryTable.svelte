@@ -30,7 +30,7 @@
 </script>
 
 
-<div class="flex flex-col divide-y divide-gray-400 mt-4 rounded bg-indigo-50 shadow border border-gray-400">
+<div class="flex flex-col divide-y divide-gray-400 mt-4 rounded bg-slate-100 dark:bg-slate-800 shadow border border-gray-400">
 
     <div class="flex justify-between">
         <div class="p-1.5">
