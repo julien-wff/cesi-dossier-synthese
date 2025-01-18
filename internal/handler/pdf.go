@@ -24,7 +24,7 @@ func extractPdf(w http.ResponseWriter, r *http.Request) (multipart.File, *apierr
 
 	file, _, err := r.FormFile(pdfFormKey)
 	if err != nil {
-		return nil, apierrors.NewInvalidFileError(err)
+		return nil, apierrors.NewFileNotFoundError(err)
 	}
 
 	return file, nil
