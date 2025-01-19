@@ -16,12 +16,20 @@
     }
 
     let appState = $state<AppState>(AppState.Selection);
+    let selectedFile = $state<File | null>(null);
     let grades = $state<Section[]>([]);
     let error = $state<string | null>(null);
 
-    async function handlePDFSubmit(form: FormData) {
+
+    async function handlePDFSubmit() {
+        if (!selectedFile)
+            return;
+
         appState = AppState.Loading;
         try {
+            const form = new FormData();
+            form.append('file', selectedFile);
+
             const res = await fetch(PUBLIC_API_ENDPOINT + '/parse', {
                 method: 'POST',
                 body: form,
@@ -37,6 +45,8 @@
             appState = AppState.Display;
         } catch (e) {
             console.error(e);
+            selectedFile = null;
+            error = (e as Error).message;
             appState = AppState.Error;
             error = (e as Error).message;
         }
@@ -49,7 +59,7 @@
 <main class="min-h-svh">
     {#if appState === AppState.Selection || appState === AppState.Loading}
         <div transition:fade class="absolute inset-0">
-            <Home onsubmit={handlePDFSubmit} loading={appState === AppState.Loading}/>
+            <Home onsubmit={handlePDFSubmit} loading={appState === AppState.Loading} bind:selectedFile/>
         </div>
     {:else if appState === AppState.Display}
         <div transition:fade>
