@@ -42,6 +42,16 @@
             // Clear the URL
             window.history.replaceState({}, document.title, window.location.pathname);
         }
+
+        // Check if the URL contains an error
+        if (appState === AppState.Selection && urlParams.has('error')) {
+            // Get and apply the error
+            error = JSON.parse(urlParams.get('error')!).message.fr;
+            appState = AppState.Error;
+
+            // Clear the URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
     });
 
     async function handlePDFSubmit() {
