@@ -46,9 +46,9 @@
 
 <Meta/>
 
-<main>
+<main class="min-h-screen">
     {#if appState === AppState.Selection || appState === AppState.Loading}
-        <div transition:fade>
+        <div transition:fade class="absolute inset-0">
             <Home onsubmit={handlePDFSubmit} loading={appState === AppState.Loading}/>
         </div>
     {:else if appState === AppState.Display}
@@ -56,7 +56,7 @@
             <Grades bind:content={grades}/>
         </div>
     {:else if appState === AppState.Error && error}
-        <div transition:fade>
+        <div transition:fade class="absolute inset-0">
             <Failure {error} onback={() => (appState = AppState.Selection)}/>
         </div>
     {/if}
