@@ -21,7 +21,7 @@
 <DebugCheckBox {label} bind:checked/>
 {#if checked}
     <div class="w-full grid grid-cols-[3rem_1fr] gap-2">
-        <input type="number" {min} {max} step="1" bind:value/>
-        <input type="range" {min} {max} step="1" bind:value/>
+        <input type="number" {min} {max} step="1" bind:value class="dark:text-gray-900 px-1"/>
+        <input type="range" {min} {max} step="1" bind:value class="accent-indigo-500"/>
     </div>
 {/if}

@@ -64,7 +64,7 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
 <div class="h-[1px] w-full bg-gray-400 my-2"></div>
 <h2 class="text-lg font-bold mb-2">Global parameters</h2>
 <label class="block select-none">
-    <input type="checkbox" bind:checked={debugColors} class="mr-2"/>
+    <input type="checkbox" bind:checked={debugColors} class="mr-2 accent-indigo-500"/>
     Debug colors
 </label>
 

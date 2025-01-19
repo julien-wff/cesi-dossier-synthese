@@ -8,6 +8,6 @@
 </script>
 
 <label class="block select-none">
-    <input type="checkbox" bind:checked class="mr-2"/>
+    <input type="checkbox" bind:checked class="mr-2 accent-indigo-500"/>
     {label}
 </label>
