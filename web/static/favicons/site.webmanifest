@@ -9,6 +9,14 @@
   "start_url": "/",
   "scope": "/",
   "orientation": "any",
+  "file_handlers": [
+    {
+      "action": "/",
+      "accept": {
+        "application/pdf": [".pdf"]
+      }
+    }
+  ],
   "icons": [
     {
       "src": "/favicons/favicon-96x96.png",

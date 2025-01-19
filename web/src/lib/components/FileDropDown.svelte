@@ -1,14 +1,29 @@
 <script lang="ts">
     interface Props {
-        input: HTMLInputElement | undefined;
+        file: File | null;
         hidden?: boolean;
-        onchange?: ({ shiftKey }: { shiftKey: boolean }) => void;
+        shiftKey?: boolean;
     }
 
-    let { input = $bindable(), hidden = false, onchange }: Props = $props();
+    let { file = $bindable(), hidden = false, shiftKey = $bindable(false) }: Props = $props();
 
+    let inputField = $state<HTMLInputElement>();
     let drag = $state(false);
-    let shiftKey = false;
+
+    const getFieldFile = () => inputField?.files?.[0] ?? null;
+
+    $effect(() => {
+        if (!inputField)
+            return;
+
+        if (file && !getFieldFile()) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            inputField.files = dataTransfer.files;
+        } else if (!file && getFieldFile()) {
+            inputField.value = '';
+        }
+    });
 
     function handleDrop(ev: DragEvent) {
         drag = false;
@@ -16,8 +31,7 @@
     }
 
     function handleChange() {
-        onchange?.({ shiftKey });
-        shiftKey = false;
+        file = getFieldFile();
     }
 </script>
 
@@ -34,7 +48,7 @@
            ondragleave={() => (drag = false)}
            ondrop={handleDrop}
            onchange={handleChange}
-           bind:this={input}
+           bind:this={inputField}
            accept="application/pdf"
            class="w-full h-48 opacity-0 cursor-pointer">
 

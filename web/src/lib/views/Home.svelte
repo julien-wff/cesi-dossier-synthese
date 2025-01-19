@@ -4,45 +4,23 @@
 
     interface Props {
         loading?: boolean;
-        onsubmit?: (formData: FormData) => void;
+        onsubmit?: () => void;
+        selectedFile: File | null;
     }
 
-    let { loading = false, onsubmit }: Props = $props();
+    let { loading = false, onsubmit, selectedFile = $bindable() }: Props = $props();
 
-    let picked = $state(false);
-    let filename: string | null = $state(null);
     let fileInput = $state<HTMLInputElement>();
+    let shiftKey = $state(false);
 
-    function handleFileChange(ev: { shiftKey: boolean }) {
-        if (!fileInput?.files?.length)
-            return;
-
-        filename = fileInput.files[0].name ?? null;
-
-        if (!filename?.toLowerCase().endsWith('.pdf')) {
-            fileInput.value = '';
-            return;
-        }
-
-        picked = true;
-
-        // Submit the form if the user pressed shift while dropping the file
-        if (ev.shiftKey)
-            handleSubmit();
-    }
+    $effect(() => {
+        if (selectedFile && shiftKey)
+            onsubmit?.();
+    });
 
     function handleCancel() {
-        picked = false;
+        selectedFile = null;
         fileInput && (fileInput.value = '');
-    }
-
-    function handleSubmit() {
-        if (!fileInput?.files?.[0])
-            return;
-
-        const formData = new FormData();
-        formData.append('file', fileInput.files[0]);
-        onsubmit?.(formData);
     }
 </script>
 
@@ -56,12 +34,14 @@
 
         <h2 class="text-xl mb-6">Dossier de synthèse CESI</h2>
 
-        <FileDropDown bind:input={fileInput} hidden={picked} onchange={handleFileChange}/>
+        <FileDropDown bind:file={selectedFile} hidden={!!selectedFile} bind:shiftKey/>
 
-        {#if picked}
+        {#if selectedFile}
             <div class="flex items-center justify-start gap-2 mb-6">
                 <img src="icons/document.svg" alt="document" class="w-6 h-6">
-                <p class="truncate max-w-full" title={filename}>{filename || 'Fichier PDF inconnu'}</p>
+                <p class="truncate max-w-full" title={selectedFile.name}>
+                    {selectedFile.name || 'Fichier PDF inconnu'}
+                </p>
             </div>
 
             <div class="flex gap-4">
@@ -71,7 +51,7 @@
                 </button>
 
                 <button class="bg-indigo-500 hover:bg-indigo-700 text-white rounded-md px-4 py-2 flex-1"
-                        onclick={handleSubmit}>
+                        onclick={onsubmit}>
                     Envoyer
                 </button>
             </div>

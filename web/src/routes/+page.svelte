@@ -7,6 +7,7 @@
     import { fade } from 'svelte/transition';
     import type { Section } from '$lib/types/grades';
     import { PUBLIC_API_ENDPOINT } from '$env/static/public';
+    import { onMount } from 'svelte';
 
     enum AppState {
         Selection = 'selection',
@@ -16,12 +17,31 @@
     }
 
     let appState = $state<AppState>(AppState.Selection);
+    let selectedFile = $state<File | null>(null);
     let grades = $state<Section[]>([]);
     let error = $state<string | null>(null);
 
-    async function handlePDFSubmit(form: FormData) {
+    onMount(() => {
+        // Handle file_handler from PWA webmanifest
+        if ("launchQueue" in window && window.launchQueue) {
+            window.launchQueue.setConsumer(async (launchParams) => {
+                for (const fileHandler of launchParams.files) {
+                    selectedFile = await fileHandler.getFile();
+                    await handlePDFSubmit();
+                }
+            });
+        }
+    })
+
+    async function handlePDFSubmit() {
+        if (!selectedFile)
+            return;
+
         appState = AppState.Loading;
         try {
+            const form = new FormData();
+            form.append('file', selectedFile);
+
             const res = await fetch(PUBLIC_API_ENDPOINT + '/parse', {
                 method: 'POST',
                 body: form,
@@ -37,8 +57,9 @@
             appState = AppState.Display;
         } catch (e) {
             console.error(e);
-            appState = AppState.Error;
+            selectedFile = null;
             error = (e as Error).message;
+            appState = AppState.Error;
         }
     }
 </script>
@@ -49,7 +70,7 @@
 <main class="min-h-svh">
     {#if appState === AppState.Selection || appState === AppState.Loading}
         <div transition:fade class="absolute inset-0">
-            <Home onsubmit={handlePDFSubmit} loading={appState === AppState.Loading}/>
+            <Home onsubmit={handlePDFSubmit} loading={appState === AppState.Loading} bind:selectedFile/>
         </div>
     {:else if appState === AppState.Display}
         <div transition:fade>
