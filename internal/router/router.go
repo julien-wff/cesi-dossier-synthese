@@ -16,6 +16,7 @@ func NewRouter(config *utils.AppConfig) http.Handler {
 	// Parsing
 	r.HandleFunc("POST /api/parse/debug", handler.ParsePdfDebugHandler)
 	r.HandleFunc("POST /api/parse", handler.ParsePdfHandler)
+	r.HandleFunc("POST /api/share", handler.ParseSharePdfHandler)
 
 	// Static files
 	if config.Production {
