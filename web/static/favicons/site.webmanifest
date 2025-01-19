@@ -37,5 +37,21 @@
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Visualisation et l'édition des notes sur PC"
+    },
+    {
+        "src": "/screenshots/mobile.webp",
+        "sizes": "720x1430",
+        "type": "image/webp",
+        "form_factor": "narrow",
+        "label": "Visualisation et l'édition des notes sur mobile, mode sombre"
+    }
   ]
 }

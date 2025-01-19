@@ -10,9 +10,18 @@ const sw = self as unknown as ServiceWorkerGlobalScope;
 // Create a unique cache name for this deployment
 const CACHE = `cache-${version}`;
 
+/**
+ * Filter out URLs that should not be cached
+ * @param url The URL to check
+ * @returns `true` if the URL should be cached, `false` otherwise
+ */
+function cacheFilter(url: string): boolean {
+    return !url.startsWith('/screenshots/') && url !== '/opengraph.png';
+}
+
 const ASSETS = [
     ...build, // the app itself
-    ...files,  // everything in `static`
+    ...files.filter(cacheFilter),  // everything in `static`
 ];
 
 
