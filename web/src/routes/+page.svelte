@@ -7,6 +7,7 @@
     import { fade } from 'svelte/transition';
     import type { Section } from '$lib/types/grades';
     import { PUBLIC_API_ENDPOINT } from '$env/static/public';
+    import { onMount } from 'svelte';
 
     enum AppState {
         Selection = 'selection',
@@ -20,6 +21,17 @@
     let grades = $state<Section[]>([]);
     let error = $state<string | null>(null);
 
+    onMount(() => {
+        // Handle file_handler from PWA webmanifest
+        if ("launchQueue" in window && window.launchQueue) {
+            window.launchQueue.setConsumer(async (launchParams) => {
+                for (const fileHandler of launchParams.files) {
+                    selectedFile = await fileHandler.getFile();
+                    await handlePDFSubmit();
+                }
+            });
+        }
+    })
 
     async function handlePDFSubmit() {
         if (!selectedFile)
@@ -48,7 +60,6 @@
             selectedFile = null;
             error = (e as Error).message;
             appState = AppState.Error;
-            error = (e as Error).message;
         }
     }
 </script>
