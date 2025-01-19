@@ -40,7 +40,6 @@ func handleParsingPanic(w http.ResponseWriter) {
 		fmt.Printf("Recovered from panic: %v\n", r)
 		debug.PrintStack()
 	}
-
 }
 
 // ParsePdfDebugHandler handles the parsing of the request PDF file, and returns debug information about all

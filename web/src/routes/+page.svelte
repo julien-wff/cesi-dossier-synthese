@@ -23,7 +23,7 @@
 
     onMount(() => {
         // Handle file_handler from PWA webmanifest
-        if ("launchQueue" in window && window.launchQueue) {
+        if ('launchQueue' in window && window.launchQueue) {
             window.launchQueue.setConsumer(async (launchParams) => {
                 for (const fileHandler of launchParams.files) {
                     selectedFile = await fileHandler.getFile();
@@ -31,7 +31,28 @@
                 }
             });
         }
-    })
+
+        // Check if the URL contains a parsing result
+        const urlParams = new URLSearchParams(window.location.search);
+        if (appState === AppState.Selection && urlParams.has('result')) {
+            // Get and apply the result
+            grades = JSON.parse(urlParams.get('result')!).data;
+            appState = AppState.Display;
+
+            // Clear the URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // Check if the URL contains an error
+        if (appState === AppState.Selection && urlParams.has('error')) {
+            // Get and apply the error
+            error = JSON.parse(urlParams.get('error')!).message.fr;
+            appState = AppState.Error;
+
+            // Clear the URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    });
 
     async function handlePDFSubmit() {
         if (!selectedFile)

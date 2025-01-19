@@ -18,6 +18,20 @@
       }
     }
   ],
+  "share_target": {
+    "action": "/api/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "Visualiser",
+      "files": [
+        {
+          "name": "file",
+          "accept": ["application/pdf", ".pdf"]
+        }
+      ]
+    }
+  },
   "icons": [
     {
       "src": "/favicons/favicon-96x96.png",
