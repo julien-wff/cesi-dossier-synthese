@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "Dossier de synthèse CESI",
   "short_name": "Dossier CESI",
   "description": "Outil pour visualiser et tester les notes de son dossier de synthèse CESI",
@@ -21,7 +22,8 @@
     {
       "src": "/favicons/favicon-96x96.png",
       "sizes": "96x96",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/favicons/maskable_icon_x192.png",
@@ -32,12 +34,14 @@
     {
       "src": "/favicons/favicon.svg",
       "sizes": "256x256",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
       "src": "/favicons/favicon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/favicons/maskable_icon_x512.png",
