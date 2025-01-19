@@ -47,7 +47,7 @@
 </script>
 
 
-<div class="w-full min-h-screen grid place-items-center">
+<div class="w-full min-h-svh grid place-items-center">
     <div class="bg-slate-100 dark:bg-slate-700 p-8 rounded-md shadow-md w-96 relative">
         {#if loading}
             <div class="absolute inset-0 bg-black bg-opacity-20 dark:bg-opacity-40 rounded-md cursor-progress z-10"

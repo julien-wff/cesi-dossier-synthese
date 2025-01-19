@@ -8,7 +8,7 @@
 </script>
 
 
-<div class="h-screen grid place-items-center">
+<div class="min-h-svh grid place-items-center">
     <div class="bg-slate-100 dark:bg-slate-700 p-8 rounded-md shadow-md w-96">
         <h1 class="text-xl mb-6">Oh non ! Une erreur est survenue :(</h1>
         <p class="mb-6">{error}</p>

@@ -46,7 +46,7 @@
 
 <Meta/>
 
-<main class="min-h-screen">
+<main class="min-h-svh">
     {#if appState === AppState.Selection || appState === AppState.Loading}
         <div transition:fade class="absolute inset-0">
             <Home onsubmit={handlePDFSubmit} loading={appState === AppState.Loading}/>
