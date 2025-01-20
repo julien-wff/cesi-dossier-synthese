@@ -1,6 +1,9 @@
 <script lang="ts">
-    import FileDropDown from '../components/FileDropDown.svelte';
-    import { fade } from 'svelte/transition';
+    import FileDropDown from '$lib/components/FileDropDown.svelte';
+    import AdvantageCard from '$lib/components/landing/AdvantageCard.svelte';
+    import Gauge from 'lucide-svelte/icons/gauge';
+    import MousePointerClick from 'lucide-svelte/icons/mouse-pointer-click';
+    import ShieldCheck from 'lucide-svelte/icons/shield-check';
 
     interface Props {
         loading?: boolean;
@@ -25,36 +28,27 @@
 </script>
 
 
-<div class="w-full min-h-svh grid place-items-center">
-    <div class="bg-slate-100 dark:bg-slate-700 p-8 rounded-md shadow-md w-96 relative">
-        {#if loading}
-            <div class="absolute inset-0 bg-black bg-opacity-20 dark:bg-opacity-40 rounded-md cursor-progress z-10"
-                 transition:fade></div>
-        {/if}
-
-        <h2 class="text-xl mb-6">Dossier de synthèse CESI</h2>
+<div class="flex flex-col items-center justify-center min-h-svh p-2 lg:p-4 lg:pb-8">
+    <div class="w-full max-w-[64rem] flex-1 flex flex-col lg:flex-row justify-center lg:justify-between items-center gap-6">
+        <h1 class="text-4xl lg:text-5xl font-bold text-center lg:text-left">
+            Un outil pour visualiser ton <br class="hidden lg:inline"/>
+            <span class="text-blue-500 dark:text-blue-400">dossier de synthèse</span>
+            CESI
+        </h1>
 
         <FileDropDown bind:file={selectedFile} hidden={!!selectedFile} bind:shiftKey/>
+    </div>
 
-        {#if selectedFile}
-            <div class="flex items-center justify-start gap-2 mb-6">
-                <img src="icons/document.svg" alt="document" class="w-6 h-6">
-                <p class="truncate max-w-full" title={selectedFile.name}>
-                    {selectedFile.name || 'Fichier PDF inconnu'}
-                </p>
-            </div>
-
-            <div class="flex gap-4">
-                <button class="bg-red-500 hover:bg-red-700 text-white rounded-md px-4 py-2 flex-1"
-                        onclick={handleCancel}>
-                    Annuler
-                </button>
-
-                <button class="bg-indigo-500 hover:bg-indigo-700 text-white rounded-md px-4 py-2 flex-1"
-                        onclick={onsubmit}>
-                    Envoyer
-                </button>
-            </div>
-        {/if}
+    <div class="w-full max-w-[64rem] flex flex-col lg:flex-row gap-2 sm:gap-4 lg:gap-8">
+        <AdvantageCard title="Pratique"
+                       description="Upload to dossier en deux clics, et voilà !"
+                       icon={Gauge}/>
+        <AdvantageCard title="Intéractif"
+                       description="Modifie tes notes et voit les résultats en direct"
+                       icon={MousePointerClick}/>
+        <AdvantageCard title="Sécurisé"
+                       description="Aucun PDF n'est conservé, projet open-source"
+                       icon={ShieldCheck}
+                       href="https://github.com/julien-wff/cesi-dossier-synthese"/>
     </div>
 </div>
