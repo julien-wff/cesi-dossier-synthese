@@ -1,5 +1,5 @@
 <script lang="ts">
-    import FileDropDown from '$lib/components/FileDropDown.svelte';
+    import FileDropDown from '$lib/components/landing/FileDropDown.svelte';
     import AdvantageCard from '$lib/components/landing/AdvantageCard.svelte';
     import Gauge from 'lucide-svelte/icons/gauge';
     import MousePointerClick from 'lucide-svelte/icons/mouse-pointer-click';
