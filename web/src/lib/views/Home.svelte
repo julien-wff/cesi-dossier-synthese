@@ -4,19 +4,6 @@
     import Gauge from 'lucide-svelte/icons/gauge';
     import MousePointerClick from 'lucide-svelte/icons/mouse-pointer-click';
     import ShieldCheck from 'lucide-svelte/icons/shield-check';
-
-    interface Props {
-        loading?: boolean;
-        onsubmit?: () => void;
-        selectedFile: File | null;
-    }
-
-    let { loading = false, onsubmit, selectedFile = $bindable() }: Props = $props();
-
-    $effect(() => {
-        if (selectedFile)
-            onsubmit?.();
-    });
 </script>
 
 
@@ -28,7 +15,7 @@
             CESI
         </h1>
 
-        <FileDropDown bind:file={selectedFile} {loading}/>
+        <FileDropDown/>
     </div>
 
     <div class="w-full max-w-[64rem] flex flex-col lg:flex-row gap-2 sm:gap-4 lg:gap-8">

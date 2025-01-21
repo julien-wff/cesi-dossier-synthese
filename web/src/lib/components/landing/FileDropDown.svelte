@@ -1,12 +1,6 @@
 <script lang="ts">
     import FileText from 'lucide-svelte/icons/file-text';
-
-    interface Props {
-        file: File | null;
-        loading?: boolean;
-    }
-
-    let { file = $bindable(), loading = false }: Props = $props();
+    import { appState, State } from '$lib/state/app.svelte.js';
 
     let inputField = $state<HTMLInputElement>();
     let drag = $state(false);
@@ -17,17 +11,17 @@
         if (!inputField)
             return;
 
-        if (file && !getFieldFile()) {
+        if (appState.file && !getFieldFile()) {
             const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
+            dataTransfer.items.add(appState.file);
             inputField.files = dataTransfer.files;
-        } else if (!file && getFieldFile()) {
+        } else if (!appState.file && getFieldFile()) {
             inputField.value = '';
         }
     });
 
     function handleChange() {
-        file = getFieldFile();
+        appState.file = getFieldFile();
     }
 </script>
 
@@ -44,8 +38,8 @@
            ondrop={() => (drag = false)}
            onchange={handleChange}
            bind:this={inputField}
-           disabled={loading}
-           class:cursor-progress={loading}
+           disabled={appState.state === State.Loading}
+           class:cursor-progress={appState.state === State.Loading}
            accept="application/pdf"
            class="w-80 h-48 opacity-0 cursor-pointer">
 
