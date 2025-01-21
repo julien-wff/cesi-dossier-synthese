@@ -88,7 +88,7 @@
 
 <Meta/>
 
-<main class="min-h-svh">
+<main class="min-h-svh" class:cursor-progress={appState === AppState.Loading}>
     {#if appState === AppState.Selection || appState === AppState.Loading}
         <div transition:fade class="absolute inset-0">
             <Home onsubmit={handlePDFSubmit} loading={appState === AppState.Loading} bind:selectedFile/>

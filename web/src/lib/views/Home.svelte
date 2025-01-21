@@ -13,18 +13,10 @@
 
     let { loading = false, onsubmit, selectedFile = $bindable() }: Props = $props();
 
-    let fileInput = $state<HTMLInputElement>();
-    let shiftKey = $state(false);
-
     $effect(() => {
-        if (selectedFile && shiftKey)
+        if (selectedFile)
             onsubmit?.();
     });
-
-    function handleCancel() {
-        selectedFile = null;
-        fileInput && (fileInput.value = '');
-    }
 </script>
 
 
@@ -36,7 +28,7 @@
             CESI
         </h1>
 
-        <FileDropDown bind:file={selectedFile} hidden={!!selectedFile} bind:shiftKey/>
+        <FileDropDown bind:file={selectedFile} {loading}/>
     </div>
 
     <div class="w-full max-w-[64rem] flex flex-col lg:flex-row gap-2 sm:gap-4 lg:gap-8">

@@ -3,11 +3,10 @@
 
     interface Props {
         file: File | null;
-        hidden?: boolean;
-        shiftKey?: boolean;
+        loading?: boolean;
     }
 
-    let { file = $bindable(), hidden = false, shiftKey = $bindable(false) }: Props = $props();
+    let { file = $bindable(), loading = false }: Props = $props();
 
     let inputField = $state<HTMLInputElement>();
     let drag = $state(false);
@@ -27,28 +26,26 @@
         }
     });
 
-    function handleDrop(ev: DragEvent) {
-        drag = false;
-        shiftKey = ev.shiftKey;
-    }
-
     function handleChange() {
         file = getFieldFile();
     }
 </script>
 
 
-<div class="border-4 border-blue-500 dark:border-blue-400 rounded-2xl relative bg-slate-100 dark:bg-transparent shadow-lg"
-     class:hidden
+<div class="border-4 border-blue-500 dark:border-blue-400 rounded-2xl relative shadow-lg transition-colors"
+     class:bg-slate-100={!drag}
+     class:dark:bg-transparent={!drag}
      class:bg-blue-100={drag}
      class:dark:bg-blue-900={drag}>
 
     <input type="file"
            ondragenter={() => (drag = true)}
            ondragleave={() => (drag = false)}
-           ondrop={handleDrop}
+           ondrop={() => (drag = false)}
            onchange={handleChange}
            bind:this={inputField}
+           disabled={loading}
+           class:cursor-progress={loading}
            accept="application/pdf"
            class="w-80 h-48 opacity-0 cursor-pointer">
 
