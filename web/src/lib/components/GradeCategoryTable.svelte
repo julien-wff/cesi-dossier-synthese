@@ -3,6 +3,7 @@
     import type { Grade, Letter } from '../types/grades';
     import { calculateAverage, gradesWithCoefficientToList, validationLevel } from '../utils/grades';
     import GradeSelector from './GradeSelector.svelte';
+    import Undo from 'lucide-svelte/icons/undo-2';
 
     interface Props {
         category: string;
@@ -36,12 +37,9 @@
         <div class="p-1.5">
             {category}
         </div>
-        <img src="icons/refresh.svg"
-             alt="*"
-             class="w-9 h-9 cursor-pointer p-1.5"
-             aria-hidden={!gradesChanged}
-             class:hidden={!gradesChanged}
-             onclick={handleGradesRevert}/>
+        <Undo class="w-9 h-9 cursor-pointer p-1.5 {!gradesChanged ? 'hidden' : ''}"
+              aria-hidden={!gradesChanged}
+              onclick={handleGradesRevert}/>
     </div>
 
     <div class="flex divide-x divide-gray-400">

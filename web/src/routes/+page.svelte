@@ -5,28 +5,16 @@
     import Grades from '$lib/views/Grades.svelte';
     import Home from '$lib/views/Home.svelte';
     import { fade } from 'svelte/transition';
-    import type { Section } from '$lib/types/grades';
     import { PUBLIC_API_ENDPOINT } from '$env/static/public';
     import { onMount } from 'svelte';
-
-    enum AppState {
-        Selection = 'selection',
-        Loading = 'loading',
-        Display = 'display',
-        Error = 'error',
-    }
-
-    let appState = $state<AppState>(AppState.Selection);
-    let selectedFile = $state<File | null>(null);
-    let grades = $state<Section[]>([]);
-    let error = $state<string | null>(null);
+    import { appState, State } from '$lib/state/app.svelte.js';
 
     onMount(() => {
         // Handle file_handler from PWA webmanifest
         if ('launchQueue' in window && window.launchQueue) {
             window.launchQueue.setConsumer(async (launchParams) => {
                 for (const fileHandler of launchParams.files) {
-                    selectedFile = await fileHandler.getFile();
+                    appState.file = await fileHandler.getFile();
                     await handlePDFSubmit();
                 }
             });
@@ -34,34 +22,39 @@
 
         // Check if the URL contains a parsing result
         const urlParams = new URLSearchParams(window.location.search);
-        if (appState === AppState.Selection && urlParams.has('result')) {
+        if (appState.state === State.Selection && urlParams.has('result')) {
             // Get and apply the result
-            grades = JSON.parse(urlParams.get('result')!).data;
-            appState = AppState.Display;
+            appState.grades = JSON.parse(urlParams.get('result')!).data;
+            appState.state = State.Display;
 
             // Clear the URL
             window.history.replaceState({}, document.title, window.location.pathname);
         }
 
         // Check if the URL contains an error
-        if (appState === AppState.Selection && urlParams.has('error')) {
+        if (appState.state === State.Selection && urlParams.has('error')) {
             // Get and apply the error
-            error = JSON.parse(urlParams.get('error')!).message.fr;
-            appState = AppState.Error;
+            appState.error = JSON.parse(urlParams.get('error')!).message.fr;
+            appState.state = State.Error;
 
             // Clear the URL
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     });
 
+    $effect(() => {
+        if (appState.file && !appState.grades.length)
+            handlePDFSubmit();
+    });
+
     async function handlePDFSubmit() {
-        if (!selectedFile)
+        if (!appState.file)
             return;
 
-        appState = AppState.Loading;
+        appState.state = State.Loading;
         try {
             const form = new FormData();
-            form.append('file', selectedFile);
+            form.append('file', appState.file);
 
             const res = await fetch(PUBLIC_API_ENDPOINT + '/parse', {
                 method: 'POST',
@@ -74,13 +67,13 @@
             if (!('data' in content))
                 throw new Error('Aucune donnée n\'a été trouvée dans le PDF');
 
-            grades = content.data;
-            appState = AppState.Display;
+            appState.grades = content.data;
+            appState.state = State.Display;
         } catch (e) {
             console.error(e);
-            selectedFile = null;
-            error = (e as Error).message;
-            appState = AppState.Error;
+            appState.file = null;
+            appState.error = (e as Error).message;
+            appState.state = State.Error;
         }
     }
 </script>
@@ -88,18 +81,18 @@
 
 <Meta/>
 
-<main class="min-h-svh">
-    {#if appState === AppState.Selection || appState === AppState.Loading}
+<main class="min-h-svh" class:cursor-progress={appState.state === State.Loading}>
+    {#if appState.state === State.Selection || appState.state === State.Loading}
         <div transition:fade class="absolute inset-0">
-            <Home onsubmit={handlePDFSubmit} loading={appState === AppState.Loading} bind:selectedFile/>
+            <Home/>
         </div>
-    {:else if appState === AppState.Display}
+    {:else if appState.state === State.Display}
         <div transition:fade>
-            <Grades bind:content={grades}/>
+            <Grades/>
         </div>
-    {:else if appState === AppState.Error && error}
+    {:else if appState.state === State.Error}
         <div transition:fade class="absolute inset-0">
-            <Failure {error} onback={() => (appState = AppState.Selection)}/>
+            <Failure/>
         </div>
     {/if}
 </main>
