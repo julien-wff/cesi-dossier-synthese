@@ -77,7 +77,7 @@
                    onchange={handlePDFSubmit}
                    bind:this={fileInput}>
             <button type="submit"
-                    class="w-full bg-indigo-500 text-white py-1 mt-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="w-full bg-indigo-500 text-white py-1 mt-2 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={loading}>
                 Parse PDF
             </button>

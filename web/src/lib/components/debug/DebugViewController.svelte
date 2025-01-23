@@ -72,7 +72,7 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
 <h2 class="text-lg font-bold mb-2">Page view</h2>
 <div class="grid grid-cols-2 gap-2">
     {#each data.pages as { page: pageNumber }}
-        <button class="aspect-square grid place-content-center rounded border-2 cursor-pointer mb-4"
+        <button class="aspect-square grid place-content-center rounded-sm border-2 cursor-pointer mb-4"
                 class:border-indigo-400={mode === DrawMode.Page && pageNumber === page}
                 onclick={() => handleViewClick(pageNumber, DrawMode.Page)}>
             <DebugPdfViewer margin={0} {data} page={pageNumber} mode={DrawMode.Page} {debugColors}/>
@@ -129,7 +129,7 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
 <h2 class="text-lg font-bold mb-2">Lines view</h2>
 <div class="grid grid-cols-2 gap-2">
     {#each data.lines as { page: pageNumber }}
-        <button class="aspect-square grid place-content-center rounded border-2 cursor-pointer"
+        <button class="aspect-square grid place-content-center rounded-sm border-2 cursor-pointer"
                 class:border-indigo-400={mode === DrawMode.Line && pageNumber === page}
                 onclick={() => handleViewClick(pageNumber, DrawMode.Line)}>
             <DebugPdfViewer margin={0} {data} page={pageNumber} mode={DrawMode.Line} {debugColors}/>
@@ -162,7 +162,7 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
 <h2 class="text-lg font-bold mb-2">Squares view</h2>
 <div class="grid grid-cols-2 gap-2">
     {#each data.squares as { page: pageNumber }}
-        <button class="aspect-square grid place-content-center rounded border-2 cursor-pointer"
+        <button class="aspect-square grid place-content-center rounded-sm border-2 cursor-pointer"
                 class:border-indigo-400={mode === DrawMode.Square && pageNumber === page}
                 onclick={() => handleViewClick(pageNumber, DrawMode.Square)}>
             <DebugPdfViewer margin={0} {data} page={pageNumber} mode={DrawMode.Square} {debugColors}/>

@@ -23,7 +23,7 @@
 
 <h1 class="text-xl mb-4">Moyennes</h1>
 
-<div class="grid grid-cols-[1fr_auto] border border-gray-400 shadow rounded">
+<div class="grid grid-cols-[1fr_auto] border border-gray-400 shadow-sm rounded-sm">
     <p class="p-1.5 border-gray-400 border-b border-r">
         Moyenne des notes
     </p>
@@ -46,7 +46,7 @@
 
 <h1 class="text-xl mt-6 mb-4">Lettres</h1>
 
-<div class="flex border border-gray-400 w-fit shadow rounded divide-x divide-gray-400">
+<div class="flex border border-gray-400 w-fit shadow-sm rounded-sm divide-x divide-gray-400">
     <div class="flex flex-col divide-y divide-gray-400">
         <div class="p-1.5 text-center">Lettre</div>
         <div class="p-1.5 text-center text-white bg-blue-500">A</div>
