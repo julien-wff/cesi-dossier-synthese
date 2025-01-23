@@ -60,6 +60,10 @@
                 method: 'POST',
                 body: form,
             });
+
+            if (res.status == 429)
+                throw new Error('Trop de requêtes, réessaye d\'ici quelques minutes');
+
             const content = await res.json();
 
             if (!res.ok)
