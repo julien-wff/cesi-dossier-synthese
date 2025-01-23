@@ -13,6 +13,8 @@ func main() {
 	cfg := utils.GetAppConfig()
 
 	r := router.NewRouter(cfg)
+	r = handlers.ProxyHeaders(r)
+	r = handlers.CombinedLoggingHandler(os.Stdout, r)
 
 	if cfg.Production {
 		fmt.Println("Starting production server on port", cfg.Port)
