@@ -77,7 +77,7 @@ func LogParseTelemetry(req *http.Request, timings *ProcessTiming, error *APIErro
 
 	return appendLog(parseTelemetry{
 		Success:         error == nil,
-		Timestamp:       time.Now().Format(time.UnixDate),
+		Timestamp:       time.Now().Format(time.DateTime),
 		ClientIP:        clientIp,
 		Source:          req.URL.Path,
 		ContentLengthKB: req.ContentLength / 1e3,
