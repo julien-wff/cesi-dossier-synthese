@@ -19,7 +19,7 @@ func NewRouter(config *utils.AppConfig) http.Handler {
 	r.HandleFunc("POST /api/share", utils.RateLimitMiddlewareFunc(handler.ParseSharePdfHandler))
 
 	// Telemetry
-	r.HandleFunc("GET /api/telemetry", handler.GetTelemetryHandler)
+	r.HandleFunc("GET /api/telemetry", handler.GetTelemetryHandler(config))
 
 	// Static files
 	if config.Production {

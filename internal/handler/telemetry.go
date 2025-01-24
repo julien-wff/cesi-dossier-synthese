@@ -5,34 +5,46 @@ import (
 	"net/http"
 )
 
-// GetTelemetryHandler returns the telemetry logs as JSON
-func GetTelemetryHandler(w http.ResponseWriter, _ *http.Request) {
-	telemetry, err := utils.ReadTelemetry()
-	w.Header().Set("Content-Type", "application/json")
+// GetTelemetryHandler returns the telemetry logs as JSON. Needs basic auth.
+func GetTelemetryHandler(config *utils.AppConfig) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
 
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		_, _ = w.Write([]byte("{\"error\":\"error while reading log file\"}"))
-		return
-	}
-
-	start := []byte("{\"error\":null,\"data\":[")
-	end := []byte("]}")
-
-	// Replace line breaks with commas
-	for i, b := range *telemetry {
-		if b == '\n' {
-			(*telemetry)[i] = ','
+		// Check basic auth
+		user, password, ok := r.BasicAuth()
+		if !ok || user != config.TelemetryUser || password != config.TelemetryPassword {
+			w.Header().Set("WWW-Authenticate", `Basic realm="Telemetry"`)
+			w.WriteHeader(http.StatusUnauthorized)
+			_, _ = w.Write([]byte("{\"error\":\"unauthorized\"}"))
+			return
 		}
+
+		// Read telemetry logs
+		telemetry, err := utils.ReadTelemetry()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte("{\"error\":\"error while reading log file\"}"))
+			return
+		}
+
+		// Replace line breaks with commas
+		for i, b := range *telemetry {
+			if b == '\n' {
+				(*telemetry)[i] = ','
+			}
+		}
+
+		// Strip last comma
+		if (*telemetry)[len(*telemetry)-1] == ',' {
+			*telemetry = (*telemetry)[:len(*telemetry)-1]
+		}
+
+		// Assemble final JSON
+		start := []byte("{\"error\":null,\"data\":[")
+		end := []byte("]}")
+		*telemetry = append(start, append(*telemetry, end...)...)
+
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(*telemetry)
 	}
-
-	// Strip last comma
-	if (*telemetry)[len(*telemetry)-1] == ',' {
-		*telemetry = (*telemetry)[:len(*telemetry)-1]
-	}
-
-	*telemetry = append(start, append(*telemetry, end...)...)
-
-	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write(*telemetry)
 }
