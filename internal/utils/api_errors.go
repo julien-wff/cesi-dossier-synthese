@@ -26,10 +26,11 @@ func (e *APIError) Error() string {
 }
 
 // Write writes the error to the response writer as a JSON object
-func (e *APIError) Write(w http.ResponseWriter) {
+func (e *APIError) Write(r *http.Request, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(e.Status)
 	_ = json.NewEncoder(w).Encode(e)
+	_ = LogParseTelemetry(r, nil, e)
 }
 
 // Unwrap returns the wrapped error

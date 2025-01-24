@@ -34,9 +34,9 @@ func extractPdf(w http.ResponseWriter, r *http.Request) (multipart.File, *utils.
 
 // handleParsingPanic handles panics that may occur during the parsing process.
 // It writes a GradesExtractionError to the response writer, and prints the stack trace.
-func handleParsingPanic(w http.ResponseWriter) {
+func handleParsingPanic(req *http.Request, w http.ResponseWriter) {
 	if r := recover(); r != nil {
-		utils.NewGradesExtractionError("parsing error").Write(w)
+		utils.NewGradesExtractionError("parsing error").Write(req, w)
 		fmt.Printf("Recovered from panic: %v\n", r)
 		debug.PrintStack()
 	}
@@ -46,12 +46,12 @@ func handleParsingPanic(w http.ResponseWriter) {
 // the steps of the parsing process as JSON
 func ParsePdfDebugHandler(w http.ResponseWriter, r *http.Request) {
 	// Handle panics
-	defer handleParsingPanic(w)
+	defer handleParsingPanic(r, w)
 
 	// Extract PDF file from request
 	file, err := extractPdf(w, r)
 	if err != nil {
-		err.Write(w)
+		err.Write(r, w)
 		return
 	}
 
@@ -62,14 +62,14 @@ func ParsePdfDebugHandler(w http.ResponseWriter, r *http.Request) {
 	// Type assertion to convert multipart.File to io.ReadSeeker
 	readSeeker, ok := file.(io.ReadSeeker)
 	if !ok {
-		utils.NewTypeAssertionError().Write(w)
+		utils.NewTypeAssertionError().Write(r, w)
 		return
 	}
 
 	// Parse PDF file
 	result, pt, err := parser.ParsePdfDebug(&readSeeker)
 	if err != nil {
-		err.Write(w)
+		err.Write(r, w)
 		return
 	}
 
@@ -79,18 +79,21 @@ func ParsePdfDebugHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Write response body as JSON
 	if err := json.NewEncoder(w).Encode(result); err != nil {
-		utils.NewJsonEncoderError(err).Write(w)
+		utils.NewJsonEncoderError(err).Write(r, w)
 	}
+
+	// Log to stats
+	_ = utils.LogParseTelemetry(r, pt, nil)
 }
 
 func ParsePdfHandler(w http.ResponseWriter, r *http.Request) {
 	// Handle panic
-	defer handleParsingPanic(w)
+	defer handleParsingPanic(r, w)
 
 	// Extract PDF file from request
 	file, err := extractPdf(w, r)
 	if err != nil {
-		err.Write(w)
+		err.Write(r, w)
 		return
 	}
 
@@ -101,14 +104,14 @@ func ParsePdfHandler(w http.ResponseWriter, r *http.Request) {
 	// Type assertion to convert multipart.File to io.ReadSeeker
 	readSeeker, ok := file.(io.ReadSeeker)
 	if !ok {
-		utils.NewTypeAssertionError().Write(w)
+		utils.NewTypeAssertionError().Write(r, w)
 		return
 	}
 
 	// Parse PDF file
 	result, pt, err := parser.ParsePdf(&readSeeker)
 	if err != nil {
-		err.Write(w)
+		err.Write(r, w)
 		return
 	}
 
@@ -118,6 +121,9 @@ func ParsePdfHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Write response body as JSON
 	if err := json.NewEncoder(w).Encode(result); err != nil {
-		utils.NewJsonEncoderError(err).Write(w)
+		utils.NewJsonEncoderError(err).Write(r, w)
 	}
+
+	// Log to stats
+	_ = utils.LogParseTelemetry(r, pt, nil)
 }

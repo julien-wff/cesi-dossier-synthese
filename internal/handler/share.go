@@ -12,6 +12,7 @@ import (
 func redirectWithError(w http.ResponseWriter, r *http.Request, err *utils.APIError) {
 	jsonErr, _ := json.Marshal(err)
 	http.Redirect(w, r, "/?error="+url.QueryEscape(string(jsonErr)), http.StatusSeeOther)
+	_ = utils.LogParseTelemetry(r, nil, err)
 }
 
 func ParseSharePdfHandler(w http.ResponseWriter, r *http.Request) {
@@ -62,4 +63,7 @@ func ParseSharePdfHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Redirect to the root URL with the JSON result as a query parameter
 	http.Redirect(w, r, "/?result="+string(encodedJsonResult), http.StatusSeeOther)
+
+	// Log to stats
+	_ = utils.LogParseTelemetry(r, pt, nil)
 }
