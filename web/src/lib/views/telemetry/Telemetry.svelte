@@ -9,6 +9,18 @@
         telemetryState.telemetry.filter(t => isAWeekOld(t.timestamp)).length,
     );
 
+    let uniqueUsers = $derived(
+        telemetryState.telemetry
+            .map(t => t.clientIP)
+            .filter((value, index, self) => self.indexOf(value) === index).length,
+    );
+    let uniqueUsersOverLastWeek = $derived(
+        telemetryState.telemetry
+            .filter(t => isAWeekOld(t.timestamp))
+            .map(t => t.clientIP)
+            .filter((value, index, self) => self.indexOf(value) === index).length,
+    );
+
     let totalErrors = $derived(
         telemetryState.telemetry.filter((t) => !t.success).length,
     );
@@ -47,10 +59,13 @@
 
 
 <div class="p-2 sm:p-4">
-    <div class="grid grid-cols-2 lg:grid-cols-4 sm:gap-4 gap-2">
+    <div class="grid grid-cols-2 lg:grid-cols-5 sm:gap-4 gap-2">
         <TelemetryStatCard description="{lastWeekRecords} parse over last week"
                            label="Total Records"
                            value={totalRecords}/>
+        <TelemetryStatCard description="{uniqueUsersOverLastWeek} over last week"
+                            label="Unique Users"
+                            value={uniqueUsers}/>
         <TelemetryStatCard description="{errorsOverLastWeek} errors over last week"
                            label="Error Rate"
                            value={errorRate + ' %'}/>
