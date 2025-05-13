@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -74,11 +76,13 @@ func LogParseTelemetry(req *http.Request, timings *ProcessTiming, error *APIErro
 	}
 
 	clientIp, _, _ := net.SplitHostPort(req.RemoteAddr)
+	clientIpHasher := sha256.New()
+	clientIpHasher.Write([]byte(clientIp))
 
 	return appendLog(parseTelemetry{
 		Success:         error == nil,
 		Timestamp:       time.Now().Format(time.DateTime),
-		ClientIP:        clientIp,
+		ClientIP:        hex.EncodeToString(clientIpHasher.Sum(nil)),
 		Source:          req.URL.Path,
 		ContentLengthKB: req.ContentLength / 1e3,
 		Timings:         timingsElements,
