@@ -1,9 +1,10 @@
 <script lang="ts">
     interface Props {
         onlogin: (user: string, password: string) => void;
+        error: string | null;
     }
 
-    let { onlogin }: Props = $props();
+    let { onlogin, error }: Props = $props();
 
     let user = $state('');
     let password = $state('');
@@ -18,6 +19,10 @@
 <div class="min-h-svh grid place-content-center">
     <form class="w-full max-w-64 bg-slate-100 dark:bg-slate-700 p-4 rounded shadow" onsubmit={handleSubmit}>
         <h2 class="bold text-xl">Login Required</h2>
+
+        {#if error}
+            <p class="text-red-500 mt-2">{error}</p>
+        {/if}
 
         <label for="user" class="block mt-2 mb-1">Username</label>
         <input type="text"
