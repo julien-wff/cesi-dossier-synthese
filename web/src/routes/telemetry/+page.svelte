@@ -20,6 +20,8 @@
     }
 
     async function fetchTelemetryData() {
+        error = null;
+
         const res = await fetch('/api/telemetry', {
             headers: {
                 Authorization: `Basic ${authToken}`,

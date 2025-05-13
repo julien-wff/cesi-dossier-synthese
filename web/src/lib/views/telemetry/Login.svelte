@@ -26,14 +26,14 @@
 
         <label for="user" class="block mt-2 mb-1">Username</label>
         <input type="text"
-               class="w-full bg-slate-300 dark:bg-slate-500 rounded-sm px-2 py-1"
+               class="w-full bg-white border-1 border-slate-300 dark:bg-slate-500 rounded-sm px-2 py-1"
                id="user"
                required
                bind:value={user}/>
 
         <label for="password" class="block mt-2 mb-1">Password</label>
         <input type="password"
-               class="w-full bg-slate-300 dark:bg-slate-500 rounded-sm px-2 py-1"
+               class="w-full bg-white border border-slate-300 dark:bg-slate-500 rounded-sm px-2 py-1"
                id="password"
                required
                bind:value={password}/>
