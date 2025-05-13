@@ -27,6 +27,13 @@ func GetTelemetryHandler(config *utils.AppConfig) http.HandlerFunc {
 			return
 		}
 
+		// Check if telemetry is empty
+		if len(*telemetry) == 0 {
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write([]byte("{\"error\":null, \"data\":[]}"))
+			return
+		}
+
 		// Replace line breaks with commas
 		for i, b := range *telemetry {
 			if b == '\n' {
