@@ -24,7 +24,7 @@
     let totalErrors = $derived(
         telemetryState.telemetry.filter((t) => !t.success).length,
     );
-    let errorRate = $derived(totalErrors / totalRecords * 100);
+    let errorRate = $derived(Math.round(totalErrors / totalRecords * 1e4) / 1e2);
     let errorsOverLastWeek = $derived(
         telemetryState.telemetry.filter((t) => !t.success && isAWeekOld(t.timestamp)).length,
     );
