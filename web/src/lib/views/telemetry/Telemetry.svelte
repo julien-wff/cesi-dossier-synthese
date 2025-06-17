@@ -1,6 +1,7 @@
 <script lang="ts">
     import TelemetryStatCard from '$lib/components/telemetry/TelemetryStatCard.svelte';
     import { telemetryState } from '$lib/state/telemetry.svelte.js';
+    import TelemetryTimingStatsCard from '$lib/components/telemetry/TelemetryTimingStatsCard.svelte';
 
     const isAWeekOld = (timestamp: Date) => timestamp.getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000;
 
@@ -58,7 +59,7 @@
 </script>
 
 
-<div class="p-2 sm:p-4">
+<div class="grid sm:gap-4 gap-2 p-2 sm:p-4">
     <div class="grid grid-cols-2 lg:grid-cols-5 sm:gap-4 gap-2">
         <TelemetryStatCard description="{lastWeekRecords} parse over last week"
                            label="Total Records"
@@ -76,4 +77,6 @@
                            label="Average Duration"
                            value="{Math.round(averageParseDuration)} ms"/>
     </div>
+
+    <TelemetryTimingStatsCard/>
 </div>
