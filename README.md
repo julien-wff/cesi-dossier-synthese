@@ -1,25 +1,63 @@
-#  Dossier de synthèse CESI
+<p align="center">
+  <h1 align="center">CESI Dossier de Synthèse</h1>
+  <p align="center">
+    <img align="center" width="70" src="https://github.com/julien-wff/cesi-dossier-synthese/blob/main/web/static/favicons/favicon-96x96.png?raw=true" alt="Dossier de synthèse logo"/>
+  </p>
+  <p align="center">
+    A web interface to extract and visualize grades from CESI PDF files.
+  </p>
+  <p align="center">
+    <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/julien-wff/cesi-dossier-synthese/test-commits.yaml">
+    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/julien-wff/cesi-dossier-synthese">
+    <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/cefadrom/cesi-dossier-synthese">
+    <img alt="Docker Image Size" src="https://img.shields.io/docker/image-size/cefadrom/cesi-dossier-synthese">
+  </p>
+</p>
 
-Je pense que tout le monde sera d'accord pour dire que les dossiers de synthèse ne sont pas très beaux.
-Et même au-delà, les calculs de note peuvent être fastidieux. Ce projet offre donc une belle interface
-permettant de visualiser son dossier, et de changer ses notes pour voir si ça passe !
+In my engineering school ([CESI](https://www.cesi.fr)), the grades are only available in PDF format.
+This makes it difficult to view them properly, calculate averages, and estimate future grades.
+
+This project provides a web application where you can upload your PDF file and extract the grades inside.
+It displays the grades in a user-friendly interface, allowing you to change them to simulate future ones, and see basic
+statistics.
 
 https://github.com/julien-wff/cesi-dossier-synthese/assets/50249422/31696820-5886-430d-bb2e-a335c372b045
 
-## Fonctionnement
+## Privacy
 
-Pour faire simple, le PDF est envoyé au serveur, qui va en extraire les tableaux à l'aide de 
-[Tabula](https://github.com/tabulapdf/tabula-java).
-Ces tableaux vont ensuite être parsés, et renvoyés au client.
+PDFs are never stored; they don't leave the server's RAM.
+Only basic telemetry is collected to improve the project, such as the number of files processed, their size, or the
+timing of operations.
 
-## Confidentialité
+If you don't trust this, the project is open source, so you can host it yourself!
 
-Les PDF ne sont jamais conservés. Une fois traités, ils sont directement supprimés du serveur.
-C'est également le cas s'il y a une erreur, supprimés !
-Si vous n'avez pas confiance, le projet est opensource, hostez-le vous même !
+## Self-hosting
+
+You can self-host this project using Docker. The following command will run the project on port 8080:
+
+```bash
+docker run -d \
+           --name cesi-dossier-synthese \
+           -p 8080:8080 \
+           -v ${PWD}/data:/app/data \
+           cefadrom/cesi-dossier-synthese
+```
+
+You can also use Docker Compose with the following `compose.yaml` file:
+
+```yaml
+services:
+  cesi-dossier-synthese:
+    image: cefadrom/cesi-dossier-synthese
+    container_name: cesi-dossier-synthese
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data # To store basic telemetry logs
+```
 
 ## Affiliations
 
-Ce projet n'est pas associé à [CESI](https://www.cesi.fr), mais l'est au 
-[BDE du CESI Nancy](https://bdecesinancy.fr) qui propose une [version hébergée](https://dossier.bdecesinancy.fr)
-utilisable gratuitement.
+This project is not associated with [CESI Engineering School](https://www.cesi.fr), but it is affiliated with the
+student association [BDE CESI Nancy](https://bdecesinancy.fr), which offers a
+[hosted version](https://dossier.bdecesinancy.fr) that can be used for free.
