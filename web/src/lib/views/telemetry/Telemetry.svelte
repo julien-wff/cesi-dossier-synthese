@@ -2,6 +2,7 @@
     import TelemetryStatCard from '$lib/components/telemetry/TelemetryStatCard.svelte';
     import { telemetryState } from '$lib/state/telemetry.svelte.js';
     import TelemetryTimingStatsCard from '$lib/components/telemetry/TelemetryTimingStatsCard.svelte';
+    import TelemetryParsesList from '$lib/components/telemetry/TelemetryParsesList.svelte';
 
     const isAWeekOld = (timestamp: Date) => timestamp.getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000;
 
@@ -79,4 +80,6 @@
     </div>
 
     <TelemetryTimingStatsCard/>
+
+    <TelemetryParsesList/>
 </div>
