@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"crypto/subtle"
 	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"net/http"
 )
@@ -12,7 +13,9 @@ func GetTelemetryHandler(config *utils.AppConfig) http.HandlerFunc {
 
 		// Check basic auth
 		user, password, ok := r.BasicAuth()
-		if !ok || user != config.TelemetryUser || password != config.TelemetryPassword {
+		userMatch := subtle.ConstantTimeCompare([]byte(user), []byte(config.TelemetryUser))
+		passwordMatch := subtle.ConstantTimeCompare([]byte(password), []byte(config.TelemetryPassword))
+		if !ok || userMatch != 1 || passwordMatch != 1 {
 			w.Header().Set("WWW-Authenticate", `Basic realm="Telemetry"`)
 			w.WriteHeader(http.StatusUnauthorized)
 			_, _ = w.Write([]byte("{\"error\":\"unauthorized\"}"))
