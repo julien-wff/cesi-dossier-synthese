@@ -11,6 +11,7 @@
     <img alt="GitHub Release" src="https://img.shields.io/github/v/release/julien-wff/cesi-dossier-synthese">
     <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/cefadrom/cesi-dossier-synthese">
     <img alt="Docker Image Size" src="https://img.shields.io/docker/image-size/cefadrom/cesi-dossier-synthese">
+    <img alt="GitHub License" src="https://img.shields.io/github/license/julien-wff/cesi-dossier-synthese">
   </p>
 </p>
 
