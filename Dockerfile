@@ -10,7 +10,7 @@ ENV PUBLIC_API_ENDPOINT='/api'
 RUN bun run build
 
 
-FROM golang:1-alpine AS backend-builder
+FROM golang:1.24.4-alpine AS backend-builder
 
 WORKDIR /app
 
