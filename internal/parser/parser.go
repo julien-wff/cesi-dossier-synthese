@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/julien-wff/cesi-dossier-synthese/internal/apierrors"
 	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"io"
 )
@@ -22,7 +21,7 @@ type PdfParseResponse struct {
 }
 
 // ParsePdf parses a PDF file and returns the extracted grades, under the `data` key in the response.
-func ParsePdf(f *io.ReadSeeker) (PdfParseResponse, *utils.ProcessTiming, *apierrors.APIError) {
+func ParsePdf(f *io.ReadSeeker) (PdfParseResponse, *utils.ProcessTiming, *utils.APIError) {
 	// Initialize performance counter
 	pt := utils.NewProcessTiming()
 
@@ -66,7 +65,7 @@ func ParsePdf(f *io.ReadSeeker) (PdfParseResponse, *utils.ProcessTiming, *apierr
 }
 
 // ParsePdfDebug parses a PDF file returns the full retrieved content through all the steps of the parsing
-func ParsePdfDebug(f *io.ReadSeeker) (PdfParseDebugResponse, *utils.ProcessTiming, *apierrors.APIError) {
+func ParsePdfDebug(f *io.ReadSeeker) (PdfParseDebugResponse, *utils.ProcessTiming, *utils.APIError) {
 	// Initialize performance counter
 	pt := utils.NewProcessTiming()
 

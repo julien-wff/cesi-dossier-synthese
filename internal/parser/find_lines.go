@@ -2,7 +2,7 @@ package parser
 
 import (
 	"fmt"
-	"github.com/julien-wff/cesi-dossier-synthese/internal/apierrors"
+	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"math"
 	"sort"
 )
@@ -309,7 +309,7 @@ func reorderCoordinates(x1, y1, x2, y2 float64) (float64, float64, float64, floa
 
 // findPageLines finds all the lines in a PDF page, based on the rectangles and lines found in the content.
 // If debug is true, it will calculate and add debug information for the frontend.
-func findPageLines(content *pdfPageContent, debug bool) (PageLines, *apierrors.APIError) {
+func findPageLines(content *pdfPageContent, debug bool) (PageLines, *utils.APIError) {
 	pageLines := PageLines{
 		Page: content.Page,
 	}
@@ -353,7 +353,7 @@ func findPageLines(content *pdfPageContent, debug bool) (PageLines, *apierrors.A
 	// Verify neighbours count
 	err := pageLines.verifyNeighbours()
 	if err != nil {
-		return pageLines, apierrors.NewPdfLineParsingError(err)
+		return pageLines, utils.NewPdfLineParsingError(err)
 	}
 
 	// Debug information

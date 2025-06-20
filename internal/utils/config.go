@@ -7,8 +7,10 @@ import (
 )
 
 type AppConfig struct {
-	Production bool
-	Port       string
+	Production        bool
+	Port              string
+	TelemetryUser     string
+	TelemetryPassword string
 }
 
 func GetAppConfig() *AppConfig {
@@ -20,7 +22,9 @@ func GetAppConfig() *AppConfig {
 	}
 
 	return &AppConfig{
-		Production: !strings.HasPrefix(env, "dev"),
-		Port:       port,
+		Production:        !strings.HasPrefix(env, "dev"),
+		Port:              port,
+		TelemetryUser:     os.Getenv("TELEMETRY_USER"),
+		TelemetryPassword: os.Getenv("TELEMETRY_PASSWORD"),
 	}
 }

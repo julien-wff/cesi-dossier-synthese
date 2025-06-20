@@ -37,3 +37,6 @@ tmp
 
 # Go
 pkg
+
+# Persistent data
+data

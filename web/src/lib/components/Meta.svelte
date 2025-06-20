@@ -1,6 +1,15 @@
+<script lang="ts">
+    interface Props {
+        title?: string;
+    }
+
+    let { title = 'Dossier de synthèse CESI' }: Props = $props();
+</script>
+
+
 <svelte:head>
     <!-- Primary Meta Tags -->
-    <title>Dossier de synthèse CESI</title>
+    <title>{title}</title>
     <meta name="title" content="Dossier de synthèse CESI">
     <meta name="description" content="Outil pour visualiser et tester les notes de son dossier de synthèse">
 
