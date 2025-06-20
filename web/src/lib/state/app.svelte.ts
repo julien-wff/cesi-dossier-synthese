@@ -1,5 +1,4 @@
 import { pushState } from '$app/navigation';
-import { PUBLIC_API_ENDPOINT } from '$env/static/public';
 
 export const AppView = {
     SELECTION: undefined,
@@ -23,7 +22,7 @@ export async function handlePDFSubmit() {
         const form = new FormData();
         form.append('file', appState.file);
 
-        const res = await fetch(PUBLIC_API_ENDPOINT + '/parse', {
+        const res = await fetch('/api/parse', {
             method: 'POST',
             body: form,
         });

@@ -51,9 +51,6 @@ jobs:
     name: Build frontend
     runs-on: ubuntu-latest
 
-    env:
-      PUBLIC_API_ENDPOINT: '/api'
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
