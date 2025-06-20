@@ -34,3 +34,6 @@ tmp
 *.njsproj
 *.sln
 *.sw?
+
+# Go
+pkg
