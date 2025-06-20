@@ -5,9 +5,10 @@
     import Grades from '$lib/views/Grades.svelte';
     import Home from '$lib/views/Home.svelte';
     import { fade } from 'svelte/transition';
-    import { PUBLIC_API_ENDPOINT } from '$env/static/public';
     import { onMount } from 'svelte';
-    import { appState, State } from '$lib/state/app.svelte.js';
+    import { appState, AppView, handlePDFSubmit } from '$lib/state/app.svelte.js';
+    import { page } from '$app/state';
+    import { afterNavigate, goto, pushState } from '$app/navigation';
 
     onMount(() => {
         // Handle file_handler from PWA webmanifest
@@ -19,82 +20,62 @@
                 }
             });
         }
+    });
+
+    afterNavigate(async (nav) => {
+        // Wait for the svelte router to be ready
+        await nav.complete;
 
         // Check if the URL contains a parsing result
-        const urlParams = new URLSearchParams(window.location.search);
-        if (appState.state === State.Selection && urlParams.has('result')) {
-            // Get and apply the result
-            appState.grades = JSON.parse(urlParams.get('result')!).data;
-            appState.state = State.Display;
-
-            // Clear the URL
-            window.history.replaceState({}, document.title, window.location.pathname);
+        if (page.state.view === AppView.SELECTION && page.url.searchParams.has('result')) {
+            try {
+                const result = JSON.parse(page.url.searchParams.get('result')!);
+                await goto('.'); // Clear the URL params
+                pushState('', {
+                    view: AppView.DISPLAY,
+                    grades: result.data,
+                });
+            } catch (e) {
+                await goto('.'); // Clear the URL params
+                pushState('', {
+                    view: AppView.ERROR,
+                    error: 'Le résultat de la requête n\'est pas valide.',
+                });
+            }
         }
 
         // Check if the URL contains an error
-        if (appState.state === State.Selection && urlParams.has('error')) {
-            // Get and apply the error
-            appState.error = JSON.parse(urlParams.get('error')!).message.fr;
-            appState.state = State.Error;
+        if (page.state.view === AppView.SELECTION && page.url.searchParams.has('error')) {
+            let error: string | undefined = undefined;
+            try {
+                error = JSON.parse(page.url.searchParams.get('error')!).message.fr;
+            } catch {
+                // If parsing fails, default to a generic error message
+            }
 
-            // Clear the URL
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    });
-
-    $effect(() => {
-        if (appState.file && !appState.grades.length)
-            handlePDFSubmit();
-    });
-
-    async function handlePDFSubmit() {
-        if (!appState.file)
-            return;
-
-        appState.state = State.Loading;
-        try {
-            const form = new FormData();
-            form.append('file', appState.file);
-
-            const res = await fetch(PUBLIC_API_ENDPOINT + '/parse', {
-                method: 'POST',
-                body: form,
+            await goto('.'); // Clear the URL params
+            pushState('', {
+                view: AppView.ERROR,
+                error,
             });
-
-            if (res.status == 429)
-                throw new Error('Trop de requêtes, réessaye d\'ici quelques minutes');
-
-            const content = await res.json();
-
-            if (!res.ok)
-                throw new Error(content?.message?.fr || 'Une erreur inconnue est survenue');
-            if (!('data' in content))
-                throw new Error('Aucune donnée n\'a été trouvée dans le PDF');
-
-            appState.grades = content.data;
-            appState.state = State.Display;
-        } catch (e) {
-            console.error(e);
-            appState.file = null;
-            appState.error = (e as Error).message;
-            appState.state = State.Error;
         }
-    }
+    });
 </script>
 
 
 <Meta/>
 
-<main class="min-h-svh" class:cursor-progress={appState.state === State.Loading}>
-    {#if appState.state === State.Selection || appState.state === State.Loading}
+
+<main class="min-h-svh" class:cursor-progress={appState.loading}>
+    {#if page.state.view === AppView.SELECTION}
         <div transition:fade class="absolute inset-0">
             <Home/>
         </div>
-    {:else if appState.state === State.Display}
+    {:else if page.state.view === AppView.DISPLAY}
         <div transition:fade>
             <Grades/>
         </div>
-    {:else if appState.state === State.Error}
+    {:else if page.state.view === AppView.ERROR}
         <div transition:fade class="absolute inset-0">
             <Failure/>
         </div>

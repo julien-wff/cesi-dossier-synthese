@@ -6,7 +6,6 @@ COPY web/package.json web/bun.lock ./
 RUN bun install --frozen-lockfile && rm -rf /root/.bun
 
 COPY web/ ./
-ENV PUBLIC_API_ENDPOINT='/api'
 RUN bun run build
 
 
