@@ -22,7 +22,7 @@ COPY --from=web-builder /app/build/ ./internal/web/build/
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/bin/app ./cmd/server/main.go
 
 
-FROM alpine:3.21 AS runtime
+FROM alpine:3.22 AS runtime
 
 USER 1000:1000
 
