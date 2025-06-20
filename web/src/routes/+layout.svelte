@@ -11,8 +11,8 @@
 </script>
 
 <svelte:head>
-    <link as="font" href={inter400} rel="preload" type="font/woff2">
-    <link as="font" href={inter700} rel="preload" type="font/woff2">
+    <link as="font" crossorigin="anonymous" href={inter400} rel="preload" type="font/woff2">
+    <link as="font" crossorigin="anonymous" href={inter700} rel="preload" type="font/woff2">
 </svelte:head>
 
 {@render children()}
