@@ -1,8 +1,8 @@
-FROM oven/bun:1-slim AS web-builder
+FROM oven/bun:1.2.16-alpine AS web-builder
 
 WORKDIR /app
 
-COPY web/package.json web/bun.lockb ./
+COPY web/package.json web/bun.lock ./
 RUN bun install --frozen-lockfile && rm -rf /root/.bun
 
 COPY web/ ./
@@ -10,7 +10,7 @@ ENV PUBLIC_API_ENDPOINT='/api'
 RUN bun run build
 
 
-FROM golang:1-alpine AS backend-builder
+FROM golang:1.24.4-alpine AS backend-builder
 
 WORKDIR /app
 
@@ -22,7 +22,7 @@ COPY --from=web-builder /app/build/ ./internal/web/build/
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/bin/app ./cmd/server/main.go
 
 
-FROM alpine:3.21 AS runtime
+FROM alpine:3.22 AS runtime
 
 USER 1000:1000
 

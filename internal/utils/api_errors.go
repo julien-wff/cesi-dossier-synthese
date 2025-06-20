@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 )
@@ -84,5 +85,5 @@ func NewPdfLineParsingError(err error) *APIError {
 }
 
 func NewGradesExtractionError(details string) *APIError {
-	return NewAPIError("grades_extraction_error", http.StatusInternalServerError, GradesExtractionErrorMessage, fmt.Errorf(details))
+	return NewAPIError("grades_extraction_error", http.StatusInternalServerError, GradesExtractionErrorMessage, errors.New(details))
 }
