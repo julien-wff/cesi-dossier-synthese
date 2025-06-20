@@ -1,7 +1,18 @@
 @import 'tailwindcss';
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-700.css";
 
-body {
+:root {
     font-family: "Inter", Arial, sans-serif;
+    background-color: var(--color-slate-200);
+    color: var(--color-slate-800);
     font-optical-sizing: auto;
     font-style: normal;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        background-color: var(--color-slate-900);
+        color: var(--color-slate-100);
+    }
 }
