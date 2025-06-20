@@ -24,22 +24,24 @@
             <p class="text-red-500 mt-2">{error}</p>
         {/if}
 
-        <label for="user" class="block mt-2 mb-1">Username</label>
-        <input type="text"
-               class="w-full bg-white border-1 border-slate-300 dark:bg-slate-500 rounded-sm px-2 py-1"
+        <label class="block mt-2 mb-1" for="user">Username</label>
+        <input autocomplete="username"
+               bind:value={user}
+               class="w-full bg-white border border-slate-300 dark:bg-slate-500 rounded-sm px-2 py-1"
                id="user"
                required
-               bind:value={user}/>
+               type="text"/>
 
-        <label for="password" class="block mt-2 mb-1">Password</label>
-        <input type="password"
+        <label class="block mt-2 mb-1" for="password">Password</label>
+        <input autocomplete="current-password"
+               bind:value={password}
                class="w-full bg-white border border-slate-300 dark:bg-slate-500 rounded-sm px-2 py-1"
-               id="password"
+                id="password"
                required
-               bind:value={password}/>
+               type="password"/>
 
-        <button type="submit"
-                class="w-full mt-4 bg-blue-500 dark:bg-blue-400 text-slate-50 rounded-sm px-2 py-1 cursor-pointer">
+        <button class="w-full mt-4 bg-blue-500 dark:bg-blue-400 text-slate-50 rounded-sm px-2 py-1 cursor-pointer"
+                type="submit">
             Login
         </button>
     </form>
