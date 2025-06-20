@@ -41,8 +41,6 @@
         [0]
         ?.timings ?? [],
     );
-
-    $inspect(accumulatedStatsAverage, totalAverageDuration);
 </script>
 
 
