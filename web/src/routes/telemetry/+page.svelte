@@ -35,16 +35,16 @@
             return;
         }
 
-        let data: TelemetryUnit[] | { error: string };
+        let data: TelemetryUnit[];
         try {
-            data = (await res.json()).data;
+            const resJson = await res.json();
+            if (resJson.error) {
+                error = resJson.error;
+                return;
+            }
+            data = resJson.data;
         } catch (e) {
             error = 'Failed to fetch telemetry data';
-            return;
-        }
-
-        if ('error' in data) {
-            error = data.error;
             return;
         }
 
