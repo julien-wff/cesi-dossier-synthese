@@ -35,5 +35,8 @@ tmp
 *.sln
 *.sw?
 
+# Go
+pkg
+
 # Persistent data
 data
