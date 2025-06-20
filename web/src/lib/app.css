@@ -1,5 +1,17 @@
 @import 'tailwindcss';
 
+:root {
+    background-color: var(--color-slate-200);
+    color: var(--color-slate-800);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        background-color: var(--color-slate-900);
+        color: var(--color-slate-100);
+    }
+}
+
 body {
     font-family: "Inter", Arial, sans-serif;
     font-optical-sizing: auto;
