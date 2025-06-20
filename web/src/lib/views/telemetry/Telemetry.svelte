@@ -5,6 +5,7 @@
     import TelemetryParsesList from '$lib/components/telemetry/TelemetryParsesList.svelte';
 
     const isAWeekOld = (timestamp: Date) => timestamp.getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const zeroIfNaN = (value: number) => isNaN(value) ? 0 : value;
 
     let totalRecords = $derived(telemetryState.telemetry.length);
     let lastWeekRecords = $derived(
@@ -70,13 +71,13 @@
                             value={uniqueUsers}/>
         <TelemetryStatCard description="{errorsOverLastWeek} errors over last week"
                            label="Error Rate"
-                           value={errorRate + ' %'}/>
+                           value="{zeroIfNaN(errorRate)} %"/>
         <TelemetryStatCard description="Max: {maxPdfSize} KB"
                            label="Average PDF Size"
-                           value="{Math.round(averagePdfSize)} KB"/>
-        <TelemetryStatCard description="95th percentile: {Math.round(percentile95ParseDuration)} ms"
+                           value="{Math.round(zeroIfNaN(averagePdfSize))} KB"/>
+        <TelemetryStatCard description="95th percentile: {Math.round(zeroIfNaN(percentile95ParseDuration))} ms"
                            label="Average Duration"
-                           value="{Math.round(averageParseDuration)} ms"/>
+                           value="{Math.round(zeroIfNaN(averageParseDuration))} ms"/>
     </div>
 
     <TelemetryTimingStatsCard/>

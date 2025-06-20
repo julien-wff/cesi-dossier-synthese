@@ -39,7 +39,7 @@
         .filter(t => t.success && t.timings)
         .sort((a, b) => b.timings.length - a.timings.length)
         [0]
-        .timings,
+        ?.timings ?? [],
     );
 
     $inspect(accumulatedStatsAverage, totalAverageDuration);
@@ -47,9 +47,15 @@
 
 
 <div class="flex items-center justify-center flex-col bg-slate-100 dark:bg-slate-700 p-2 sm:p-4 rounded-sm shadow-sm">
-    <div class="text-center font-bold mb-2">Timing Statistics</div>
+    <div class="text-center font-bold mb-2 md:mb-4">Timing Statistics</div>
 
     <div class="flex flex-1 w-full gap-0.5">
+        {#if timingKeys.length === 0}
+            <div class="text-sm text-gray-500 dark:text-gray-400 w-full text-center">
+                No timing data available
+            </div>
+        {/if}
+
         {#each timingKeys as { name, description }, idx (name)}
             {@const duration = `${accumulatedStatsAverage[name].toFixed(2)}ms`}
 

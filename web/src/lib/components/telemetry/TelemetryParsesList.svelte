@@ -8,8 +8,14 @@
     <span class="text-center font-bold mb-2 sm:mb-4">Latest parses</span>
 
     <div class="flex flex-col gap-2 w-full">
-    {#each telemetryState.telemetry.slice(-25).toReversed() as telemetry}
-        <TelemetryParse unit={telemetry}/>
-    {/each}
+        {#if telemetryState.telemetry.length === 0}
+            <div class="text-sm text-gray-500 dark:text-gray-400 w-full text-center">
+                No telemetry data available
+            </div>
+        {/if}
+
+        {#each telemetryState.telemetry.slice(-25).toReversed() as telemetry}
+            <TelemetryParse unit={telemetry}/>
+        {/each}
     </div>
 </div>
