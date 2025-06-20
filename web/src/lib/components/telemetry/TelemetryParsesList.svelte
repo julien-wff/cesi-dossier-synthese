@@ -8,7 +8,7 @@
     <span class="text-center font-bold mb-2 sm:mb-4">Latest parses</span>
 
     <div class="flex flex-col gap-2 w-full">
-    {#each telemetryState.telemetry.toReversed().slice(0, 25) as telemetry}
+    {#each telemetryState.telemetry.slice(-25).toReversed() as telemetry}
         <TelemetryParse unit={telemetry}/>
     {/each}
     </div>
