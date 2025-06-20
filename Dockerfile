@@ -48,6 +48,7 @@ LABEL org.opencontainers.image.version=$VERSION \
       org.opencontainers.image.revision=$VCS_REF \
       org.opencontainers.image.created=$BUILD_DATE
 
+VOLUME ["/app/data"]
 EXPOSE 8080
 
 CMD ["./app"]
