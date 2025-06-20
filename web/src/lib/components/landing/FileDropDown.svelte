@@ -1,56 +1,42 @@
 <script lang="ts">
     import FileText from 'lucide-svelte/icons/file-text';
     import CloudAlert from 'lucide-svelte/icons/cloud-alert';
-    import { appState, State } from '$lib/state/app.svelte.js';
+    import { appState, handlePDFSubmit } from '$lib/state/app.svelte.js';
     import { browser } from '$app/environment';
 
     let inputField = $state<HTMLInputElement>();
     let drag = $state(false);
     let online = $state(browser ? navigator.onLine : true);
 
-    const getFieldFile = () => inputField?.files?.[0] ?? null;
-
-    $effect(() => {
-        if (!inputField)
-            return;
-
-        if (appState.file && !getFieldFile()) {
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(appState.file);
-            inputField.files = dataTransfer.files;
-        } else if (!appState.file && getFieldFile()) {
-            inputField.value = '';
-        }
-    });
-
     function handleChange() {
-        appState.file = getFieldFile();
+        appState.file = inputField?.files?.[0] ?? null
+        handlePDFSubmit();
     }
 </script>
 
 
-<svelte:window ononline={() => (online = true)} onoffline={() => (online = false)}/>
+<svelte:window onoffline={() => (online = false)} ononline={() => (online = true)}/>
 
 <div class="border-4 border-blue-500 dark:border-blue-400 rounded-2xl relative shadow-lg transition-colors"
-     class:bg-slate-100={!drag}
-     class:dark:bg-transparent={!drag}
      class:bg-blue-100={drag}
-     class:dark:bg-blue-900={drag}
+     class:bg-slate-100={!drag}
      class:border-red-500={!online}
+     class:dark:bg-blue-900={drag}
+     class:dark:bg-transparent={!drag}
      class:dark:border-red-400={!online}>
 
-    <input type="file"
+    <input accept="application/pdf"
+           bind:this={inputField}
+           class="w-80 h-48 opacity-0"
+           class:cursor-not-allowed={!online}
+           class:cursor-pointer={!appState.loading && online}
+           class:cursor-progress={appState.loading}
+           disabled={appState.loading || !online}
+           onchange={handleChange}
            ondragenter={() => (drag = true)}
            ondragleave={() => (drag = false)}
            ondrop={() => (drag = false)}
-           onchange={handleChange}
-           bind:this={inputField}
-           disabled={appState.state === State.Loading || !online}
-           class:cursor-pointer={appState.state !== State.Loading && online}
-           class:cursor-progress={appState.state === State.Loading}
-           class:cursor-not-allowed={!online}
-           accept="application/pdf"
-           class="w-80 h-48 opacity-0">
+           type="file">
 
     <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 p-4 text-center pointer-events-none">
         {#if online}
