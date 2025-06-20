@@ -27,21 +27,36 @@
         await nav.complete;
 
         // Check if the URL contains a parsing result
-        if ((!page.state.view || page.state.view === AppView.SELECTION) && page.url.searchParams.has('result')) {
-            const result = JSON.parse(page.url.searchParams.get('result')!);
-            await goto('.'); // Clear the URL params
-            pushState('', {
-                view: AppView.DISPLAY,
-                grades: result.data,
-            });
+        if (page.state.view === AppView.SELECTION && page.url.searchParams.has('result')) {
+            try {
+                const result = JSON.parse(page.url.searchParams.get('result')!);
+                await goto('.'); // Clear the URL params
+                pushState('', {
+                    view: AppView.DISPLAY,
+                    grades: result.data,
+                });
+            } catch (e) {
+                await goto('.'); // Clear the URL params
+                pushState('', {
+                    view: AppView.ERROR,
+                    error: 'Le résultat de la requête n\'est pas valide.',
+                });
+            }
         }
 
         // Check if the URL contains an error
-        if ((!page.state.view || page.state.view === AppView.SELECTION) && page.url.searchParams.has('error')) {
+        if (page.state.view === AppView.SELECTION && page.url.searchParams.has('error')) {
+            let error: string | undefined = undefined;
+            try {
+                error = JSON.parse(page.url.searchParams.get('error')!).message.fr;
+            } catch {
+                // If parsing fails, default to a generic error message
+            }
+
             await goto('.'); // Clear the URL params
             pushState('', {
                 view: AppView.ERROR,
-                error: JSON.parse(page.url.searchParams.get('error')!).message.fr,
+                error,
             });
         }
     });
