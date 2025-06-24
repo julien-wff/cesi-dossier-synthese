@@ -29,7 +29,10 @@ WORKDIR /app
 
 # pdfcpu needs this
 ENV XDG_CONFIG_HOME=/app/.config
-RUN mkdir -p /app/.config
+RUN mkdir -p /app/.config \
+    # Create parser log file
+    && mkdir /app/data \
+    && touch /app/data/parser.log
 
 COPY --from=backend-builder /app/bin/app ./
 
