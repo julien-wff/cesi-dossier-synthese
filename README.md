@@ -26,7 +26,7 @@ https://github.com/julien-wff/cesi-dossier-synthese/assets/50249422/31696820-588
 
 ## Privacy
 
-PDFs are never stored; they don't leave the server's RAM.
+PDFs are never stored; they only stay in the server's RAM for the duration of the request.
 Only basic telemetry is collected to improve the project, such as the number of files processed, their size, or the
 timing of operations.
 
