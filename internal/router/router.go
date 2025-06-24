@@ -24,6 +24,7 @@ func NewRouter(config *utils.AppConfig) http.Handler {
 	// Static files
 	if config.Production {
 		r.Handle("/debug/", handler.StaticHtmlHandler("debug"))
+		r.Handle("/telemetry/", handler.StaticHtmlHandler("telemetry"))
 		r.Handle("/", handler.StaticFilesHandler())
 	}
 
