@@ -57,6 +57,17 @@ services:
       - ./data:/app/data # To store basic telemetry logs
 ```
 
+Here are the configurable environment variables:
+
+| Variable             | Description                                                                 | Default Value    |
+|----------------------|-----------------------------------------------------------------------------|------------------|
+| `APP_ENV`            | Set environment to production or development                                | `production`     |
+| `APP_PORT`           | Port on which the application will run                                      | `8080`           |
+| `TELEMETRY_USER`     | Username to access the telemetry dashboard (`/telemetry`)                   | None (no access) |
+| `TELEMETRY_PASSWORD` | Password to access the telemetry dashboard (`/telemetry`)                   | None (no access) |
+| `PROXY_HEADERS`      | If the app is behind a reverse proxy, to use headers like `X-Forwarded-For` | `false`          |
+| `RATE_LIMIT_TOKENS`  | Number of parsing requests allowed per minute per IP address                | `20`             |
+
 ## Affiliations
 
 This project is not associated with [CESI Engineering School](https://www.cesi.fr), but it is affiliated with the
