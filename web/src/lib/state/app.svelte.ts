@@ -12,6 +12,18 @@ export const appState = $state({
 });
 
 
+function handleError(message: string, error?: any) {
+    if (error) {
+        console.error(new Error(message), 'Source error:', error);
+    } else {
+        console.error(new Error(message));
+    }
+    pushState('', {
+        view: AppView.ERROR,
+        error: message,
+    });
+}
+
 export async function handlePDFSubmit() {
     if (!appState.file || appState.loading)
         return;
@@ -27,23 +39,26 @@ export async function handlePDFSubmit() {
             body: form,
         });
 
-        if (res.status == 429)
-            throw new Error('Trop de requêtes, réessaye d\'ici quelques minutes');
+        if (res.status == 429) {
+            return handleError('Trop de requêtes, veuillez réessayez d\'ici quelques minutes.');
+        }
 
-        const content = await res.json();
+        let content = null;
+        try {
+            content = await res.json();
+        } catch {
+            // Ignore body
+        }
 
-        if (!res.ok)
-            throw new Error(content?.message?.fr || 'Une erreur inconnue est survenue');
-        if (!('data' in content))
-            throw new Error('Aucune donnée n\'a été trouvée dans le PDF');
+        if (!res.ok || !content)
+            return handleError(content?.message?.fr ?? 'Une erreur inconnue est survenue. Veuillez réessayer plus tard.');
+
+        if (!Array.isArray(content.data) || content.data.length === 0)
+            return handleError('Aucune note n\'a été trouvée dans le PDF.');
 
         pushState('', { view: AppView.DISPLAY, grades: content.data });
     } catch (e) {
-        console.error(e);
-        pushState('', {
-            view: AppView.ERROR,
-            error: (e as Error).message,
-        });
+        handleError('Une erreur inconnue est survenue lors de l\'envoi du PDF. Veuillez réessayer plus tard.', e);
     } finally {
         appState.loading = false;
         appState.file = null;
