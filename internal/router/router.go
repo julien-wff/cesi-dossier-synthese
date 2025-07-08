@@ -14,9 +14,9 @@ func NewRouter(config *utils.AppConfig) http.Handler {
 	r.HandleFunc("GET /health", handler.HealthHandler)
 
 	// Parsing
-	r.HandleFunc("POST /api/parse/debug", utils.RateLimitMiddlewareFunc(handler.ParsePdfDebugHandler))
-	r.HandleFunc("POST /api/parse", utils.RateLimitMiddlewareFunc(handler.ParsePdfHandler))
-	r.HandleFunc("POST /api/share", utils.RateLimitMiddlewareFunc(handler.ParseSharePdfHandler))
+	r.HandleFunc("POST /api/parse/debug", utils.RateLimitMiddlewareFunc(config, handler.ParsePdfDebugHandler))
+	r.HandleFunc("POST /api/parse", utils.RateLimitMiddlewareFunc(config, handler.ParsePdfHandler))
+	r.HandleFunc("POST /api/share", utils.RateLimitMiddlewareFunc(config, handler.ParseSharePdfHandler))
 
 	// Telemetry
 	r.HandleFunc("GET /api/telemetry", handler.GetTelemetryHandler(config))

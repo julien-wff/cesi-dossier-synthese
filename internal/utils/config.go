@@ -12,6 +12,7 @@ type AppConfig struct {
 	TelemetryUser     string
 	TelemetryPassword string
 	ProxyHeaders      bool
+	RateLimitTokens   uint64
 }
 
 func GetAppConfig() *AppConfig {
@@ -23,11 +24,17 @@ func GetAppConfig() *AppConfig {
 		port = "8080"
 	}
 
+	rateLimitTokens := uint64(20) // Default to 20 tokens / ip / minute
+	if t, err := strconv.Atoi(os.Getenv("RATE_LIMIT_TOKENS")); err == nil && t >= 0 {
+		rateLimitTokens = uint64(t)
+	}
+
 	return &AppConfig{
 		Production:        !strings.HasPrefix(env, "dev"),
 		Port:              port,
 		TelemetryUser:     os.Getenv("TELEMETRY_USER"),
 		TelemetryPassword: os.Getenv("TELEMETRY_PASSWORD"),
 		ProxyHeaders:      proxyHeaders == "true" || proxyHeaders == "1",
+		RateLimitTokens:   rateLimitTokens,
 	}
 }

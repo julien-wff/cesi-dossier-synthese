@@ -7,10 +7,10 @@ import (
 	"time"
 )
 
-func getRateLimitMiddleware() *httplimit.Middleware {
+func getRateLimitMiddleware(cfg *AppConfig) *httplimit.Middleware {
 	// Rate limiting
 	store, err := memorystore.New(&memorystore.Config{
-		Tokens:   20,
+		Tokens:   cfg.RateLimitTokens,
 		Interval: time.Minute,
 	})
 	if err != nil {
@@ -24,10 +24,19 @@ func getRateLimitMiddleware() *httplimit.Middleware {
 	return middleware
 }
 
-var rateLimitMiddleware = getRateLimitMiddleware()
+var rateLimitMiddleware *httplimit.Middleware
 
-func RateLimitMiddlewareFunc(next http.HandlerFunc) http.HandlerFunc {
+func RateLimitMiddlewareFunc(cfg *AppConfig, next http.HandlerFunc) http.HandlerFunc {
+
+	if rateLimitMiddleware == nil {
+		rateLimitMiddleware = getRateLimitMiddleware(cfg)
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
-		rateLimitMiddleware.Handle(http.HandlerFunc(next)).ServeHTTP(w, r)
+		if cfg.RateLimitTokens > 0 {
+			rateLimitMiddleware.Handle(next).ServeHTTP(w, r)
+		} else {
+			next(w, r)
+		}
 	}
 }
