@@ -4,6 +4,7 @@ import (
 	"github.com/sethvargo/go-limiter/httplimit"
 	"github.com/sethvargo/go-limiter/memorystore"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -25,12 +26,12 @@ func getRateLimitMiddleware(cfg *AppConfig) *httplimit.Middleware {
 }
 
 var rateLimitMiddleware *httplimit.Middleware
+var rateLimitMiddlewareOnce sync.Once
 
 func RateLimitMiddlewareFunc(cfg *AppConfig, next http.HandlerFunc) http.HandlerFunc {
-
-	if rateLimitMiddleware == nil {
+	rateLimitMiddlewareOnce.Do(func() {
 		rateLimitMiddleware = getRateLimitMiddleware(cfg)
-	}
+	})
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		if cfg.RateLimitTokens > 0 {
