@@ -69,7 +69,7 @@
 
 
 <div class="grid sm:gap-4 gap-2 p-2 sm:p-4">
-    <div class="grid grid-cols-2 lg:grid-cols-5 sm:gap-4 gap-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 sm:gap-4 gap-2">
         <TelemetryStatCard description="{lastWeekRecords} parse over last week"
                            label="Total Records"
                            value={totalRecords}/>
@@ -87,7 +87,7 @@
                            value="{Math.round(zeroIfNaN(averageParseDuration))} ms"/>
     </div>
 
-    <div class="grid grid-cols-3 sm:gap-4 gap-2">
+    <div class="grid grid-cols-1 lg:grid-cols-3 sm:gap-4 gap-2">
         <TelemetryPieStatCard label="Operating System" values={userAgents.map(u => u.os)}/>
         <TelemetryPieStatCard label="Browser" values={userAgents.map(u => u.browser)}/>
         <TelemetryPieStatCard label="Platform" values={userAgents.map(u => u.platform)}/>
