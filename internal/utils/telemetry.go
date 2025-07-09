@@ -71,11 +71,21 @@ func appendLog(telemetry parseTelemetry) error {
 	return nil
 }
 
-// parseUserAgent parses the User-Agent header from the request and returns a userAgent struct
-func parseUserAgent(req *http.Request) userAgent {
-	ua := useragent.Parse(req.UserAgent())
+const unknownUserAgent = "Unknown"
 
-	platform := "Unknown"
+// parseUserAgent parses the User-Agent header from the request and returns a userAgent struct
+func parseUserAgent(rawUA string) userAgent {
+	if rawUA == "" {
+		return userAgent{
+			OS:       unknownUserAgent,
+			Browser:  unknownUserAgent,
+			Platform: unknownUserAgent,
+		}
+	}
+
+	ua := useragent.Parse(rawUA)
+
+	platform := unknownUserAgent
 	if ua.Desktop {
 		platform = "Desktop"
 	} else if ua.Mobile {
@@ -84,6 +94,14 @@ func parseUserAgent(req *http.Request) userAgent {
 		platform = "Tablet"
 	} else if ua.Bot {
 		platform = "Bot"
+	}
+
+	if ua.OS == "" {
+		ua.OS = unknownUserAgent
+	}
+
+	if ua.Name == "" {
+		ua.Name = unknownUserAgent
 	}
 
 	return userAgent{
@@ -109,7 +127,7 @@ func LogParseTelemetry(req *http.Request, timings *ProcessTiming, error *APIErro
 	clientIpHasher := sha256.New()
 	clientIpHasher.Write([]byte(clientIp))
 
-	ua := parseUserAgent(req)
+	ua := parseUserAgent(req.UserAgent())
 
 	return appendLog(parseTelemetry{
 		Success:         error == nil,
