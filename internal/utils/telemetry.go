@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/mileusna/useragent"
 	"io"
 	"net"
 	"net/http"
@@ -25,6 +26,13 @@ type parseTelemetry struct {
 	ContentLengthKB int64           `json:"contentLengthKB"`
 	Timings         []TimingElement `json:"timings"`
 	Error           *string         `json:"error"`
+	UserAgent       userAgent       `json:"userAgent"`
+}
+
+type userAgent struct {
+	OS       string `json:"os"`
+	Browser  string `json:"browser"`
+	Platform string `json:"platform"`
 }
 
 // appendLog serializes the provided content to JSON and appends it to the log file
@@ -63,6 +71,46 @@ func appendLog(telemetry parseTelemetry) error {
 	return nil
 }
 
+const unknownUserAgent = "Unknown"
+
+// parseUserAgent parses the User-Agent header from the request and returns a userAgent struct
+func parseUserAgent(rawUA string) userAgent {
+	if rawUA == "" {
+		return userAgent{
+			OS:       unknownUserAgent,
+			Browser:  unknownUserAgent,
+			Platform: unknownUserAgent,
+		}
+	}
+
+	ua := useragent.Parse(rawUA)
+
+	platform := unknownUserAgent
+	if ua.Desktop {
+		platform = "Desktop"
+	} else if ua.Mobile {
+		platform = "Mobile"
+	} else if ua.Tablet {
+		platform = "Tablet"
+	} else if ua.Bot {
+		platform = "Bot"
+	}
+
+	if ua.OS == "" {
+		ua.OS = unknownUserAgent
+	}
+
+	if ua.Name == "" {
+		ua.Name = unknownUserAgent
+	}
+
+	return userAgent{
+		OS:       ua.OS,
+		Browser:  ua.Name,
+		Platform: platform,
+	}
+}
+
 // LogParseTelemetry logs the provided request, timings and error to the log file
 func LogParseTelemetry(req *http.Request, timings *ProcessTiming, error *APIError) error {
 	var errorMessage *string
@@ -79,6 +127,8 @@ func LogParseTelemetry(req *http.Request, timings *ProcessTiming, error *APIErro
 	clientIpHasher := sha256.New()
 	clientIpHasher.Write([]byte(clientIp))
 
+	ua := parseUserAgent(req.UserAgent())
+
 	return appendLog(parseTelemetry{
 		Success:         error == nil,
 		Timestamp:       time.Now().Format(time.DateTime),
@@ -87,6 +137,7 @@ func LogParseTelemetry(req *http.Request, timings *ProcessTiming, error *APIErro
 		ContentLengthKB: req.ContentLength / 1e3,
 		Timings:         timingsElements,
 		Error:           errorMessage,
+		UserAgent:       ua,
 	})
 }
 

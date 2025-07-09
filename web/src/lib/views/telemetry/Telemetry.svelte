@@ -3,6 +3,7 @@
     import { telemetryState } from '$lib/state/telemetry.svelte.js';
     import TelemetryTimingStatsCard from '$lib/components/telemetry/TelemetryTimingStatsCard.svelte';
     import TelemetryParsesList from '$lib/components/telemetry/TelemetryParsesList.svelte';
+    import TelemetryPieStatCard from '$lib/components/telemetry/TelemetryPieStatCard.svelte';
 
     const isAWeekOld = (timestamp: Date) => timestamp.getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000;
     const zeroIfNaN = (value: number) => isNaN(value) ? 0 : value;
@@ -58,6 +59,12 @@
     let percentile95ParseDuration = $derived(
         percentile95ParseValues.reduce((acc, t) => acc + t, 0) / percentile95ParseValues.length,
     );
+
+    let userAgents = $derived(
+        telemetryState.telemetry
+            .map(t => t.userAgent)
+            .filter(u => !!u),
+    );
 </script>
 
 
@@ -67,8 +74,8 @@
                            label="Total Records"
                            value={totalRecords}/>
         <TelemetryStatCard description="{uniqueUsersOverLastWeek} over last week"
-                            label="Unique Users"
-                            value={uniqueUsers}/>
+                           label="Unique Users"
+                           value={uniqueUsers}/>
         <TelemetryStatCard description="{errorsOverLastWeek} errors over last week"
                            label="Error Rate"
                            value="{zeroIfNaN(errorRate)} %"/>
@@ -78,6 +85,12 @@
         <TelemetryStatCard description="95th percentile: {Math.round(zeroIfNaN(percentile95ParseDuration))} ms"
                            label="Average Duration"
                            value="{Math.round(zeroIfNaN(averageParseDuration))} ms"/>
+    </div>
+
+    <div class="grid grid-cols-3 sm:gap-4 gap-2">
+        <TelemetryPieStatCard label="Operating System" values={userAgents.map(u => u.os)}/>
+        <TelemetryPieStatCard label="Browser" values={userAgents.map(u => u.browser)}/>
+        <TelemetryPieStatCard label="Platform" values={userAgents.map(u => u.platform)}/>
     </div>
 
     <TelemetryTimingStatsCard/>
