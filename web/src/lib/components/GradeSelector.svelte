@@ -16,6 +16,7 @@
      class:bg-red-500={grade === 'D'}>
 
     <select class="block w-9 h-full appearance-none bg-transparent text-center text-white cursor-pointer"
+            style="text-align-last: center"
             bind:value={grade}>
         <option value={null}></option>
         <option value="A" class="text-blue-600">A</option>
