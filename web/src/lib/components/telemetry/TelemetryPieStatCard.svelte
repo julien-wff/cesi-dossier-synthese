@@ -56,24 +56,28 @@
 
 <div class="flex items-center justify-center flex-col bg-slate-100 dark:bg-slate-700 p-2 sm:p-4 rounded-sm shadow-sm gap-2 sm:gap-4">
     <p class="text-center font-bold">{label}</p>
-    <div class="w-full max-w-sm grid grid-cols-2">
-        <div class="justify-self-center relative aspect-square w-32">
-            {#each Object.entries(aggregatedValues).slice(0, 8) as [ value, count ], idx}
-                {@const countUntilLast = Object.values(aggregatedValues).slice(0, idx).reduce((a, b) => a + b, 0)}
-                <div class="absolute w-full h-full inset-0 rounded-full" style="
+    {#if values.length === 0}
+        <p class="text-center text-sm text-gray-500">No data available</p>
+    {:else}
+        <div class="w-full max-w-sm grid grid-cols-2">
+            <div class="justify-self-center relative aspect-square w-32">
+                {#each Object.entries(aggregatedValues).slice(0, 8) as [ value, count ], idx}
+                    {@const countUntilLast = Object.values(aggregatedValues).slice(0, idx).reduce((a, b) => a + b, 0)}
+                    <div class="absolute w-full h-full inset-0 rounded-full" style="
                     background: conic-gradient({colorsThemes[idx]} calc({count / values.length} * 360deg), transparent 0);
                     rotate: {(countUntilLast / values.length) * 360}deg;
                 "></div>
-            {/each}
-        </div>
+                {/each}
+            </div>
 
-        <div class="justify-self-center flex flex-col justify-center gap-1">
-            {#each Object.entries(aggregatedValues).slice(0, 8) as [ value, count ], idx}
-                <div class="flex items-center gap-2">
-                    <div class="w-4 h-4 rounded-full" style="background-color: {colorsThemes[idx]}"></div>
-                    <span class="text-sm">{value || 'Unknown'} ({count})</span>
-                </div>
-            {/each}
+            <div class="justify-self-center flex flex-col justify-center gap-1">
+                {#each Object.entries(aggregatedValues).slice(0, 8) as [ value, count ], idx}
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full" style="background-color: {colorsThemes[idx]}"></div>
+                        <span class="text-sm">{value || 'Unknown'} ({count})</span>
+                    </div>
+                {/each}
+            </div>
         </div>
-    </div>
+    {/if}
 </div>
