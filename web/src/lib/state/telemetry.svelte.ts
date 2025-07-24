@@ -31,6 +31,8 @@ export interface TelemetryStats {
     UAPlatforms: Record<string, number>;
     latestSuccessfulParses: TelemetryUnit[];
     latestFailedParses: TelemetryUnit[];
+    timingAverageDuration: Record<string, number>;
+    timingKeys: { name: string, description: string }[];
 }
 
 export interface TimingElement {

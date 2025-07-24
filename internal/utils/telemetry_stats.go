@@ -10,22 +10,29 @@ import (
 	"time"
 )
 
+type TimingKey struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
 type TelemetryStats struct {
-	TotalParses             int              `json:"totalParses"`
-	TotalParsesOverLastWeek int              `json:"totalParsesOverLastWeek"`
-	UniqueUsers             int              `json:"uniqueUsers"`
-	UniqueUsersOverLastWeek int              `json:"uniqueUsersOverLastWeek"`
-	ErrorRate               float64          `json:"errorRate"`
-	ErrorsOverLastWeek      int              `json:"errorsOverLastWeek"`
-	AveragePdfSizeKb        float64          `json:"averagePdfSizeKb"`
-	MaxPdfSizeKb            int64            `json:"maxPdfSizeKb"`
-	AverageParseTime        float64          `json:"averageParseTime"`
-	AverageParseTime95th    float64          `json:"averageParseTime95th"`
-	UAOSs                   map[string]int64 `json:"UAOSs"`
-	UABrowsers              map[string]int64 `json:"UABrowsers"`
-	UAPlatforms             map[string]int64 `json:"UAPlatforms"`
-	LatestSuccessfulParses  []parseTelemetry `json:"latestSuccessfulParses"`
-	LatestFailedParses      []parseTelemetry `json:"latestFailedParses"`
+	TotalParses             int                `json:"totalParses"`
+	TotalParsesOverLastWeek int                `json:"totalParsesOverLastWeek"`
+	UniqueUsers             int                `json:"uniqueUsers"`
+	UniqueUsersOverLastWeek int                `json:"uniqueUsersOverLastWeek"`
+	ErrorRate               float64            `json:"errorRate"`
+	ErrorsOverLastWeek      int                `json:"errorsOverLastWeek"`
+	AveragePdfSizeKb        float64            `json:"averagePdfSizeKb"`
+	MaxPdfSizeKb            int64              `json:"maxPdfSizeKb"`
+	AverageParseTime        float64            `json:"averageParseTime"`
+	AverageParseTime95th    float64            `json:"averageParseTime95th"`
+	UAOSs                   map[string]int64   `json:"UAOSs"`
+	UABrowsers              map[string]int64   `json:"UABrowsers"`
+	UAPlatforms             map[string]int64   `json:"UAPlatforms"`
+	LatestSuccessfulParses  []parseTelemetry   `json:"latestSuccessfulParses"`
+	LatestFailedParses      []parseTelemetry   `json:"latestFailedParses"`
+	TimingAverageDuration   map[string]float64 `json:"timingAverageDuration"`
+	TimingKeys              []TimingKey        `json:"timingKeys"`
 }
 
 // ReadTelemetry reads the raw content of the log file and returns it as a slice of parseTelemetry structs
@@ -92,6 +99,11 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 	uaBrowsers := make(map[string]int64)
 	uaPlatforms := make(map[string]int64)
 
+	// Timing statistics - accumulate durations by timing name
+	timingDurations := make(map[string][]float64)
+	var mostCompleteTimings []TimingKey
+	maxSeenTimingsCount := 0
+
 	// Collect parse durations for percentile calculation
 	var parseDurations []float64
 
@@ -123,10 +135,24 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 			var entryDuration float64
 			for _, timing := range entry.Timings {
 				entryDuration += timing.Duration
+				// Accumulate timing durations by name
+				timingDurations[timing.Name] = append(timingDurations[timing.Name], timing.Duration)
 			}
 			totalParseDuration += entryDuration
 			parseDurations = append(parseDurations, entryDuration)
 			successfulParses++
+
+			// Track the entry with the most complete timings
+			if len(entry.Timings) > maxSeenTimingsCount {
+				maxSeenTimingsCount = len(entry.Timings)
+				mostCompleteTimings = make([]TimingKey, 0, len(entry.Timings))
+				for _, timing := range entry.Timings {
+					mostCompleteTimings = append(mostCompleteTimings, TimingKey{
+						Name:        timing.Name,
+						Description: timing.Description,
+					})
+				}
+			}
 		}
 
 		// Track PDF sizes
@@ -144,6 +170,18 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 		}
 		if entry.UserAgent.Platform != "" {
 			uaPlatforms[entry.UserAgent.Platform]++
+		}
+	}
+
+	// Calculate timing averages
+	timingAverageDuration := make(map[string]float64)
+	for timingName, durations := range timingDurations {
+		if len(durations) > 0 {
+			var sum float64
+			for _, duration := range durations {
+				sum += duration
+			}
+			timingAverageDuration[timingName] = sum / float64(len(durations))
 		}
 	}
 
@@ -226,5 +264,7 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 		UAPlatforms:             uaPlatforms,
 		LatestSuccessfulParses:  latestSuccessfulParses,
 		LatestFailedParses:      latestFailedParses,
+		TimingAverageDuration:   timingAverageDuration,
+		TimingKeys:              mostCompleteTimings,
 	}
 }
