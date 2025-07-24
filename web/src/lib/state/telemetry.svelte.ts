@@ -9,6 +9,12 @@ export interface TelemetryUnit {
     userAgent?: UserAgent;
 }
 
+export interface TimingElement {
+    name: string;
+    description: string;
+    duration: number; // in milliseconds
+}
+
 export interface UserAgent {
     os: string;
     browser: string;
@@ -35,20 +41,12 @@ export interface TelemetryStats {
     timingKeys: { name: string, description: string }[];
 }
 
-export interface TimingElement {
-    name: string;
-    description: string;
-    duration: number; // in milliseconds
-}
-
 export interface TelemetryState {
     loaded: boolean;
-    telemetry: TelemetryUnit[];
     stats: TelemetryStats | null;
 }
 
 export const telemetryState = $state<TelemetryState>({
     loaded: false,
-    telemetry: [],
     stats: null,
 });

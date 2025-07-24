@@ -5,7 +5,7 @@
     import Telemetry from '$lib/views/telemetry/Telemetry.svelte';
     import { browser } from '$app/environment';
     import { onMount } from 'svelte';
-    import { telemetryState, type TelemetryStats } from '$lib/state/telemetry.svelte';
+    import { telemetryState } from '$lib/state/telemetry.svelte';
 
     const telemetryAuthKey = 'telemetry-auth';
 
@@ -35,21 +35,18 @@
             return;
         }
 
-        let data: TelemetryStats;
         try {
             const resJson = await res.json();
             if (resJson.error) {
                 error = resJson.error;
                 return;
             }
-            data = resJson.data;
+            telemetryState.stats = resJson.data;
+            telemetryState.loaded = true;
         } catch (e) {
             error = 'Failed to fetch telemetry data';
             return;
         }
-
-        telemetryState.stats = data;
-        telemetryState.loaded = true;
     }
 
     onMount(() => {
