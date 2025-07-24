@@ -91,7 +91,7 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 		uniqueIPs[entry.ClientIP] = struct{}{}
 
 		// Parse timestamp string to time.Time
-		timestamp, err := time.Parse(time.RFC3339, entry.Timestamp)
+		timestamp, err := time.Parse(time.DateTime, entry.Timestamp)
 		isRecentEntry := false
 		if err == nil {
 			isRecentEntry = timestamp.After(oneWeekAgo)
