@@ -23,10 +23,10 @@
         <TelemetryStatCard description="{telemetryState.stats?.totalParsesOverLastWeek ?? 0} parse over last week"
                            label="Total Records"
                            value={telemetryState.stats?.totalParses ?? 0}/>
-        <TelemetryStatCard description="{telemetryState.stats?.errorsOverLastWeek ?? 0} over last week"
+        <TelemetryStatCard description="{telemetryState.stats?.uniqueUsersOverLastWeek ?? 0} over last week"
                            label="Unique Users"
                            value={telemetryState.stats?.uniqueUsers ?? 0}/>
-        <TelemetryStatCard description="{telemetryState.stats?.uniqueUsersOverLastWeek ?? 0} errors over last week"
+        <TelemetryStatCard description="{telemetryState.stats?.errorsOverLastWeek ?? 0} errors over last week"
                            label="Error Rate"
                            value="{round(telemetryState.stats?.errorRate, 1)} %"/>
         <TelemetryStatCard description="Max: {telemetryState.stats?.maxPdfSizeKb} KB"
