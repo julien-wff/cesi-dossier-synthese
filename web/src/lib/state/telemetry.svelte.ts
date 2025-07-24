@@ -26,6 +26,9 @@ export interface TelemetryStats {
     maxPdfSizeKb: number;
     averageParseTime: number;
     averageParseTime95th: number;
+    UAOSs: Record<string, number>;
+    UABrowsers: Record<string, number>;
+    UAPlatforms: Record<string, number>;
     latestSuccessfulParses: TelemetryUnit[];
     latestFailedParses: TelemetryUnit[];
 }

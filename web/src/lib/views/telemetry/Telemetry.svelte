@@ -5,12 +5,6 @@
     import TelemetryParsesList from '$lib/components/telemetry/TelemetryParsesList.svelte';
     import TelemetryPieStatCard from '$lib/components/telemetry/TelemetryPieStatCard.svelte';
 
-    let userAgents = $derived(
-        telemetryState.telemetry
-            .map(t => t.userAgent)
-            .filter(u => !!u),
-    );
-
     const round = (value: number | null | undefined, decimals: number = 0) => {
         const factor = Math.pow(10, decimals);
         return Math.round((value ?? 0) * factor) / factor;
@@ -38,9 +32,9 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 sm:gap-4 gap-2">
-        <TelemetryPieStatCard label="Operating System" values={userAgents.map(u => u.os)}/>
-        <TelemetryPieStatCard label="Browser" values={userAgents.map(u => u.browser)}/>
-        <TelemetryPieStatCard label="Platform" values={userAgents.map(u => u.platform)}/>
+        <TelemetryPieStatCard label="Operating System" values={telemetryState.stats?.UAOSs ?? {}}/>
+        <TelemetryPieStatCard label="Browser" values={telemetryState.stats?.UABrowsers ?? {}}/>
+        <TelemetryPieStatCard label="Platform" values={telemetryState.stats?.UAPlatforms ?? {}}/>
     </div>
 
     <TelemetryTimingStatsCard/>

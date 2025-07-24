@@ -21,6 +21,9 @@ type TelemetryStats struct {
 	MaxPdfSizeKb            int64            `json:"maxPdfSizeKb"`
 	AverageParseTime        float64          `json:"averageParseTime"`
 	AverageParseTime95th    float64          `json:"averageParseTime95th"`
+	UAOSs                   map[string]int64 `json:"UAOSs"`
+	UABrowsers              map[string]int64 `json:"UABrowsers"`
+	UAPlatforms             map[string]int64 `json:"UAPlatforms"`
 	LatestSuccessfulParses  []parseTelemetry `json:"latestSuccessfulParses"`
 	LatestFailedParses      []parseTelemetry `json:"latestFailedParses"`
 }
@@ -84,6 +87,11 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 	uniqueIPs := make(map[string]struct{})
 	uniqueIPsLastWeek := make(map[string]struct{})
 
+	// Maps for user agent statistics
+	uaOSs := make(map[string]int64)
+	uaBrowsers := make(map[string]int64)
+	uaPlatforms := make(map[string]int64)
+
 	// Collect parse durations for percentile calculation
 	var parseDurations []float64
 
@@ -125,6 +133,17 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 		totalPdfSizeKb += entry.ContentLengthKB
 		if entry.ContentLengthKB > maxPdfSizeKb {
 			maxPdfSizeKb = entry.ContentLengthKB
+		}
+
+		// Track user agent statistics
+		if entry.UserAgent.OS != "" {
+			uaOSs[entry.UserAgent.OS]++
+		}
+		if entry.UserAgent.Browser != "" {
+			uaBrowsers[entry.UserAgent.Browser]++
+		}
+		if entry.UserAgent.Platform != "" {
+			uaPlatforms[entry.UserAgent.Platform]++
 		}
 	}
 
@@ -202,6 +221,9 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 		MaxPdfSizeKb:            maxPdfSizeKb,
 		AverageParseTime:        averageParseTime,
 		AverageParseTime95th:    averageParseTime95th,
+		UAOSs:                   uaOSs,
+		UABrowsers:              uaBrowsers,
+		UAPlatforms:             uaPlatforms,
 		LatestSuccessfulParses:  latestSuccessfulParses,
 		LatestFailedParses:      latestFailedParses,
 	}
