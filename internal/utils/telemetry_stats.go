@@ -11,16 +11,16 @@ import (
 )
 
 type TelemetryStats struct {
-	TotalParses             int     `json:"total_parses"`
-	TotalParsesOverLastWeek int     `json:"total_parses_over_last_week"`
-	UniqueUsers             int     `json:"unique_users"`
-	UniqueUsersOverLastWeek int     `json:"unique_users_over_last_week"`
-	ErrorRate               float64 `json:"error_rate"`
-	ErrorsOverLastWeek      int     `json:"errors_over_last_week"`
-	AveragePdfSize          float64 `json:"average_pdf_size"`
-	MaxPdfSizeKb            int64   `json:"max_pdf_size_kb"`
-	AverageParseTime        float64 `json:"average_parse_time"`
-	AverageParseTime95th    float64 `json:"average_parse_time_95th"`
+	TotalParses             int     `json:"totalParses"`
+	TotalParsesOverLastWeek int     `json:"totalParsesOverLastWeek"`
+	UniqueUsers             int     `json:"uniqueUsers"`
+	UniqueUsersOverLastWeek int     `json:"uniqueUsersOverLastWeek"`
+	ErrorRate               float64 `json:"errorRate"`
+	ErrorsOverLastWeek      int     `json:"errorsOverLastWeek"`
+	AveragePdfSizeKb        float64 `json:"averagePdfSizeKb"`
+	MaxPdfSizeKb            int64   `json:"maxPdfSizeKb"`
+	AverageParseTime        float64 `json:"averageParseTime"`
+	AverageParseTime95th    float64 `json:"averageParseTime95th"`
 }
 
 // ReadTelemetry reads the raw content of the log file and returns it as a slice of parseTelemetry structs
@@ -183,7 +183,7 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 		UniqueUsersOverLastWeek: len(uniqueIPsLastWeek),
 		ErrorRate:               errorRate,
 		ErrorsOverLastWeek:      errorsOverLastWeek,
-		AveragePdfSize:          averagePdfSizeKb,
+		AveragePdfSizeKb:        averagePdfSizeKb,
 		MaxPdfSizeKb:            maxPdfSizeKb,
 		AverageParseTime:        averageParseTime,
 		AverageParseTime95th:    averageParseTime95th,

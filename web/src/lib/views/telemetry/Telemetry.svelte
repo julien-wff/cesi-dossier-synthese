@@ -20,21 +20,21 @@
 
 <div class="grid sm:gap-4 gap-2 p-2 sm:p-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 sm:gap-4 gap-2">
-        <TelemetryStatCard description="{telemetryState.stats?.total_parses_over_last_week ?? 0} parse over last week"
+        <TelemetryStatCard description="{telemetryState.stats?.totalParsesOverLastWeek ?? 0} parse over last week"
                            label="Total Records"
-                           value={telemetryState.stats?.total_parses ?? 0}/>
-        <TelemetryStatCard description="{telemetryState.stats?.errors_over_last_week ?? 0} over last week"
+                           value={telemetryState.stats?.totalParses ?? 0}/>
+        <TelemetryStatCard description="{telemetryState.stats?.errorsOverLastWeek ?? 0} over last week"
                            label="Unique Users"
-                           value={telemetryState.stats?.unique_users ?? 0}/>
-        <TelemetryStatCard description="{telemetryState.stats?.unique_users_over_last_week ?? 0} errors over last week"
+                           value={telemetryState.stats?.uniqueUsers ?? 0}/>
+        <TelemetryStatCard description="{telemetryState.stats?.uniqueUsersOverLastWeek ?? 0} errors over last week"
                            label="Error Rate"
-                           value="{round(telemetryState.stats?.error_rate, 1)} %"/>
-        <TelemetryStatCard description="Max: {telemetryState.stats?.max_pdf_size_kb} KB"
+                           value="{round(telemetryState.stats?.errorRate, 1)} %"/>
+        <TelemetryStatCard description="Max: {telemetryState.stats?.maxPdfSizeKb} KB"
                            label="Average PDF Size"
-                           value="{round(telemetryState.stats?.average_pdf_size)} KB"/>
-        <TelemetryStatCard description="95th percentile: {round(telemetryState.stats?.average_parse_time_95th)} ms"
+                           value="{round(telemetryState.stats?.averagePdfSizeKb)} KB"/>
+        <TelemetryStatCard description="95th percentile: {round(telemetryState.stats?.averageParseTime95th)} ms"
                            label="Average Duration"
-                           value="{round(telemetryState.stats?.average_parse_time)} ms"/>
+                           value="{round(telemetryState.stats?.averageParseTime)} ms"/>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 sm:gap-4 gap-2">

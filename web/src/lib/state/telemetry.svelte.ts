@@ -16,16 +16,16 @@ export interface UserAgent {
 }
 
 export interface TelemetryStats {
-    total_parses: number;
-    total_parses_over_last_week: number;
-    unique_users: number;
-    unique_users_over_last_week: number;
-    error_rate: number;
-    errors_over_last_week: number;
-    average_pdf_size: number;
-    max_pdf_size_kb: number;
-    average_parse_time: number;
-    average_parse_time_95th: number;
+    totalParses: number;
+    totalParsesOverLastWeek: number;
+    uniqueUsers: number;
+    uniqueUsersOverLastWeek: number;
+    errorRate: number;
+    errorsOverLastWeek: number;
+    averagePdfSizeKb: number;
+    maxPdfSizeKb: number;
+    averageParseTime: number;
+    averageParseTime95th: number;
 }
 
 export interface TimingElement {
