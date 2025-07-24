@@ -5,7 +5,7 @@
     import Telemetry from '$lib/views/telemetry/Telemetry.svelte';
     import { browser } from '$app/environment';
     import { onMount } from 'svelte';
-    import { telemetryState, type TelemetryUnit } from '$lib/state/telemetry.svelte';
+    import { telemetryState, type TelemetryStats } from '$lib/state/telemetry.svelte';
 
     const telemetryAuthKey = 'telemetry-auth';
 
@@ -35,7 +35,7 @@
             return;
         }
 
-        let data: TelemetryUnit[];
+        let data: TelemetryStats;
         try {
             const resJson = await res.json();
             if (resJson.error) {
@@ -48,10 +48,7 @@
             return;
         }
 
-        telemetryState.telemetry = data.map((d: any) => ({
-            ...d,
-            timestamp: new Date(d.timestamp),
-        }));
+        telemetryState.stats = data;
         telemetryState.loaded = true;
     }
 
