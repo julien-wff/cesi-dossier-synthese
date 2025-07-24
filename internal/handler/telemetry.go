@@ -7,6 +7,26 @@ import (
 	"net/http"
 )
 
+// writeResponse writes the telemetry response (error and data) to the HTTP response writer.
+func writeResponse(w http.ResponseWriter, data *utils.TelemetryStats, error string) {
+	res := struct {
+		Error *string               `json:"error"`
+		Data  *utils.TelemetryStats `json:"data"`
+	}{
+		Error: nil,
+		Data:  data,
+	}
+
+	if error != "" {
+		res.Error = &error
+	}
+
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		http.Error(w, "Error encoding response", http.StatusInternalServerError)
+		return
+	}
+}
+
 // GetTelemetryHandler returns the telemetry logs as JSON. Needs basic auth.
 func GetTelemetryHandler(config *utils.AppConfig) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +39,7 @@ func GetTelemetryHandler(config *utils.AppConfig) http.HandlerFunc {
 		if !ok || userMatch != 1 || passwordMatch != 1 {
 			w.Header().Set("WWW-Authenticate", `Basic realm="Telemetry"`)
 			w.WriteHeader(http.StatusUnauthorized)
-			_, _ = w.Write([]byte("{\"error\":\"unauthorized\"}"))
+			writeResponse(w, nil, "Unauthorized access")
 			return
 		}
 
@@ -27,20 +47,12 @@ func GetTelemetryHandler(config *utils.AppConfig) http.HandlerFunc {
 		telemetry, err := utils.ReadTelemetry()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = w.Write([]byte("{\"error\":\"error while reading log file\"}"))
+			writeResponse(w, nil, "Error reading telemetry logs: "+err.Error())
 			return
 		}
 
 		// Compute stats
 		stats := utils.ComputeTelemetryStats(telemetry)
-		statsJSON, err := json.Marshal(stats)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = w.Write([]byte("{\"error\":\"error while serializing telemetry stats\"}"))
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte("{\"error\":null, \"data\":" + string(statsJSON) + "}"))
+		writeResponse(w, &stats, "")
 	}
 }
