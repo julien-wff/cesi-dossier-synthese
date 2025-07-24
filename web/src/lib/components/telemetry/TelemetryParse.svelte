@@ -21,7 +21,7 @@
     {/if}
 
     <div class="flex flex-col md:flex-row md:gap-2">
-        <div>[{unit.timestamp.toLocaleString()}] {unit.source} ({unit.contentLengthKB} KB)</div>
+        <div>[{new Date(unit.timestamp).toLocaleString()}] {unit.source} ({unit.contentLengthKB} KB)</div>
 
         <div class="hidden md:block">-</div>
 

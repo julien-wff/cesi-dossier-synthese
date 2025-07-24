@@ -11,16 +11,18 @@ import (
 )
 
 type TelemetryStats struct {
-	TotalParses             int     `json:"totalParses"`
-	TotalParsesOverLastWeek int     `json:"totalParsesOverLastWeek"`
-	UniqueUsers             int     `json:"uniqueUsers"`
-	UniqueUsersOverLastWeek int     `json:"uniqueUsersOverLastWeek"`
-	ErrorRate               float64 `json:"errorRate"`
-	ErrorsOverLastWeek      int     `json:"errorsOverLastWeek"`
-	AveragePdfSizeKb        float64 `json:"averagePdfSizeKb"`
-	MaxPdfSizeKb            int64   `json:"maxPdfSizeKb"`
-	AverageParseTime        float64 `json:"averageParseTime"`
-	AverageParseTime95th    float64 `json:"averageParseTime95th"`
+	TotalParses             int              `json:"totalParses"`
+	TotalParsesOverLastWeek int              `json:"totalParsesOverLastWeek"`
+	UniqueUsers             int              `json:"uniqueUsers"`
+	UniqueUsersOverLastWeek int              `json:"uniqueUsersOverLastWeek"`
+	ErrorRate               float64          `json:"errorRate"`
+	ErrorsOverLastWeek      int              `json:"errorsOverLastWeek"`
+	AveragePdfSizeKb        float64          `json:"averagePdfSizeKb"`
+	MaxPdfSizeKb            int64            `json:"maxPdfSizeKb"`
+	AverageParseTime        float64          `json:"averageParseTime"`
+	AverageParseTime95th    float64          `json:"averageParseTime95th"`
+	LatestSuccessfulParses  []parseTelemetry `json:"latestSuccessfulParses"`
+	LatestFailedParses      []parseTelemetry `json:"latestFailedParses"`
 }
 
 // ReadTelemetry reads the raw content of the log file and returns it as a slice of parseTelemetry structs
@@ -176,6 +178,19 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 		averageParseTime95th = 0
 	}
 
+	// Prepare latest successful and error parses
+	const maxLatestParses = 25
+	latestSuccessfulParses := make([]parseTelemetry, 0, maxLatestParses)
+	latestFailedParses := make([]parseTelemetry, 0, maxLatestParses)
+	for i := len(data) - 1; i >= 0 && (len(latestSuccessfulParses) < maxLatestParses || len(latestFailedParses) < maxLatestParses); i-- {
+		entry := data[i]
+		if entry.Success && len(latestSuccessfulParses) < maxLatestParses {
+			latestSuccessfulParses = append(latestSuccessfulParses, entry)
+		} else if !entry.Success && len(latestFailedParses) < maxLatestParses {
+			latestFailedParses = append(latestFailedParses, entry)
+		}
+	}
+
 	return TelemetryStats{
 		TotalParses:             totalRecords,
 		TotalParsesOverLastWeek: lastWeekRecords,
@@ -187,5 +202,7 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 		MaxPdfSizeKb:            maxPdfSizeKb,
 		AverageParseTime:        averageParseTime,
 		AverageParseTime95th:    averageParseTime95th,
+		LatestSuccessfulParses:  latestSuccessfulParses,
+		LatestFailedParses:      latestFailedParses,
 	}
 }

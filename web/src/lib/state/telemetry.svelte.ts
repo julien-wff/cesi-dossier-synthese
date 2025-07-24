@@ -1,6 +1,6 @@
 export interface TelemetryUnit {
     success: boolean;
-    timestamp: Date;
+    timestamp: string;
     clientIP: string;
     source: string;
     contentLengthKB: number;
@@ -26,6 +26,8 @@ export interface TelemetryStats {
     maxPdfSizeKb: number;
     averageParseTime: number;
     averageParseTime95th: number;
+    latestSuccessfulParses: TelemetryUnit[];
+    latestFailedParses: TelemetryUnit[];
 }
 
 export interface TimingElement {
