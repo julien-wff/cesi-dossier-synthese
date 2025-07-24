@@ -242,9 +242,9 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 	for i := len(data) - 1; i >= 0 && (len(latestSuccessfulParses) < maxLatestParses || len(latestFailedParses) < maxLatestParses); i-- {
 		entry := data[i]
 		if entry.Success && len(latestSuccessfulParses) < maxLatestParses {
-			latestSuccessfulParses = append(latestSuccessfulParses, entry)
+			latestSuccessfulParses = append([]parseTelemetry{entry}, latestSuccessfulParses...)
 		} else if !entry.Success && len(latestFailedParses) < maxLatestParses {
-			latestFailedParses = append(latestFailedParses, entry)
+			latestFailedParses = append([]parseTelemetry{entry}, latestFailedParses...)
 		}
 	}
 
