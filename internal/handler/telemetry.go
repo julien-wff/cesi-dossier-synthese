@@ -2,6 +2,7 @@ package handler
 
 import (
 	"crypto/subtle"
+	"encoding/json"
 	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"net/http"
 )
@@ -30,31 +31,16 @@ func GetTelemetryHandler(config *utils.AppConfig) http.HandlerFunc {
 			return
 		}
 
-		// Check if telemetry is empty
-		if len(*telemetry) == 0 {
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = w.Write([]byte("{\"error\":null, \"data\":[]}"))
+		// Compute stats
+		stats := utils.ComputeTelemetryStats(telemetry)
+		statsJSON, err := json.Marshal(stats)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte("{\"error\":\"error while serializing telemetry stats\"}"))
 			return
 		}
 
-		// Replace line breaks with commas
-		for i, b := range *telemetry {
-			if b == '\n' {
-				(*telemetry)[i] = ','
-			}
-		}
-
-		// Strip last comma
-		if (*telemetry)[len(*telemetry)-1] == ',' {
-			*telemetry = (*telemetry)[:len(*telemetry)-1]
-		}
-
-		// Assemble final JSON
-		start := []byte("{\"error\":null,\"data\":[")
-		end := []byte("]}")
-		*telemetry = append(start, append(*telemetry, end...)...)
-
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write(*telemetry)
+		_, _ = w.Write([]byte("{\"error\":null, \"data\":" + string(statsJSON) + "}"))
 	}
 }

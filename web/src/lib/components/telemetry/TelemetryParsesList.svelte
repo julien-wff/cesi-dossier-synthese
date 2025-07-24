@@ -1,9 +1,6 @@
 <script lang="ts">
     import { telemetryState, type TelemetryUnit } from '$lib/state/telemetry.svelte.js';
     import TelemetryParse from '$lib/components/telemetry/TelemetryParse.svelte';
-
-    let successfulParses = $derived(telemetryState.telemetry.filter(t => t.success));
-    let failedParses = $derived(telemetryState.telemetry.filter(t => !t.success));
 </script>
 
 
@@ -27,6 +24,6 @@
 
 
 <div class="grid sm:gap-4 gap-2 2xl:grid-cols-2">
-    {@render parsesList('Latest successful parses', successfulParses)}
-    {@render parsesList('Latest failed parses', failedParses)}
+    {@render parsesList('Latest successful parses', telemetryState.stats?.latestSuccessfulParses || [])}
+    {@render parsesList('Latest failed parses', telemetryState.stats?.latestFailedParses || [])}
 </div>
