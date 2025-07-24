@@ -32,13 +32,13 @@ export interface TelemetryStats {
     maxPdfSizeKb: number;
     averageParseTime: number;
     averageParseTime95th: number;
-    UAOSs: Record<string, number>;
-    UABrowsers: Record<string, number>;
-    UAPlatforms: Record<string, number>;
-    latestSuccessfulParses: TelemetryUnit[];
-    latestFailedParses: TelemetryUnit[];
-    timingAverageDuration: Record<string, number>;
-    timingKeys: { name: string, description: string }[];
+    UAOSs: Record<string, number> | null;
+    UABrowsers: Record<string, number> | null;
+    UAPlatforms: Record<string, number> | null;
+    latestSuccessfulParses: TelemetryUnit[] | null;
+    latestFailedParses: TelemetryUnit[] | null;
+    timingAverageDuration: Record<string, number> | null;
+    timingKeys: { name: string, description: string }[] | null;
 }
 
 export interface TelemetryState {

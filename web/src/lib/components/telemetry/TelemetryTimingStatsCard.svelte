@@ -12,13 +12,13 @@
     <div class="text-center font-bold mb-2 md:mb-4">Timing Statistics</div>
 
     <div class="flex flex-col md:flex-row flex-1 w-full gap-0.5">
-        {#if !telemetryState.stats || telemetryState.stats.timingKeys.length === 0}
+        {#if !telemetryState.stats || !telemetryState.stats.timingKeys || telemetryState.stats.timingKeys.length === 0}
             <div class="text-sm text-gray-500 dark:text-gray-400 w-full text-center">
                 No timing data available
             </div>
         {:else}
             {#each telemetryState.stats.timingKeys as { name, description }, idx (name)}
-                {@const stats = telemetryState.stats.timingAverageDuration[name]}
+                {@const stats = telemetryState.stats.timingAverageDuration![name]}
                 {@const duration = `${stats.toFixed(2)}ms`}
                 {@const fraction = (stats / totalAverageDuration * 100).toFixed(2)}
 
