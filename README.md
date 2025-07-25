@@ -22,7 +22,7 @@ This project provides a web application where you can upload your PDF file and e
 It displays the grades in a user-friendly interface, allowing you to change them to simulate future ones, and see basic
 statistics.
 
-https://github.com/julien-wff/cesi-dossier-synthese/assets/50249422/31696820-5886-430d-bb2e-a335c372b045
+https://github.com/user-attachments/assets/8ee91f46-0bff-4c5d-a332-f803995d0659
 
 ## Privacy
 
