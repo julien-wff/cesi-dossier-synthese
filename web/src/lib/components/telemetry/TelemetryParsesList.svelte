@@ -15,7 +15,7 @@
                 </div>
             {/if}
 
-            {#each telemetry.slice(-25).toReversed() as unit}
+            {#each telemetry as unit}
                 <TelemetryParse {unit}/>
             {/each}
         </div>
