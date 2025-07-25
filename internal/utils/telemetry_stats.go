@@ -236,7 +236,7 @@ func ComputeTelemetryStats(telemetry *[]parseTelemetry) TelemetryStats {
 	}
 
 	// Prepare latest successful and error parses
-	const maxLatestParses = 25
+	const maxLatestParses = 15
 	latestSuccessfulParses := make([]parseTelemetry, 0, maxLatestParses)
 	latestFailedParses := make([]parseTelemetry, 0, maxLatestParses)
 	for i := len(data) - 1; i >= 0 && (len(latestSuccessfulParses) < maxLatestParses || len(latestFailedParses) < maxLatestParses); i-- {
