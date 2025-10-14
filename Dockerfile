@@ -1,4 +1,4 @@
-FROM oven/bun:1.2.16-alpine AS web-builder
+FROM oven/bun:1.3.0-alpine AS web-builder
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY web/ ./
 RUN bun run build
 
 
-FROM golang:1.24.4-alpine AS backend-builder
+FROM golang:1.25.3-alpine AS backend-builder
 
 WORKDIR /app
 
