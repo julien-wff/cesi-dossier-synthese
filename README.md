@@ -22,7 +22,7 @@ This project provides a web application where you can upload your PDF file and e
 It displays the grades in a user-friendly interface, allowing you to change them to simulate future ones, and see basic
 statistics.
 
-https://github.com/julien-wff/cesi-dossier-synthese/assets/50249422/31696820-5886-430d-bb2e-a335c372b045
+https://github.com/user-attachments/assets/8ee91f46-0bff-4c5d-a332-f803995d0659
 
 ## Privacy
 
@@ -56,6 +56,17 @@ services:
     volumes:
       - ./data:/app/data # To store basic telemetry logs
 ```
+
+Here are the configurable environment variables:
+
+| Variable             | Description                                                                     | Default Value    |
+|----------------------|---------------------------------------------------------------------------------|------------------|
+| `APP_ENV`            | Set environment to production or development                                    | `production`     |
+| `APP_PORT`           | Port on which the application will run                                          | `8080`           |
+| `TELEMETRY_USER`     | Username to access the telemetry dashboard (`/telemetry`)                       | None (no access) |
+| `TELEMETRY_PASSWORD` | Password to access the telemetry dashboard (`/telemetry`)                       | None (no access) |
+| `PROXY_HEADERS`      | If the app is behind a reverse proxy, to use headers like `X-Forwarded-For`     | `false`          |
+| `RATE_LIMIT_TOKENS`  | Number of parsing requests allowed per minute per IP address (`0` for no limit) | `20`             |
 
 ## Affiliations
 

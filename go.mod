@@ -5,6 +5,7 @@ go 1.25.3
 require (
 	github.com/gorilla/handlers v1.5.2
 	github.com/ledongthuc/pdf v0.0.0-20250511090121-5959a4027728
+	github.com/mileusna/useragent v1.3.5
 	github.com/pdfcpu/pdfcpu v0.11.0
 	github.com/sethvargo/go-limiter v1.0.0
 	github.com/stretchr/testify v1.11.1

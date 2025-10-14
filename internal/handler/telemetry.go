@@ -2,9 +2,30 @@ package handler
 
 import (
 	"crypto/subtle"
+	"encoding/json"
 	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"net/http"
 )
+
+// writeResponse writes the telemetry response (error and data) to the HTTP response writer.
+func writeResponse(w http.ResponseWriter, data *utils.TelemetryStats, error string) {
+	res := struct {
+		Error *string               `json:"error"`
+		Data  *utils.TelemetryStats `json:"data"`
+	}{
+		Error: nil,
+		Data:  data,
+	}
+
+	if error != "" {
+		res.Error = &error
+	}
+
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		http.Error(w, "Error encoding response", http.StatusInternalServerError)
+		return
+	}
+}
 
 // GetTelemetryHandler returns the telemetry logs as JSON. Needs basic auth.
 func GetTelemetryHandler(config *utils.AppConfig) http.HandlerFunc {
@@ -18,7 +39,7 @@ func GetTelemetryHandler(config *utils.AppConfig) http.HandlerFunc {
 		if !ok || userMatch != 1 || passwordMatch != 1 {
 			w.Header().Set("WWW-Authenticate", `Basic realm="Telemetry"`)
 			w.WriteHeader(http.StatusUnauthorized)
-			_, _ = w.Write([]byte("{\"error\":\"unauthorized\"}"))
+			writeResponse(w, nil, "Unauthorized access")
 			return
 		}
 
@@ -26,35 +47,12 @@ func GetTelemetryHandler(config *utils.AppConfig) http.HandlerFunc {
 		telemetry, err := utils.ReadTelemetry()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = w.Write([]byte("{\"error\":\"error while reading log file\"}"))
+			writeResponse(w, nil, "Error reading telemetry logs: "+err.Error())
 			return
 		}
 
-		// Check if telemetry is empty
-		if len(*telemetry) == 0 {
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = w.Write([]byte("{\"error\":null, \"data\":[]}"))
-			return
-		}
-
-		// Replace line breaks with commas
-		for i, b := range *telemetry {
-			if b == '\n' {
-				(*telemetry)[i] = ','
-			}
-		}
-
-		// Strip last comma
-		if (*telemetry)[len(*telemetry)-1] == ',' {
-			*telemetry = (*telemetry)[:len(*telemetry)-1]
-		}
-
-		// Assemble final JSON
-		start := []byte("{\"error\":null,\"data\":[")
-		end := []byte("]}")
-		*telemetry = append(start, append(*telemetry, end...)...)
-
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write(*telemetry)
+		// Compute stats
+		stats := utils.ComputeTelemetryStats(telemetry)
+		writeResponse(w, &stats, "")
 	}
 }

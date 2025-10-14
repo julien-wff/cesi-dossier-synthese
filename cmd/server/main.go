@@ -13,7 +13,9 @@ func main() {
 	cfg := utils.GetAppConfig()
 
 	r := router.NewRouter(cfg)
-	r = handlers.ProxyHeaders(r)
+	if cfg.ProxyHeaders {
+		r = handlers.ProxyHeaders(r)
+	}
 	r = handlers.CombinedLoggingHandler(os.Stdout, r)
 
 	if cfg.Production {
