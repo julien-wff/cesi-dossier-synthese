@@ -1,4 +1,4 @@
-FROM oven/bun:1.2.16-alpine AS web-builder
+FROM oven/bun:1.3.0-alpine AS web-builder
 
 WORKDIR /app
 
