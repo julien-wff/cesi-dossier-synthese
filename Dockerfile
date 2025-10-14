@@ -9,7 +9,7 @@ COPY web/ ./
 RUN bun run build
 
 
-FROM golang:1.24.4-alpine AS backend-builder
+FROM golang:1.25.3-alpine AS backend-builder
 
 WORKDIR /app
 
