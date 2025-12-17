@@ -1,4 +1,4 @@
-FROM oven/bun:1.3.0-alpine AS web-builder
+FROM oven/bun:1.3.4-alpine AS web-builder
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY web/ ./
 RUN bun run build
 
 
-FROM golang:1.25.3-alpine AS backend-builder
+FROM golang:1.25.5-alpine AS backend-builder
 
 WORKDIR /app
 
@@ -21,7 +21,7 @@ COPY --from=web-builder /app/build/ ./internal/web/build/
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/bin/app ./cmd/server/main.go
 
 
-FROM alpine:3.22 AS runtime
+FROM alpine:3.23 AS runtime
 
 USER 1000:1000
 

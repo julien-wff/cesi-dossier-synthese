@@ -1,6 +1,6 @@
 module github.com/julien-wff/cesi-dossier-synthese
 
-go 1.25.3
+go 1.25.5
 
 require (
 	github.com/gorilla/handlers v1.5.2
