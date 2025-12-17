@@ -56,7 +56,7 @@ export async function handlePDFSubmit() {
         return handleError(ErrorType.NETWORK, 'Impossible de contacter le serveur. Essayez de changer de connexion (le réseau CESI peut bloquer le service).', e);
     }
 
-    if (res.status == 429) {
+    if (res.status === 429) {
         return handleError(ErrorType.NETWORK, 'Trop de requêtes, veuillez réessayer d\'ici quelques minutes.', res);
     }
 
