@@ -59,7 +59,7 @@
         <div class="w-full max-w-sm grid grid-cols-2">
             <div class="justify-self-center relative aspect-square w-32">
                 {#each Object.entries(sortedValues).slice(0, 8) as [ _, count ], idx}
-                    {@const countUntilLast = Object.values(sortedValues).slice(0, idx).reduce((a, b) => a + b, 0)}
+                    {const countUntilLast = Object.values(sortedValues).slice(0, idx).reduce((a, b) => a + b, 0)}
                     <div class="absolute w-full h-full inset-0 rounded-full"
                          style="
                              background: conic-gradient({colorsThemes[idx]} calc({count / totalDeviceCount} * 360deg), transparent 0);
@@ -71,7 +71,7 @@
             <div class="justify-self-center flex flex-col justify-center gap-1">
                 {#each Object.entries(sortedValues).slice(0, 8) as [ value, count ], idx}
                     <div class="flex items-center gap-2">
-                        <div class="w-4 h-4 rounded-full" style="background-color: {colorsThemes[idx]}"></div>
+                        <div class="size-4 rounded-full" style="background-color: {colorsThemes[idx]}"></div>
                         <span class="text-sm">{value || 'Unknown'} ({count})</span>
                     </div>
                 {/each}

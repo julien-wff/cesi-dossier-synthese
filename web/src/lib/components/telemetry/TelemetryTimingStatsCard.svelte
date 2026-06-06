@@ -18,9 +18,9 @@
             </div>
         {:else}
             {#each telemetryState.stats.timingKeys as { name, description }, idx (name)}
-                {@const stats = telemetryState.stats.timingAverageDuration![name]}
-                {@const duration = `${stats.toFixed(2)}ms`}
-                {@const fraction = (stats / totalAverageDuration * 100).toFixed(2)}
+                {const stats = telemetryState.stats.timingAverageDuration![name]}
+                {const duration = `${stats.toFixed(2)}ms`}
+                {const fraction = (stats / totalAverageDuration * 100).toFixed(2)}
 
                 <div class="text-sm py-4 text-center md:w-(--fraction) h-(--fraction) md:h-auto flex md:flex-col gap-1 items-center justify-center overflow-clip"
                      class:bg-red-300={idx === 0}

@@ -37,7 +37,7 @@
         <div class="p-1.5">
             {category}
         </div>
-        <Undo class="w-9 h-9 cursor-pointer p-1.5 {!gradesChanged ? 'hidden' : ''}"
+        <Undo class="size-9 cursor-pointer p-1.5 {!gradesChanged ? 'hidden' : ''}"
               aria-hidden={!gradesChanged}
               onclick={handleGradesRevert}/>
     </div>

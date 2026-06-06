@@ -40,10 +40,10 @@
 
     <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 p-4 text-center pointer-events-none">
         {#if online}
-            <FileText class="w-8 h-8"/>
+            <FileText class="size-8"/>
             <p class="font-bold">Clique ou dépose ton<br>dossier PDF ici</p>
         {:else}
-            <CloudAlert class="w-8 h-8"/>
+            <CloudAlert class="size-8"/>
             <p class="font-bold">Hors ligne</p>
         {/if}
     </div>
