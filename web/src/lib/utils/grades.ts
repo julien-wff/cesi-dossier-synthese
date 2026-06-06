@@ -1,13 +1,13 @@
 import type { Grade, Letter, Section } from '../types/grades';
 
-export const LETTER_VALUES = {
+const LETTER_VALUES = {
     A: 5,
     B: 4,
     C: 2,
     D: 1,
 } satisfies {[key in Letter]: number};
 
-export const convertToLetterGrade = (letter: Letter) => LETTER_VALUES[letter] || 0;
+const convertToLetterGrade = (letter: Letter) => LETTER_VALUES[letter] || 0;
 
 export function calculateAverage(letters: Letter[]) {
     letters = letters.filter(convertToLetterGrade);
@@ -34,7 +34,7 @@ export function gradesWithCoefficientToList(grades: Grade[]) {
     return letters;
 }
 
-export function sectionsToGrades(sections: Section[]) {
+function sectionsToGrades(sections: Section[]) {
     return sections.map(({ categories }) =>
         categories.map(({ grades }) =>
             gradesWithCoefficientToList(grades),

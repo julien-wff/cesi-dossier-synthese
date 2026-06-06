@@ -5,13 +5,13 @@ export interface DebugResponse {
     squares: DebugSquare[];
 }
 
-export interface DebugPerformanceElement {
+interface DebugPerformanceElement {
     name: string;
     duration: number; // ms
     description: string;
 }
 
-export interface DebugPage {
+interface DebugPage {
     page: number;
     size: DebugSize;
     text: DebugPageText[];
@@ -19,35 +19,35 @@ export interface DebugPage {
     lines: DebugPageLine[];
 }
 
-export interface DebugSize {
+interface DebugSize {
     width: number;
     height: number;
 }
 
-export interface DebugPosition {
+interface DebugPosition {
     x: number;
     y: number;
 }
 
-export interface DebugPageText {
+interface DebugPageText {
     content: string;
     font_size: number;
     position: DebugPosition;
 }
 
-export interface DebugPageRectangle {
+interface DebugPageRectangle {
     position: DebugPosition;
     size: DebugSize;
 }
 
-export interface DebugPageLine {
+interface DebugPageLine {
     x1: number;
     y1: number;
     x2: number;
     y2: number;
 }
 
-export interface DebugLine {
+interface DebugLine {
     page: number;
     lines: DebugLineLine[];
 }
@@ -69,12 +69,12 @@ export interface DebugLineLine {
     end_neighbours_ids: number[];
 }
 
-export interface DebugSquare {
+interface DebugSquare {
     page: number;
     squares: DebugSquareSquare[][];
 }
 
-export interface DebugSquareSquare {
+interface DebugSquareSquare {
     x1: number;
     y1: number;
     x2: number;
