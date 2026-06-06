@@ -87,7 +87,7 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
                       min={0}
                       max={data.pages[page].text.length - 1}/>
     {#if displaySingleText}
-        {@const text = data.pages[page].text[textIndex]}
+        {const text = data.pages[page].text[textIndex]}
         <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
             Position: ({round(text.position.x)} ; {round(text.position.y)})
             <br/>
@@ -103,7 +103,7 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
                       min={0}
                       max={data.pages[page].lines.length - 1}/>
     {#if displaySingleLine}
-        {@const line = data.pages[page].lines[lineIndex]}
+        {const line = data.pages[page].lines[lineIndex]}
         <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
             ({round(line.x1)} ; {round(line.y2)}) -> ({round(line.x2)} ; {round(line.y2)})
         </div>
@@ -115,7 +115,7 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
                       min={0}
                       max={data.pages[page].rectangles.length - 1}/>
     {#if displaySingleSquare}
-        {@const square = data.pages[page].rectangles[squareIndex]}
+        {const square = data.pages[page].rectangles[squareIndex]}
         <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
             Position: ({round(square.position.x)} ; {round(square.position.y)})
             -> ({round(square.position.x + square.size.width)} ; {round(square.position.y + square.size.height)})
@@ -144,7 +144,7 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
                       min={0}
                       max={data.lines[page].lines.length - 1}/>
     {#if displaySingleLine}
-        {@const line = data.lines[page].lines[lineIndex]}
+        {const line = data.lines[page].lines[lineIndex]}
         <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
             [#{line.id}] ({round(line.x1)} ; {round(line.y1)}) -> ({round(line.x2)} ; {round(line.y2)})
         </div>
@@ -177,7 +177,7 @@ Squares: {data.squares.reduce((t, p) => t + p.squares.length, 0)}
                       min={0}
                       max={data.squares[page].squares.flat().length - 1}/>
     {#if displaySingleSquare}
-        {@const square = data.squares[page].squares.flat()[squareIndex]}
+        {const square = data.squares[page].squares.flat()[squareIndex]}
         <div class="text-sm p-1 rounded-s border border-indigo-400 mb-2 mt-1">
             Position: ({round(square.x1)} ; {round(square.y1)})
             -> ({round(square.x2)} ; {round(square.y2)})

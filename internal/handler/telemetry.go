@@ -3,8 +3,9 @@ package handler
 import (
 	"crypto/subtle"
 	"encoding/json"
-	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"net/http"
+
+	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 )
 
 // writeResponse writes the telemetry response (error and data) to the HTTP response writer.
@@ -52,7 +53,6 @@ func GetTelemetryHandler(config *utils.AppConfig) http.HandlerFunc {
 		}
 
 		// Compute stats
-		stats := utils.ComputeTelemetryStats(telemetry)
-		writeResponse(w, &stats, "")
+		writeResponse(w, new(utils.ComputeTelemetryStats(telemetry)), "")
 	}
 }

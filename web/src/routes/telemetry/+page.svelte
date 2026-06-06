@@ -63,7 +63,7 @@
         <Telemetry/>
     {:else if !error && (!loaded || (loaded && authToken))}
         <div class="min-h-svh grid place-content-center">
-            <div class="w-8 h-8 border-t-2 border-slate-900 dark:border-slate-50 rounded-full animate-spin"></div>
+            <div class="size-8 border-t-2 border-slate-900 dark:border-slate-50 rounded-full animate-spin"></div>
         </div>
     {:else}
         <Login onlogin={handleLogin} {error}/>

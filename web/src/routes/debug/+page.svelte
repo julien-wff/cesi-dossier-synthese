@@ -65,7 +65,7 @@
 <Meta/>
 
 <main class="flex min-h-screen">
-    <aside class="w-72 p-2 bg-slate-100 dark:bg-slate-700 shadow-md max-h-screen overflow-y-auto">
+    <aside class="w-72 p-2 bg-slate-100 dark:bg-slate-700 shadow-md max-h-screen overflow-y-auto scrollbar-thin">
         <h1 class="text-xl font-bold mb-4">Debug viewer</h1>
 
         <form class="mb-4" onsubmit={handlePDFSubmit}>
