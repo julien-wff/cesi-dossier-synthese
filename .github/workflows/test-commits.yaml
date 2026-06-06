@@ -47,8 +47,8 @@ jobs:
         - name: Run tests
           run: go test ./...
 
-  build-frontend:
-    name: Build frontend
+  build-check-frontend:
+    name: Check and build frontend
     runs-on: ubuntu-latest
 
     steps:
@@ -58,11 +58,19 @@ jobs:
       - name: Use Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: '1.3.4'
+          bun-version: '1.3.14'
 
       - name: Install dependencies
         working-directory: ./web
         run: bun install --frozen-lockfile
+
+      - name: Check svelte
+        working-directory: ./web
+        run: bun run check
+
+      - name: Check knip
+        working-directory: ./web
+        run: bun run knip -- --treat-config-hints-as-errors
 
       - name: Build
         working-directory: ./web

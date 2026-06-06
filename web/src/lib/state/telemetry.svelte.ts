@@ -1,27 +1,16 @@
-export interface TelemetryUnit {
-    success: boolean;
-    timestamp: string;
-    clientIP: string;
-    source: string;
-    contentLengthKB: number;
-    timings: TimingElement[];
-    error: string | null;
-    userAgent?: UserAgent;
-}
-
-export interface TimingElement {
+interface TimingElement {
     name: string;
     description: string;
     duration: number; // in milliseconds
 }
 
-export interface UserAgent {
+interface UserAgent {
     os: string;
     browser: string;
     platform: string;
 }
 
-export interface TelemetryStats {
+interface TelemetryStats {
     totalParses: number;
     totalParsesOverLastWeek: number;
     uniqueUsers: number;
@@ -39,6 +28,17 @@ export interface TelemetryStats {
     latestFailedParses: TelemetryUnit[] | null;
     timingAverageDuration: Record<string, number> | null;
     timingKeys: { name: string, description: string }[] | null;
+}
+
+export interface TelemetryUnit {
+    success: boolean;
+    timestamp: string;
+    clientIP: string;
+    source: string;
+    contentLengthKB: number;
+    timings: TimingElement[];
+    error: string | null;
+    userAgent?: UserAgent;
 }
 
 export interface TelemetryState {
