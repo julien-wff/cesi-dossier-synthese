@@ -7,11 +7,16 @@
     A web interface to extract and visualize grades from CESI PDF files.
   </p>
   <p align="center">
-    <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/julien-wff/cesi-dossier-synthese/test-commits.yaml">
-    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/julien-wff/cesi-dossier-synthese">
-    <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/cefadrom/cesi-dossier-synthese">
-    <img alt="Docker Image Size" src="https://img.shields.io/docker/image-size/cefadrom/cesi-dossier-synthese">
-    <img alt="GitHub License" src="https://img.shields.io/github/license/julien-wff/cesi-dossier-synthese">
+    <a href="https://github.com/julien-wff/cesi-dossier-synthese/actions">
+      <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/julien-wff/cesi-dossier-synthese/test-commits.yaml"></a>
+    <a href="https://github.com/julien-wff/cesi-dossier-synthese/releases">
+      <img alt="GitHub Release" src="https://img.shields.io/github/v/release/julien-wff/cesi-dossier-synthese"></a>
+    <a href="https://hub.docker.com/r/cefadrom/cesi-dossier-synthese">
+      <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/cefadrom/cesi-dossier-synthese"></a>
+    <a href="https://hub.docker.com/r/cefadrom/cesi-dossier-synthese">
+      <img alt="Docker Image Size" src="https://img.shields.io/docker/image-size/cefadrom/cesi-dossier-synthese"></a>
+    <a href="https://github.com/julien-wff/cesi-dossier-synthese?tab=AGPL-3.0-1-ov-file">
+      <img alt="GitHub License" src="https://img.shields.io/github/license/julien-wff/cesi-dossier-synthese"></a>
   </p>
 </p>
 
