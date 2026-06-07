@@ -1,7 +1,9 @@
 <p align="center">
   <h1 align="center">CESI Dossier de Synthèse</h1>
   <p align="center">
-    <img align="center" width="70" src="https://github.com/julien-wff/cesi-dossier-synthese/blob/main/web/static/favicons/favicon-96x96.png?raw=true" alt="Dossier de synthèse logo"/>
+    <a href="https://dossier.bdecesinancy.fr/">
+      <img align="center" width="70" src="https://github.com/julien-wff/cesi-dossier-synthese/blob/main/web/static/favicons/favicon-96x96.png?raw=true" alt="Dossier de synthèse logo"/>
+    </a>
   </p>
   <p align="center">
     A web interface to extract and visualize grades from CESI PDF files.
