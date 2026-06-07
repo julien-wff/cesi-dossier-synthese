@@ -5,12 +5,13 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/mileusna/useragent"
 	"net"
 	"net/http"
 	"os"
 	"sync"
 	"time"
+
+	"github.com/mileusna/useragent"
 )
 
 const logFile = "./data/parser.log"

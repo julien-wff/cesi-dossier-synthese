@@ -2,9 +2,10 @@ package parser
 
 import (
 	"fmt"
-	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"math"
 	"sort"
+
+	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 )
 
 // lineDirection represents the direction of a line (horizontal or vertical)

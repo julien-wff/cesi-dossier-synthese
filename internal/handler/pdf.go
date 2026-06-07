@@ -3,12 +3,13 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/julien-wff/cesi-dossier-synthese/internal/parser"
-	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"runtime/debug"
+
+	"github.com/julien-wff/cesi-dossier-synthese/internal/parser"
+	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 )
 
 const (

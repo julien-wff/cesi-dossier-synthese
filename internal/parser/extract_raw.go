@@ -2,15 +2,16 @@ package parser
 
 import (
 	"bytes"
+	"io"
+	"sort"
+	"strconv"
+	"strings"
+
 	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"github.com/ledongthuc/pdf"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
-	"io"
-	"sort"
-	"strconv"
-	"strings"
 )
 
 // position represents a 2D position

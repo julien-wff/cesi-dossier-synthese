@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/gorilla/handlers"
 	"github.com/julien-wff/cesi-dossier-synthese/internal/router"
 	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
-	"net/http"
-	"os"
 )
 
 func main() {

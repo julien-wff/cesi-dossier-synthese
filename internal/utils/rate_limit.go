@@ -1,11 +1,12 @@
 package utils
 
 import (
-	"github.com/sethvargo/go-limiter/httplimit"
-	"github.com/sethvargo/go-limiter/memorystore"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/sethvargo/go-limiter/httplimit"
+	"github.com/sethvargo/go-limiter/memorystore"
 )
 
 func getRateLimitMiddleware(cfg *AppConfig) *httplimit.Middleware {

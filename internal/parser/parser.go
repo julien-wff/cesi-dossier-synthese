@@ -1,8 +1,9 @@
 package parser
 
 import (
-	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"io"
+
+	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 )
 
 // PdfParseDebugResponse is the response of the ParsePdfDebug function,

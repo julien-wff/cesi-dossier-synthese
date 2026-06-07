@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"github.com/julien-wff/cesi-dossier-synthese/internal/web"
 	"io/fs"
 	"log"
 	"net/http"
+
+	"github.com/julien-wff/cesi-dossier-synthese/internal/web"
 )
 
 // StaticFilesHandler serves files from the /build directory inside embed.FS. It also serves the /build/index.html file

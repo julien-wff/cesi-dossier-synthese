@@ -1,9 +1,10 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/julien-wff/cesi-dossier-synthese/internal/handler"
 	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
-	"net/http"
 )
 
 // NewRouter returns a new http.Handler that routes requests to the correct handler

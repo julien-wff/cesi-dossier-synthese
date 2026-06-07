@@ -2,11 +2,12 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/julien-wff/cesi-dossier-synthese/internal/parser"
-	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/julien-wff/cesi-dossier-synthese/internal/parser"
+	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 )
 
 func redirectWithError(w http.ResponseWriter, r *http.Request, err *utils.APIError) {

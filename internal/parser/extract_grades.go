@@ -1,9 +1,10 @@
 package parser
 
 import (
-	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 	"strconv"
 	"strings"
+
+	"github.com/julien-wff/cesi-dossier-synthese/internal/utils"
 )
 
 type GradeLetter string
